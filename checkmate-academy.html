@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkmate Academy — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn 12 famous checkmate patterns, from Back Rank to Boden's Mate. A free mate-in-one trainer for junior chess players from Ellis Knowledge Studio.">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+/* chessboard.js 1.0.0 base styles (MIT, Chris Oakman) */
+/*! chessboard.js v1.0.0 | (c) 2019 Chris Oakman | MIT License chessboardjs.com/license */
+.clearfix-7da63{clear:both}.board-b72b1{border:2px solid #404040;box-sizing:content-box}.square-55d63{float:left;position:relative;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.white-1e1d7{background-color:#f0d9b5;color:#b58863}.black-3c85d{background-color:#b58863;color:#f0d9b5}.highlight1-32417,.highlight2-9c5d2{box-shadow:inset 0 0 3px 3px #ff0}.notation-322f9{cursor:default;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;position:absolute}.alpha-d2270{bottom:1px;right:3px}.numeric-fc462{top:2px;left:2px}
+
+/* Uses the shared site.css tokens: --bg --panel --panel-2 --line --ivory --muted --gold --gold-dim --felt-dark --felt-light */
+:root{ --ok:#7fb069; --bad:#d9694f; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background: radial-gradient(ellipse at top left, rgba(201,162,75,0.07), transparent 55%), var(--bg);
+  color:var(--ivory); font-family:'Inter',sans-serif; min-height:100vh; font-size:15px; line-height:1.55;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:36px 28px 20px;display:flex;flex-direction:column;gap:24px}
+@media (max-width:600px){.wrap{padding:24px 16px 12px}}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 6px}
+h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(30px,5vw,44px);line-height:1.05;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.tag{margin:8px 0 0;color:var(--muted);max-width:60ch}
+.total{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-family:'JetBrains Mono',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+.total .star{color:var(--gold);font-size:18px;line-height:1}
+
+.main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:780px){.main{grid-template-columns:minmax(0,1fr)}}
+.board-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+#board{width:100%;touch-action:none}
+.board-box .white-1e1d7{background:var(--felt-light);color:var(--felt-dark)}
+.board-box .black-3c85d{background:var(--felt-dark);color:var(--felt-light)}
+.board-b72b1{border:0}
+.notation-322f9{font-family:'JetBrains Mono',monospace;font-weight:600}
+.hl-mate{box-shadow:inset 0 0 0 4px var(--bad), inset 0 0 22px rgba(217,105,79,.6)}
+.hl-move{box-shadow:inset 0 0 0 4px var(--gold)}
+.turn{display:flex;align-items:center;gap:8px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.turn i{width:12px;height:12px;border-radius:50%;background:var(--ivory);display:inline-block}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{font-family:'Fraunces',serif;font-weight:600;font-size:28px;line-height:1.1;margin:0}
+.task{margin:0;color:var(--ivory)}
+.stars{display:flex;gap:4px;font-size:24px;line-height:1}
+.stars b{color:var(--line);font-weight:400}
+.stars b.on{color:var(--gold)}
+.msg{border-radius:8px;padding:12px 14px;background:var(--panel-2);border:1px solid var(--line);min-height:48px;font-weight:500}
+.msg.ok{border-color:var(--ok);background:rgba(127,176,105,.12)}
+.msg.bad{border-color:var(--bad);background:rgba(217,105,79,.12)}
+.lesson{margin:0;color:var(--muted);line-height:1.6}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+button{font:inherit;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border-radius:8px;padding:11px 16px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--ivory)}
+button:hover:not(:disabled){border-color:var(--gold-dim)}
+button.primary{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,.lvl:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.map h3{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin:0 0 12px}
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.lvl{display:flex;flex-direction:column;gap:3px;text-align:left;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ivory)}
+.lvl .n{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lvl .t{font-weight:600}
+.lvl .s{color:var(--gold);letter-spacing:2px;font-size:13px}
+.lvl.cur{border-color:var(--gold)}
+.lvl.locked{opacity:.45;cursor:not-allowed}
+.foot{color:var(--muted);font-size:12.5px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.foot a{color:var(--gold)}
+#wipe{padding:4px 10px;font-size:10.5px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+/* click-to-move */
+#board .sel-sq{box-shadow:inset 0 0 0 4px rgba(242,182,50,.95)}
+#board .tgt-sq{background-image:radial-gradient(circle,rgba(20,30,60,.28) 22%,transparent 24%)}
+#board .tgt-sq.cap-sq{background-image:radial-gradient(circle,transparent 58%,rgba(20,30,60,.28) 60%)}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Ellis Knowledge Studio<span>Chess</span></a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="analysis-board.html">Analysis Board</a>
+    <a href="openings-trainer.html">Openings Trainer</a>
+    <a href="checkmate-academy.html" class="current">Checkmate Academy</a>
+    <a href="endgames/">Endgames</a>
+    <a href="coach/">AI Coach</a>
+    <a href="junior-coaching.html">Junior Coaching</a>
+  </div>
+</nav>
+
+<div class="checker-divider">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <p class="eyebrow">Junior training · Mate in 1</p>
+      <h1>Checkmate Academy</h1>
+      <p class="tag">Twelve famous mating patterns, from the Back Rank to Boden's Mate. Find the move that ends the game, earn stars, and unlock the next level.</p>
+    </div>
+    <div class="total" aria-label="Total stars"><span class="star">★</span><span id="total">0</span>/36</div>
+  </div>
+
+  <div class="main">
+    <div class="board-box">
+      <div id="board"></div>
+      <div class="turn"><i></i> White to move · Mate in 1</div>
+    </div>
+
+    <section class="card" aria-live="polite">
+      <p class="eyebrow" id="lvlno">Level 1 of 12</p>
+      <h2 id="pname">Back Rank Mate</h2>
+      <p class="task" id="ptask"></p>
+      <div class="stars" id="pstars"><b>★</b><b>★</b><b>★</b></div>
+      <div class="msg" id="msg">Drag a white piece, or tap it and then tap a square.</div>
+      <p class="lesson" id="lesson" hidden></p>
+      <div class="btns">
+        <button id="hint">Hint (−1 ★)</button>
+        <button id="reset">Reset</button>
+        <button id="next" class="primary" disabled>Next level →</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="map">
+    <h3>Pattern map</h3>
+    <div class="levels" id="levels"></div>
+  </section>
+
+  <div class="foot">
+    <span>Want to master these patterns with a coach? Private lessons for juniors from Ellis Knowledge Studio.</span>
+    <span>Pieces: Cburnett, CC BY-SA 3.0 · <button id="wipe">Reset progress</button></span>
+  </div>
+</div>
+
+<div class="site-footer">ELLIS KNOWLEDGE STUDIO · CHESS</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const PIECES = {"wK": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9IndrIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUuMDAwMDAwLCA1LjAwMDAwMCkiIHN0cm9rZT0iIzAwMDAwMCIKICAgICAgIHN0cm9rZS13aWR0aD0iMS41Ij4KICAgICAgICA8bGluZSB4MT0iMTUiIHkxPSI0Ljk2NzY0NzA2IiB4Mj0iMTUiIHkyPSIwIiBpZD0iU2hhcGUiLz4KICAgICAgICA8bGluZSB4MT0iMTIuODU3MTQyOSIgeTE9IjEuNzY0NzA1ODgiIHgyPSIxNy4xNDI4NTcxIiB5Mj0iMS43NjQ3MDU4OCIgaWQ9IlNoYXBlIi8+CiAgICAgICAgPHBhdGggZD0iTTE3LjU3MTQyODYsNy41IEMxNy41NzE0Mjg2LDcuNSAxNi43MTQyODU3LDUuMjk0MTE3NjUgMTUsNS4yOTQxMTc2NSBDMTMuMjg1NzE0Myw1LjI5NDExNzY1IDEyLjQyODU3MTQsNy41IDEyLjQyODU3MTQsNy41IEMxMS4xNDI4NTcxLDEwLjE0NzA1ODggMTUsMTYuNzY0NzA1OSAxNSwxNi43NjQ3MDU5IEMxNSwxNi43NjQ3MDU5IDE4Ljg1NzE0MjksMTAuMTQ3MDU4OCAxNy41NzE0Mjg2LDcuNSBaIgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgZmlsbD0iI0ZGRkZGRiIvPgogICAgICAgIDxwYXRoIGQ9Ik01LjU3MTQyODU3LDI3LjM1Mjk0MTIgQzEwLjI4NTcxNDMsMzAuNDQxMTc2NSAxOC44NTcxNDI5LDMwLjQ0MTE3NjUgMjMuNTcxNDI4NiwyNy4zNTI5NDEyIEwyMy41NzE0Mjg2LDIxLjE3NjQ3MDYgQzIzLjU3MTQyODYsMjEuMTc2NDcwNiAzMS4yODU3MTQzLDE3LjIwNTg4MjQgMjguNzE0Mjg1NywxMS45MTE3NjQ3IEMyNS4yODU3MTQzLDYuMTc2NDcwNTkgMTcuMTQyODU3MSw4LjgyMzUyOTQxIDE1LDE1LjQ0MTE3NjUgTDE1LDE4LjUyOTQxMTggTDE1LDE1LjQ0MTE3NjUgQzEyLDguODIzNTI5NDEgMy44NTcxNDI4Niw2LjE3NjQ3MDU5IDEuMjg1NzE0MjksMTEuOTExNzY0NyBDLTEuMjg1NzE0MjksMTcuMjA1ODgyNCA1LjU3MTQyODU3LDIwLjczNTI5NDEgNS41NzE0Mjg1NywyMC43MzUyOTQxIEw1LjU3MTQyODU3LDI3LjM1Mjk0MTIgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNNS41NzE0Mjg1NywyMS4xNzY0NzA2IEMxMC4yODU3MTQzLDE4LjUyOTQxMTggMTguODU3MTQyOSwxOC41Mjk0MTE4IDIzLjU3MTQyODYsMjEuMTc2NDcwNiIgaWQ9IlNoYXBlIgogICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMCIgZmlsbD0iIzAwMDAwMCIvPgogICAgICAgIDxwYXRoIGQ9Ik01LjU3MTQyODU3LDI0LjI2NDcwNTkgQzEwLjI4NTcxNDMsMjEuNjE3NjQ3MSAxOC44NTcxNDI5LDIxLjYxNzY0NzEgMjMuNTcxNDI4NiwyNC4yNjQ3MDU5IiBpZD0iU2hhcGUiCiAgICAgICAgICAgICAgZmlsbC1vcGFjaXR5PSIwIiBmaWxsPSIjMDAwMDAwIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIi8+CiAgICAgICAgPHBhdGggZD0iTTUuNTcxNDI4NTcsMjcuMzUyOTQxMiBDMTAuMjg1NzE0MywyNC43MDU4ODI0IDE4Ljg1NzE0MjksMjQuNzA1ODgyNCAyMy41NzE0Mjg2LDI3LjM1Mjk0MTIiIGlkPSJTaGFwZSIKICAgICAgICAgICAgICBmaWxsLW9wYWNpdHk9IjAiIGZpbGw9IiMwMDAwMDAiLz4KICAgIDwvZz48L3N2Zz4=", "wQ": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9IndxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuMDAwMDAwLCA1LjAwMDAwMCkiIHN0cm9rZT0iIzAwMDAwMCIKICAgICAgIHN0cm9rZS13aWR0aD0iMS41Ij4KICAgICAgICA8cGF0aCBkPSJNMy40NTk0NTk0Niw2LjIgQzMuNDU5NDU5NDYsNy4xNzgzMzI5OSAyLjY4NTAzMzA4LDcuOTcxNDI4NTcgMS43Mjk3Mjk3Myw3Ljk3MTQyODU3IEMwLjc3NDQyNjM3OSw3Ljk3MTQyODU3IDAsNy4xNzgzMzI5OSAwLDYuMiBDMCw1LjIyMTY2NzAxIDAuNzc0NDI2Mzc5LDQuNDI4NTcxNDMgMS43Mjk3Mjk3Myw0LjQyODU3MTQzIEMyLjY4NTAzMzA4LDQuNDI4NTcxNDMgMy40NTk0NTk0Niw1LjIyMTY2NzAxIDMuNDU5NDU5NDYsNi4yIFoiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIi8+CiAgICAgICAgPHBhdGggZD0iTTE3LjcyOTcyOTcsMi4yMTQyODU3MSBDMTcuNzI5NzI5NywzLjE5MjYxODcgMTYuOTU1MzAzNCwzLjk4NTcxNDI5IDE2LDMuOTg1NzE0MjkgQzE1LjA0NDY5NjYsMy45ODU3MTQyOSAxNC4yNzAyNzAzLDMuMTkyNjE4NyAxNC4yNzAyNzAzLDIuMjE0Mjg1NzEgQzE0LjI3MDI3MDMsMS4yMzU5NTI3MyAxNS4wNDQ2OTY2LDAuNDQyODU3MTQzIDE2LDAuNDQyODU3MTQzIEMxNi45NTUzMDM0LDAuNDQyODU3MTQzIDE3LjcyOTcyOTcsMS4yMzU5NTI3MyAxNy43Mjk3Mjk3LDIuMjE0Mjg1NzEgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNMzIsNi4yIEMzMiw3LjE3ODMzMjk5IDMxLjIyNTU3MzYsNy45NzE0Mjg1NyAzMC4yNzAyNzAzLDcuOTcxNDI4NTcgQzI5LjMxNDk2NjksNy45NzE0Mjg1NyAyOC41NDA1NDA1LDcuMTc4MzMyOTkgMjguNTQwNTQwNSw2LjIgQzI4LjU0MDU0MDUsNS4yMjE2NjcwMSAyOS4zMTQ5NjY5LDQuNDI4NTcxNDMgMzAuMjcwMjcwMyw0LjQyODU3MTQzIEMzMS4yMjU1NzM2LDQuNDI4NTcxNDMgMzIsNS4yMjE2NjcwMSAzMiw2LjIgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNMTAuMzc4Mzc4NCwzLjEgQzEwLjM3ODM3ODQsNC4wNzgzMzI5OSA5LjYwMzk1Miw0Ljg3MTQyODU3IDguNjQ4NjQ4NjUsNC44NzE0Mjg1NyBDNy42OTMzNDUzLDQuODcxNDI4NTcgNi45MTg5MTg5Miw0LjA3ODMzMjk5IDYuOTE4OTE4OTIsMy4xIEM2LjkxODkxODkyLDIuMTIxNjY3MDEgNy42OTMzNDUzLDEuMzI4NTcxNDMgOC42NDg2NDg2NSwxLjMyODU3MTQzIEM5LjYwMzk1MiwxLjMyODU3MTQzIDEwLjM3ODM3ODQsMi4xMjE2NjcwMSAxMC4zNzgzNzg0LDMuMSBaIgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgZmlsbD0iI0ZGRkZGRiIvPgogICAgICAgIDxwYXRoIGQ9Ik0yNS4wODEwODExLDMuNTQyODU3MTQgQzI1LjA4MTA4MTEsNC41MjExOTAxMyAyNC4zMDY2NTQ3LDUuMzE0Mjg1NzEgMjMuMzUxMzUxNCw1LjMxNDI4NTcxIEMyMi4zOTYwNDgsNS4zMTQyODU3MSAyMS42MjE2MjE2LDQuNTIxMTkwMTMgMjEuNjIxNjIxNiwzLjU0Mjg1NzE0IEMyMS42MjE2MjE2LDIuNTY0NTI0MTYgMjIuMzk2MDQ4LDEuNzcxNDI4NTcgMjMuMzUxMzUxNCwxLjc3MTQyODU3IEMyNC4zMDY2NTQ3LDEuNzcxNDI4NTcgMjUuMDgxMDgxMSwyLjU2NDUyNDE2IDI1LjA4MTA4MTEsMy41NDI4NTcxNCBaIgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgZmlsbD0iI0ZGRkZGRiIvPgogICAgICAgIDxwYXRoIGQ9Ik00LjMyNDMyNDMyLDE4LjYgQzExLjY3NTY3NTcsMTcuMjcxNDI4NiAyMi40ODY0ODY1LDE3LjI3MTQyODYgMjcuNjc1Njc1NywxOC42IEwyOS40MDU0MDU0LDcuOTcxNDI4NTcgTDIzLjM1MTM1MTQsMTcuNzE0Mjg1NyBMMjMuMzUxMzUxNCw1LjMxNDI4NTcxIEwxOC41OTQ1OTQ2LDE3LjI3MTQyODYgTDE2LDMuOTg1NzE0MjkgTDEzLjQwNTQwNTQsMTcuMjcxNDI4NiBMOC42NDg2NDg2NSw0Ljg3MTQyODU3IEw4LjY0ODY0ODY1LDE3LjcxNDI4NTcgTDIuNTk0NTk0NTksNy45NzE0Mjg1NyBMNC4zMjQzMjQzMiwxOC42IFoiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIi8+CiAgICAgICAgPHBhdGggZD0iTTQuMzI0MzI0MzIsMTguNiBDNC4zMjQzMjQzMiwyMC4zNzE0Mjg2IDUuNjIxNjIxNjIsMjAuMzcxNDI4NiA2LjQ4NjQ4NjQ5LDIyLjE0Mjg1NzEgQzcuMzUxMzUxMzUsMjMuNDcxNDI4NiA3LjM1MTM1MTM1LDIzLjAyODU3MTQgNi45MTg5MTg5MiwyNS4yNDI4NTcxIEM1LjYyMTYyMTYyLDI2LjEyODU3MTQgNS42MjE2MjE2MiwyNy40NTcxNDI5IDUuNjIxNjIxNjIsMjcuNDU3MTQyOSBDNC4zMjQzMjQzMiwyOC43ODU3MTQzIDYuMDU0MDU0MDUsMjkuNjcxNDI4NiA2LjA1NDA1NDA1LDI5LjY3MTQyODYgQzExLjY3NTY3NTcsMzAuNTU3MTQyOSAyMC4zMjQzMjQzLDMwLjU1NzE0MjkgMjUuOTQ1OTQ1OSwyOS42NzE0Mjg2IEMyNS45NDU5NDU5LDI5LjY3MTQyODYgMjcuMjQzMjQzMiwyOC43ODU3MTQzIDI1Ljk0NTk0NTksMjcuNDU3MTQyOSBDMjUuOTQ1OTQ1OSwyNy40NTcxNDI5IDI2LjM3ODM3ODQsMjYuMTI4NTcxNCAyNS4wODEwODExLDI1LjI0Mjg1NzEgQzI0LjY0ODY0ODYsMjMuMDI4NTcxNCAyNC42NDg2NDg2LDIzLjQ3MTQyODYgMjUuNTEzNTEzNSwyMi4xNDI4NTcxIEMyNi4zNzgzNzg0LDIwLjM3MTQyODYgMjcuNjc1Njc1NywyMC4zNzE0Mjg2IDI3LjY3NTY3NTcsMTguNiBDMjAuMzI0MzI0MywxNy4yNzE0Mjg2IDExLjY3NTY3NTcsMTcuMjcxNDI4NiA0LjMyNDMyNDMyLDE4LjYgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNNi40ODY0ODY0OSwyMi4xNDI4NTcxIEM5LjUxMzUxMzUxLDIxLjI1NzE0MjkgMjIuNDg2NDg2NSwyMS4yNTcxNDI5IDI1LjUxMzUxMzUsMjIuMTQyODU3MSIgaWQ9IlNoYXBlIi8+CiAgICAgICAgPHBhdGggZD0iTTYuOTE4OTE4OTIsMjUuMjQyODU3MSBDMTIuMTA4MTA4MSwyNC4zNTcxNDI5IDE5Ljg5MTg5MTksMjQuMzU3MTQyOSAyNS4wODEwODExLDI1LjI0Mjg1NzEiIGlkPSJTaGFwZSIvPgogICAgPC9nPjwvc3ZnPg==", "wB": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJjb2xvci1zY2hlbWU6bGlnaHQgb25seSIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjQ1IiB2aWV3Qm94PSIwIDAgNDUgNDUiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ij48ZyBmaWxsPSIjZmZmIiBzdHJva2UtbGluZWNhcD0iYnV0dCI+PHBhdGggZD0iTTkgMzZjMy4zOS0uOTcgMTAuMTEuNDMgMTMuNS0yIDMuMzkgMi40MyAxMC4xMSAxLjAzIDEzLjUgMiAwIDAgMS42NS41NCAzIDItLjY4Ljk3LTEuNjUuOTktMyAuNS0zLjM5LS45Ny0xMC4xMS40Ni0xMy41LTEtMy4zOSAxLjQ2LTEwLjExLjAzLTEzLjUgMS0xLjM1LjQ5LTIuMzIuNDctMy0uNSAxLjM1LTEuOTQgMy0yIDMtMnoiLz48cGF0aCBkPSJNMTUgMzJjMi41IDIuNSAxMi41IDIuNSAxNSAwIC41LTEuNSAwLTIgMC0yIDAtMi41LTIuNS00LTIuNS00IDUuNS0xLjUgNi0xMS41LTUtMTUuNS0xMSA0LTEwLjUgMTQtNSAxNS41IDAgMC0yLjUgMS41LTIuNSA0IDAgMC0uNS41IDAgMnoiLz48cGF0aCBkPSJNMjUgOGEyLjUgMi41IDAgMSAxLTUgMCAyLjUgMi41IDAgMSAxIDUgMHoiLz48L2c+PHBhdGggc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgZD0iTTE3LjUgMjZoMTBNMTUgMzBoMTVtLTcuNS0xNC41djVNMjAgMThoNSIvPjwvZz48L3N2Zz4=", "wN": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9InduIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYuMDAwMDAwLCA2LjAwMDAwMCkiCiAgICAgICBzdHJva2U9IiMwMDAwMDAiPgogICAgICAgIDxwYXRoIGQ9Ik0xMy41NzU3NTc2LDIuNjI1IEMyMi40ODQ4NDg1LDMuNSAyNy41NzU3NTc2LDkuNjI1IDI3LjE1MTUxNTIsMjggTDcuNjM2MzYzNjQsMjggQzcuNjM2MzYzNjQsMjAuMTI1IDE2LjEyMTIxMjEsMjIuMzEyNSAxNC40MjQyNDI0LDkuNjI1IgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNMTUuMjcyNzI3Myw5LjYyNSBDMTUuNTk1MTUxNSwxMi4xNzEyNSAxMC41NjM2MzY0LDE2LjA3Mzc1IDguNDg0ODQ4NDgsMTcuNSBDNS45MzkzOTM5NCwxOS4yNSA2LjA5MjEyMTIxLDIxLjI5NzUgNC4yNDI0MjQyNCwyMSBDMy4zNTgzMDMwMywyMC4xNzc1IDUuNDM4Nzg3ODgsMTguMzQgNC4yNDI0MjQyNCwxOC4zNzUgQzMuMzkzOTM5MzksMTguMzc1IDQuNDAzNjM2MzYsMTkuNDUxMjUgMy4zOTM5MzkzOSwyMC4xMjUgQzIuNTQ1NDU0NTUsMjAuMTI1IC0wLjAwMjU0NTQ1NDU1LDIxIC0xLjkwNTgwODc2ZS0wNiwxNi42MjUgQy0xLjkwNTgwODc2ZS0wNiwxNC44NzUgNS4wOTA5MDkwOSw2LjEyNSA1LjA5MDkwOTA5LDYuMTI1IEM1LjA5MDkwOTA5LDYuMTI1IDYuNjk0NTQ1NDUsNC40NjI1IDYuNzg3ODc4NzksMy4wNjI1IEM2LjE2ODQ4NDg1LDIuMTkyNzUgNi4zNjM2MzYzNiwxLjMxMjUgNi4zNjM2MzYzNiwwLjQzNzUgQzcuMjEyMTIxMjEsLTAuNDM3NSA4LjkwOTA5MDkxLDIuNjI1IDguOTA5MDkwOTEsMi42MjUgTDEwLjYwNjA2MDYsMi42MjUgQzEwLjYwNjA2MDYsMi42MjUgMTEuMjY3ODc4OCwwLjg4MiAxMi43MjcyNzI3LDAgQzEzLjU3NTc1NzYsMCAxMy41NzU3NTc2LDIuNjI1IDEzLjU3NTc1NzYsMi42MjUiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iI0ZGRkZGRiIvPgogICAgICAgIDxwYXRoIGQ9Ik0yLjk2OTY5Njk3LDE2LjE4NzUgQzIuOTY5Njk2OTcsMTYuNDI5MTI0NiAyLjc3OTc1NzE3LDE2LjYyNSAyLjU0NTQ1NDU1LDE2LjYyNSBDMi4zMTExNTE5MiwxNi42MjUgMi4xMjEyMTIxMiwxNi40MjkxMjQ2IDIuMTIxMjEyMTIsMTYuMTg3NSBDMi4xMjEyMTIxMiwxNS45NDU4NzU0IDIuMzExMTUxOTIsMTUuNzUgMi41NDU0NTQ1NSwxNS43NSBDMi43Nzk3NTcxNywxNS43NSAyLjk2OTY5Njk3LDE1Ljk0NTg3NTQgMi45Njk2OTY5NywxNi4xODc1IFoiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iIzAwMDAwMCIvPgogICAgICAgIDxwYXRoIGQ9Ik03LjYzNjM1NDMsNy40Mzc1IEM3LjYzNjM1NDMsOC4xNjIzNTc3OSA3LjQ0NjQxODY4LDguNzQ5OTcxMTIgNy4yMTIxMjEyMSw4Ljc0OTk3MTEyIEM2Ljk3NzgyMzc1LDguNzQ5OTcxMTIgNi43ODc4ODgxMiw4LjE2MjM1Nzc5IDYuNzg3ODg4MTIsNy40Mzc1IEM2Ljc4Nzg4ODEyLDYuNzEyNjQyMjEgNi45Nzc4MjM3NSw2LjEyNTAyODg4IDcuMjEyMTIxMjEsNi4xMjUwMjg4OCBDNy40NDY0MTg2OCw2LjEyNTAyODg4IDcuNjM2MzU0Myw2LjcxMjY0MjIxIDcuNjM2MzU0Myw3LjQzNzUgTDcuNjM2MzU0Myw3LjQzNzUgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIHN0cm9rZS13aWR0aD0iMS40OTk5NjciIGZpbGw9IiMwMDAwMDAiCiAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNy4yMTIxMjEsIDcuNDM3NTAwKSByb3RhdGUoMzAuMDAwNzI4KSB0cmFuc2xhdGUoLTcuMjEyMTIxLCAtNy40Mzc1MDApICIvPgogICAgPC9nPjwvc3ZnPg==", "wR": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9IndyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkuMDAwMDAwLCA4LjAwMDAwMCkiIHN0cm9rZT0iIzAwMDAwMCIKICAgICAgIHN0cm9rZS13aWR0aD0iMS41Ij4KICAgICAgICA8cG9seWdvbiBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiIHBvaW50cz0iMCAyNiAyMiAyNiAyMiAyMy40IDAgMjMuNCIvPgogICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgZmlsbD0iI0ZGRkZGRiIKICAgICAgICAgICAgICAgICBwb2ludHM9IjIuNDQ0NDQ0NDQgMjMuNCAyLjQ0NDQ0NDQ0IDE5LjkzMzMzMzMgMTkuNTU1NTU1NiAxOS45MzMzMzMzIDE5LjU1NTU1NTYgMjMuNCIvPgogICAgICAgIDxwb2x5bGluZSBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiCiAgICAgICAgICAgICAgICAgIHBvaW50cz0iMS42Mjk2Mjk2MyA0LjMzMzMzMzMzIDEuNjI5NjI5NjMgMCA0Ljg4ODg4ODg5IDAgNC44ODg4ODg4OSAxLjczMzMzMzMzIDguOTYyOTYyOTYgMS43MzMzMzMzMyA4Ljk2Mjk2Mjk2IDAgMTMuMDM3MDM3IDAgMTMuMDM3MDM3IDEuNzMzMzMzMzMgMTcuMTExMTExMSAxLjczMzMzMzMzIDE3LjExMTExMTEgMCAyMC4zNzAzNzA0IDAgMjAuMzcwMzcwNCA0LjMzMzMzMzMzIi8+CiAgICAgICAgPHBvbHlsaW5lIGlkPSJTaGFwZSIgZmlsbD0iI0ZGRkZGRiIKICAgICAgICAgICAgICAgICAgcG9pbnRzPSIyMC4zNzAzNzA0IDQuMzMzMzMzMzMgMTcuOTI1OTI1OSA2LjkzMzMzMzMzIDQuMDc0MDc0MDcgNi45MzMzMzMzMyAxLjYyOTYyOTYzIDQuMzMzMzMzMzMiLz4KICAgICAgICA8cG9seWxpbmUgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIgogICAgICAgICAgICAgICAgICBwb2ludHM9IjE3LjkyNTkyNTkgNi45MzMzMzMzMyAxNy45MjU5MjU5IDE3Ljc2NjY2NjcgNC4wNzQwNzQwNyAxNy43NjY2NjY3IDQuMDc0MDc0MDcgNi45MzMzMzMzMyIvPgogICAgICAgIDxwb2x5bGluZSBpZD0iU2hhcGUiIGZpbGw9IiNGRkZGRkYiCiAgICAgICAgICAgICAgICAgIHBvaW50cz0iMTcuOTI1OTI1OSAxNy43NjY2NjY3IDE5LjE0ODE0ODEgMTkuOTMzMzMzMyAyLjg1MTg1MTg1IDE5LjkzMzMzMzMgNC4wNzQwNzQwNyAxNy43NjY2NjY3Ii8+CiAgICAgICAgPGxpbmUgeDE9IjEuNjI5NjI5NjMiIHkxPSI0LjMzMzMzMzMzIiB4Mj0iMjAuMzcwMzcwNCIgeTI9IjQuMzMzMzMzMzMiIGlkPSJTaGFwZSIvPgogICAgPC9nPjwvc3ZnPg==", "wP": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9IndwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMC4wMDAwMDAsIDkuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiCiAgICAgICBzdHJva2Utd2lkdGg9IjEuNSI+CiAgICAgICAgPHBhdGggZD0iTTEwLDAgQzguMTU4MzMzMzMsMCA2LjY2NjY2NjY3LDEuNTAxMjkwMzIgNi42NjY2NjY2NywzLjM1NDgzODcxIEM2LjY2NjY2NjY3LDQuMTAxMjkwMzIgNi45MDgzMzMzMyw0Ljc4OTAzMjI2IDcuMzE2NjY2NjcsNS4zNTA5Njc3NCBDNS42OTE2NjY2Nyw2LjI5MDMyMjU4IDQuNTgzMzMzMzMsOC4wNDMyMjU4MSA0LjU4MzMzMzMzLDEwLjA2NDUxNjEgQzQuNTgzMzMzMzMsMTEuNzY3MDk2OCA1LjM2NjY2NjY3LDEzLjI4NTE2MTMgNi41OTE2NjY2NywxNC4yODMyMjU4IEM0LjA5MTY2NjY3LDE1LjE3MjI1ODEgMC40MTY2NjY2NjcsMTguOTM4MDY0NSAwLjQxNjY2NjY2NywyNS41ODA2NDUyIEwxOS41ODMzMzMzLDI1LjU4MDY0NTIgQzE5LjU4MzMzMzMsMTguOTM4MDY0NSAxNS45MDgzMzMzLDE1LjE3MjI1ODEgMTMuNDA4MzMzMywxNC4yODMyMjU4IEMxNC42MzMzMzMzLDEzLjI4NTE2MTMgMTUuNDE2NjY2NywxMS43NjcwOTY4IDE1LjQxNjY2NjcsMTAuMDY0NTE2MSBDMTUuNDE2NjY2Nyw4LjA0MzIyNTgxIDE0LjMwODMzMzMsNi4yOTAzMjI1OCAxMi42ODMzMzMzLDUuMzUwOTY3NzQgQzEzLjA5MTY2NjcsNC43ODkwMzIyNiAxMy4zMzMzMzMzLDQuMTAxMjkwMzIgMTMuMzMzMzMzMywzLjM1NDgzODcxIEMxMy4zMzMzMzMzLDEuNTAxMjkwMzIgMTEuODQxNjY2NywwIDEwLDAgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiLz4KICAgIDwvZz48L3N2Zz4=", "bK": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9ImJrIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUuMDAwMDAwLCA1LjAwMDAwMCkiCiAgICAgICBzdHJva2Utd2lkdGg9IjEuNSI+CiAgICAgICAgPGxpbmUgeDE9IjE1IiB5MT0iNC45Njc2NDcwNiIgeDI9IjE1IiB5Mj0iMCIgaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiLz4KICAgICAgICA8cGF0aCBkPSJNMTUsMTYuNzY0NzA1OSBDMTUsMTYuNzY0NzA1OSAxOC44NTcxNDI5LDEwLjE0NzA1ODggMTcuNTcxNDI4Niw3LjUgQzE3LjU3MTQyODYsNy41IDE2LjcxNDI4NTcsNS4yOTQxMTc2NSAxNSw1LjI5NDExNzY1IEMxMy4yODU3MTQzLDUuMjk0MTE3NjUgMTIuNDI4NTcxNCw3LjUgMTIuNDI4NTcxNCw3LjUgQzExLjE0Mjg1NzEsMTAuMTQ3MDU4OCAxNSwxNi43NjQ3MDU5IDE1LDE2Ljc2NDcwNTkiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIGZpbGw9IiMwMDAwMDAiLz4KICAgICAgICA8cGF0aCBkPSJNNS41NzE0Mjg1NywyNy4zNTI5NDEyIEMxMC4yODU3MTQzLDMwLjQ0MTE3NjUgMTguODU3MTQyOSwzMC40NDExNzY1IDIzLjU3MTQyODYsMjcuMzUyOTQxMiBMMjMuNTcxNDI4NiwyMS4xNzY0NzA2IEMyMy41NzE0Mjg2LDIxLjE3NjQ3MDYgMzEuMjg1NzE0MywxNy4yMDU4ODI0IDI4LjcxNDI4NTcsMTEuOTExNzY0NyBDMjUuMjg1NzE0Myw2LjE3NjQ3MDU5IDE3LjE0Mjg1NzEsOC44MjM1Mjk0MSAxNSwxNS40NDExNzY1IEwxNSwxOC41Mjk0MTE4IEwxNSwxNS40NDExNzY1IEMxMiw4LjgyMzUyOTQxIDMuODU3MTQyODYsNi4xNzY0NzA1OSAxLjI4NTcxNDI5LDExLjkxMTc2NDcgQy0xLjI4NTcxNDI5LDE3LjIwNTg4MjQgNS41NzE0Mjg1NywyMC43MzUyOTQxIDUuNTcxNDI4NTcsMjAuNzM1Mjk0MSBMNS41NzE0Mjg1NywyNy4zNTI5NDEyIFoiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIGZpbGw9IiMwMDAwMDAiLz4KICAgICAgICA8bGluZSB4MT0iMTIuODU3MTQyOSIgeTE9IjEuNzY0NzA1ODgiIHgyPSIxNy4xNDI4NTcxIiB5Mj0iMS43NjQ3MDU4OCIgaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiLz4KICAgICAgICA8cGF0aCBkPSJNMjMuMTQyODU3MSwyMC43MzUyOTQxIEMyMy4xNDI4NTcxLDIwLjczNTI5NDEgMzAuNDI4NTcxNCwxNy4yMDU4ODI0IDI4LjMxMTQyODYsMTIuMjIwNTg4MiBDMjQuOTg1NzE0Myw3LjA1ODgyMzUzIDE3LjE0Mjg1NzEsMTAuNTg4MjM1MyAxNSwxNi4zMjM1Mjk0IEwxNS4wMDg1NzE0LDE4LjE3NjQ3MDYgTDE1LDE2LjMyMzUyOTQgQzEyLjg1NzE0MjksMTAuNTg4MjM1MyA0LjIwNTE0Mjg2LDcuMDU4ODIzNTMgMS43MTE3MTQyOSwxMi4yMjA1ODgyIEMtMC40Mjg1NzE0MjksMTcuMjA1ODgyNCA1Ljg3MTQyODU3LDIwLjE2MTc2NDcgNS44NzE0Mjg1NywyMC4xNjE3NjQ3IgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgc3Ryb2tlPSIjRkZGRkZGIi8+CiAgICAgICAgPHBhdGggZD0iTTUuNTcxNDI4NTcsMjEuMTc2NDcwNiBDMTAuMjg1NzE0MywxOC41Mjk0MTE4IDE4Ljg1NzE0MjksMTguNTI5NDExOCAyMy41NzE0Mjg2LDIxLjE3NjQ3MDYgTTUuNTcxNDI4NTcsMjQuMjY0NzA1OSBDMTAuMjg1NzE0MywyMS42MTc2NDcxIDE4Ljg1NzE0MjksMjEuNjE3NjQ3MSAyMy41NzE0Mjg2LDI0LjI2NDcwNTkgTTUuNTcxNDI4NTcsMjcuMzUyOTQxMiBDMTAuMjg1NzE0MywyNC43MDU4ODI0IDE4Ljg1NzE0MjksMjQuNzA1ODgyNCAyMy41NzE0Mjg2LDI3LjM1Mjk0MTIiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2U9IiNGRkZGRkYiLz4KICAgIDwvZz48L3N2Zz4=", "bQ": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJjb2xvci1zY2hlbWU6bGlnaHQgb25seSIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjQ1IiB2aWV3Qm94PSIwIDAgNDUgNDUiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ij48ZyBzdHJva2U9Im5vbmUiPjxjaXJjbGUgY3g9IjYiIGN5PSIxMiIgcj0iMi43NSIvPjxjaXJjbGUgY3g9IjE0IiBjeT0iOSIgcj0iMi43NSIvPjxjaXJjbGUgY3g9IjIyLjUiIGN5PSI4IiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMzEiIGN5PSI5IiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMzkiIGN5PSIxMiIgcj0iMi43NSIvPjwvZz48cGF0aCBzdHJva2UtbGluZWNhcD0iYnV0dCIgZD0iTTkgMjZjOC41LTEuNSAyMS0xLjUgMjcgMGwyLjUtMTIuNUwzMSAyNWwtLjMtMTQuMS01LjIgMTMuNi0zLTE0LjUtMyAxNC41LTUuMi0xMy42TDE0IDI1IDYuNSAxMy41eiIvPjxwYXRoIHN0cm9rZS1saW5lY2FwPSJidXR0IiBkPSJNOSAyNmMwIDIgMS41IDIgMi41IDQgMSAxLjUgMSAxIC41IDMuNS0xLjUgMS0xLjUgMi41LTEuNSAyLjUtMS41IDEuNS41IDIuNS41IDIuNSA2LjUgMSAxNi41IDEgMjMgMCAwIDAgMS41LTEgMC0yLjUgMCAwIC41LTEuNS0xLTIuNS0uNS0yLjUtLjUtMiAuNS0zLjUgMS0yIDIuNS0yIDIuNS00LTguNS0xLjUtMTguNS0xLjUtMjcgMHoiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgZD0iTTExIDM4LjVhMzUgMzUgMSAwIDAgMjMgMCIvPjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VjZWNlYyIgZD0iTTExIDI5YTM1IDM1IDEgMCAxIDIzIDBtLTIxLjUgMi41aDIwbS0yMSAzYTM1IDM1IDEgMCAwIDIyIDBtLTIzIDNhMzUgMzUgMSAwIDAgMjQgMCIvPjwvZz48L3N2Zz4=", "bB": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJjb2xvci1zY2hlbWU6bGlnaHQgb25seSIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjQ1IiB2aWV3Qm94PSIwIDAgNDUgNDUiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ij48ZyBmaWxsPSIjMDAwIiBzdHJva2UtbGluZWNhcD0iYnV0dCI+PHBhdGggZD0iTTkgMzZjMy40LTEgMTAuMS40IDEzLjUtMiAzLjQgMi40IDEwLjEgMSAxMy41IDIgMCAwIDEuNi41IDMgMi0uNyAxLTEuNiAxLTMgLjUtMy40LTEtMTAuMS41LTEzLjUtMS0zLjQgMS41LTEwLjEgMC0xMy41IDEtMS40LjUtMi4zLjUtMy0uNSAxLjQtMiAzLTIgMy0yeiIvPjxwYXRoIGQ9Ik0xNSAzMmMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIGQ9Ik0xNy41IDI2aDEwTTE1IDMwaDE1bS03LjUtMTQuNXY1TTIwIDE4aDUiLz48L2c+PC9zdmc+", "bN": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9ImJuIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYuMDAwMDAwLCA2LjAwMDAwMCkiPgogICAgICAgIDxwYXRoIGQ9Ik0xMy41NzU3NTc2LDIuNjM2MzYzNjQgQzIyLjQ4NDg0ODUsMy41MTUxNTE1MiAyNy41NzU3NTc2LDkuNjY2NjY2NjcgMjcuMTUxNTE1MiwyOC4xMjEyMTIxIEw3LjYzNjM2MzY0LDI4LjEyMTIxMjEgQzcuNjM2MzYzNjQsMjAuMjEyMTIxMiAxNi4xMjEyMTIxLDIyLjQwOTA5MDkgMTQuNDI0MjQyNCw5LjY2NjY2NjY3IgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iIzAwMDAwMCIvPgogICAgICAgIDxwYXRoIGQ9Ik0xNS4yNzI3MjczLDkuNjY2NjY2NjcgQzE1LjU5NTE1MTUsMTIuMjIzOTM5NCAxMC41NjM2MzY0LDE2LjE0MzMzMzMgOC40ODQ4NDg0OCwxNy41NzU3NTc2IEM1LjkzOTM5Mzk0LDE5LjMzMzMzMzMgNi4wOTIxMjEyMSwyMS4zODk2OTcgNC4yNDI0MjQyNCwyMS4wOTA5MDkxIEMzLjM1ODMwMzAzLDIwLjI2NDg0ODUgNS40Mzg3ODc4OCwxOC40MTkzOTM5IDQuMjQyNDI0MjQsMTguNDU0NTQ1NSBDMy4zOTM5MzkzOSwxOC40NTQ1NDU1IDQuNDAzNjM2MzYsMTkuNTM1NDU0NSAzLjM5MzkzOTM5LDIwLjIxMjEyMTIgQzIuNTQ1NDU0NTUsMjAuMjEyMTIxMiAtMC4wMDI1NDU0NTQ1NSwyMS4wOTA5MDkxIC0xLjkwNTgwODc2ZS0wNiwxNi42OTY5Njk3IEMtMS45MDU4MDg3NmUtMDYsMTQuOTM5MzkzOSA1LjA5MDkwOTA5LDYuMTUxNTE1MTUgNS4wOTA5MDkwOSw2LjE1MTUxNTE1IEM1LjA5MDkwOTA5LDYuMTUxNTE1MTUgNi42OTQ1NDU0NSw0LjQ4MTgxODE4IDYuNzg3ODc4NzksMy4wNzU3NTc1OCBDNi4xNjg0ODQ4NSwyLjIwMjI0MjQyIDYuMzYzNjM2MzYsMS4zMTgxODE4MiA2LjM2MzYzNjM2LDAuNDM5MzkzOTM5IEM3LjIxMjEyMTIxLC0wLjQzOTM5MzkzOSA4LjkwOTA5MDkxLDIuNjM2MzYzNjQgOC45MDkwOTA5MSwyLjYzNjM2MzY0IEwxMC42MDYwNjA2LDIuNjM2MzYzNjQgQzEwLjYwNjA2MDYsMi42MzYzNjM2NCAxMS4yNjc4Nzg4LDAuODg1ODE4MTgyIDEyLjcyNzI3MjcsMCBDMTMuNTc1NzU3NiwwIDEzLjU3NTc1NzYsMi42MzYzNjM2NCAxMy41NzU3NTc2LDIuNjM2MzYzNjQiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSIjMDAwMDAwIi8+CiAgICAgICAgPHBhdGggZD0iTTIuOTY5Njk2OTcsMTYuMjU3NTc1OCBDMi45Njk2OTY5NywxNi41MDAyNDYzIDIuNzc5NzU3MTcsMTYuNjk2OTY5NyAyLjU0NTQ1NDU1LDE2LjY5Njk2OTcgQzIuMzExMTUxOTIsMTYuNjk2OTY5NyAyLjEyMTIxMjEyLDE2LjUwMDI0NjMgMi4xMjEyMTIxMiwxNi4yNTc1NzU4IEMyLjEyMTIxMjEyLDE2LjAxNDkwNTIgMi4zMTExNTE5MiwxNS44MTgxODE4IDIuNTQ1NDU0NTUsMTUuODE4MTgxOCBDMi43Nzk3NTcxNywxNS44MTgxODE4IDIuOTY5Njk2OTcsMTYuMDE0OTA1MiAyLjk2OTY5Njk3LDE2LjI1NzU3NTggWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIxLjUiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgICA8cGF0aCBkPSJNNy42MzYzNTQzLDcuNDY5Njk2OTcgQzcuNjM2MzU0Myw4LjE5NzY5MjY3IDcuNDQ2NDE4NjgsOC43ODc4NDk3OSA3LjIxMjEyMTIxLDguNzg3ODQ5NzkgQzYuOTc3ODIzNzUsOC43ODc4NDk3OSA2Ljc4Nzg4ODEyLDguMTk3NjkyNjcgNi43ODc4ODgxMiw3LjQ2OTY5Njk3IEM2Ljc4Nzg4ODEyLDYuNzQxNzAxMjcgNi45Nzc4MjM3NSw2LjE1MTU0NDE1IDcuMjEyMTIxMjEsNi4xNTE1NDQxNSBDNy40NDY0MTg2OCw2LjE1MTU0NDE1IDcuNjM2MzU0Myw2Ljc0MTcwMTI3IDcuNjM2MzU0Myw3LjQ2OTY5Njk3IEw3LjYzNjM1NDMsNy40Njk2OTY5NyBaIgogICAgICAgICAgICAgIGlkPSJTaGFwZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNDk5OTY3IiBmaWxsPSIjRkZGRkZGIgogICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcuMjEyMTIxLCA3LjQ2OTY5Nykgcm90YXRlKDMwLjAwMDcyOCkgdHJhbnNsYXRlKC03LjIxMjEyMSwgLTcuNDY5Njk3KSAiLz4KICAgICAgICA8cGF0aCBkPSJNMTUuNzM5MzkzOSwyLjk4Nzg3ODc5IEwxNS4zNTc1NzU4LDQuMjYyMTIxMjEgTDE1Ljc4MTgxODIsNC4zOTM5MzkzOSBDMTguNDU0NTQ1NSw1LjI3MjcyNzI3IDIwLjU3NTc1NzYsNi41ODIxMjEyMSAyMi40ODQ4NDg1LDEwLjMyNTc1NzYgQzI0LjM5MzkzOTQsMTQuMDY5MzkzOSAyNS4yNDI0MjQyLDE5LjM4NjA2MDYgMjQuODE4MTgxOCwyOC4xMjEyMTIxIEwyNC43NzU3NTc2LDI4LjU2MDYwNjEgTDI2LjY4NDg0ODUsMjguNTYwNjA2MSBMMjYuNzI3MjcyNywyOC4xMjEyMTIxIEMyNy4xNTE1MTUyLDE5LjI4MDYwNjEgMjUuOTgwNjA2MSwxMy4zMTM2MzY0IDIzLjk2OTY5Nyw5LjM2Nzg3ODc5IEMyMS45NTg3ODc5LDUuNDIyMTIxMjEgMTkuMDU2OTY5NywzLjUzMjcyNzI3IDE2LjE3MjEyMTIsMy4wNzU3NTc1OCBMMTUuNzM5MzkzOSwyLjk4Nzg3ODc5IFoiCiAgICAgICAgICAgICAgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIi8+CiAgICA8L2c+PC9zdmc+", "bR": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9ImJyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkuMDAwMDAwLCA4LjAwMDAwMCkiPgogICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iIzAwMDAwMCIgcG9pbnRzPSIwIDI2IDIyIDI2IDIyIDIzLjQgMCAyMy40Ii8+CiAgICAgICAgPHBvbHlnb24gaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSIjMDAwMDAwIgogICAgICAgICAgICAgICAgIHBvaW50cz0iMi44NTE4NTE4NSAxOS45MzMzMzMzIDQuMDc0MDc0MDcgMTcuNzY2NjY2NyAxNy45MjU5MjU5IDE3Ljc2NjY2NjcgMTkuMTQ4MTQ4MSAxOS45MzMzMzMzIi8+CiAgICAgICAgPHBvbHlnb24gaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSIjMDAwMDAwIgogICAgICAgICAgICAgICAgIHBvaW50cz0iMi40NDQ0NDQ0NCAyMy40IDIuNDQ0NDQ0NDQgMTkuOTMzMzMzMyAxOS41NTU1NTU2IDE5LjkzMzMzMzMgMTkuNTU1NTU1NiAyMy40Ii8+CiAgICAgICAgPHBvbHlnb24gaWQ9IlNoYXBlIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSIjMDAwMDAwIgogICAgICAgICAgICAgICAgIHBvaW50cz0iNC4wNzQwNzQwNyAxNy43NjY2NjY3IDQuMDc0MDc0MDcgNi41IDE3LjkyNTkyNTkgNi41IDE3LjkyNTkyNTkgMTcuNzY2NjY2NyIvPgogICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iIzAwMDAwMCIKICAgICAgICAgICAgICAgICBwb2ludHM9IjQuMDc0MDc0MDcgNi41IDEuNjI5NjI5NjMgNC4zMzMzMzMzMyAyMC4zNzAzNzA0IDQuMzMzMzMzMzMgMTcuOTI1OTI1OSA2LjUiLz4KICAgICAgICA8cG9seWdvbiBpZD0iU2hhcGUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGZpbGw9IiMwMDAwMDAiCiAgICAgICAgICAgICAgICAgcG9pbnRzPSIxLjYyOTYyOTYzIDQuMzMzMzMzMzMgMS42Mjk2Mjk2MyAwIDQuODg4ODg4ODkgMCA0Ljg4ODg4ODg5IDEuNzMzMzMzMzMgOC45NjI5NjI5NiAxLjczMzMzMzMzIDguOTYyOTYyOTYgMCAxMy4wMzcwMzcgMCAxMy4wMzcwMzcgMS43MzMzMzMzMyAxNy4xMTExMTExIDEuNzMzMzMzMzMgMTcuMTExMTExMSAwIDIwLjM3MDM3MDQgMCAyMC4zNzAzNzA0IDQuMzMzMzMzMzMiLz4KICAgICAgICA8cG9seWxpbmUgaWQ9IlNoYXBlIiBzdHJva2U9IiNGRkZGRkYiCiAgICAgICAgICAgICAgICAgIHBvaW50cz0iMi40NDQ0NDQ0NCAyMi45NjY2NjY3IDE5LjU1NTU1NTYgMjIuOTY2NjY2NyAxOS41NTU1NTU2IDIyLjk2NjY2NjciLz4KICAgICAgICA8bGluZSB4MT0iMy4yNTkyNTkyNiIgeTE9IjE5LjUiIHgyPSIxOC43NDA3NDA3IiB5Mj0iMTkuNSIgaWQ9IlNoYXBlIiBzdHJva2U9IiNGRkZGRkYiLz4KICAgICAgICA8bGluZSB4MT0iNC4wNzQwNzQwNyIgeTE9IjE3Ljc2NjY2NjciIHgyPSIxNy45MjU5MjU5IiB5Mj0iMTcuNzY2NjY2NyIgaWQ9IlNoYXBlIiBzdHJva2U9IiNGRkZGRkYiLz4KICAgICAgICA8bGluZSB4MT0iNC4wNzQwNzQwNyIgeTE9IjYuNSIgeDI9IjE3LjkyNTkyNTkiIHkyPSI2LjUiIGlkPSJTaGFwZSIgc3Ryb2tlPSIjRkZGRkZGIi8+CiAgICAgICAgPGxpbmUgeDE9IjEuNjI5NjI5NjMiIHkxPSI0LjMzMzMzMzMzIiB4Mj0iMjAuMzcwMzcwNCIgeTI9IjQuMzMzMzMzMzMiIGlkPSJTaGFwZSIgc3Ryb2tlPSIjRkZGRkZGIi8+CiAgICA8L2c+PC9zdmc+", "bP": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGcgaWQ9ImJwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMC4wMDAwMDAsIDguMDAwMDAwKSIgZmlsbD0iIzAwMDAwMCIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiCiAgICAgICBzdHJva2Utd2lkdGg9IjEuNSI+CiAgICAgICAgPHBhdGggZD0iTTEwLDAgQzguMTU4MzMzMzMsMCA2LjY2NjY2NjY3LDEuNTAxMjkwMzIgNi42NjY2NjY2NywzLjM1NDgzODcxIEM2LjY2NjY2NjY3LDQuMTAxMjkwMzIgNi45MDgzMzMzMyw0Ljc4OTAzMjI2IDcuMzE2NjY2NjcsNS4zNTA5Njc3NCBDNS42OTE2NjY2Nyw2LjI5MDMyMjU4IDQuNTgzMzMzMzMsOC4wNDMyMjU4MSA0LjU4MzMzMzMzLDEwLjA2NDUxNjEgQzQuNTgzMzMzMzMsMTEuNzY3MDk2OCA1LjM2NjY2NjY3LDEzLjI4NTE2MTMgNi41OTE2NjY2NywxNC4yODMyMjU4IEM0LjA5MTY2NjY3LDE1LjE3MjI1ODEgMC40MTY2NjY2NjcsMTguOTM4MDY0NSAwLjQxNjY2NjY2NywyNS41ODA2NDUyIEwxOS41ODMzMzMzLDI1LjU4MDY0NTIgQzE5LjU4MzMzMzMsMTguOTM4MDY0NSAxNS45MDgzMzMzLDE1LjE3MjI1ODEgMTMuNDA4MzMzMywxNC4yODMyMjU4IEMxNC42MzMzMzMzLDEzLjI4NTE2MTMgMTUuNDE2NjY2NywxMS43NjcwOTY4IDE1LjQxNjY2NjcsMTAuMDY0NTE2MSBDMTUuNDE2NjY2Nyw4LjA0MzIyNTgxIDE0LjMwODMzMzMsNi4yOTAzMjI1OCAxMi42ODMzMzMzLDUuMzUwOTY3NzQgQzEzLjA5MTY2NjcsNC43ODkwMzIyNiAxMy4zMzMzMzMzLDQuMTAxMjkwMzIgMTMuMzMzMzMzMywzLjM1NDgzODcxIEMxMy4zMzMzMzMzLDEuNTAxMjkwMzIgMTEuODQxNjY2NywwIDEwLDAgWiIKICAgICAgICAgICAgICBpZD0iU2hhcGUiLz4KICAgIDwvZz48L3N2Zz4="};
+
+// Every position verified with chess.js: White to move has a checkmate in one.
+const LEVELS = [
+ {name:"Back Rank Mate", fen:"6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1",
+  task:"Black's king is hiding behind its pawns. Use your rook.",
+  hint:"The king can't step forward. Attack it along the 8th rank.",
+  lesson:"Ra8#. The pawns on f7, g7 and h7 were meant to protect the king, but they trap it instead. Tip: give your king a 'window' (luft) by pushing a pawn."},
+ {name:"Kiss of Death", fen:"k7/7Q/1K6/8/8/8/8/8 w - - 0 1",
+  task:"Your king and queen work as a team.",
+  hint:"Put the queen right next to the black king, where your own king guards her.",
+  lesson:"Qb7# is the 'kiss': the queen touches the king and can't be taken because your king protects her. Qa7#, Qg8# and Qh8# also work here."},
+ {name:"Ladder Mate", fen:"6k1/R7/8/8/8/8/8/1R4K1 w - - 0 1",
+  task:"Two rooks climb the board like a ladder.",
+  hint:"One rook already guards the 7th rank. The other takes the 8th.",
+  lesson:"Rb8#. One rook cuts off a whole rank and the other gives check on the next. This 'ladder' can chase a king from the middle of the board to the edge."},
+ {name:"Smothered Mate", fen:"6rk/6pp/8/6N1/8/8/8/6K1 w - - 0 1",
+  task:"The black king is surrounded by its own army.",
+  hint:"Only one piece can jump over others to give check.",
+  lesson:"Nf7#. The king is 'smothered' by its own rook and pawns. Only a knight can deliver this mate."},
+ {name:"Corner Mate", fen:"7k/7p/8/4N3/8/8/8/6RK w - - 0 1",
+  task:"The king is stuck in the corner.",
+  hint:"Your rook already controls the g-file. Now check with the knight.",
+  lesson:"Nf7#. The rook covers g7 and g8, the pawn blocks h7, and the knight checks from a square the king can't reach."},
+ {name:"Arabian Mate", fen:"7k/1R6/5N2/8/8/8/8/6K1 w - - 0 1",
+  task:"A rook and knight team up, one of the oldest mates in chess.",
+  hint:"The knight guards h7 and g8. Move the rook next to the king.",
+  lesson:"Rh7#. The knight protects the rook and also covers g8. This mate appears in Arabic chess books over 1,000 years old."},
+ {name:"Lolli's Mate", fen:"6k1/5p1p/5PpQ/8/8/8/8/6K1 w - - 0 1",
+  task:"A pawn on f6 is like a spear in Black's position.",
+  hint:"Your queen wants g7, and the f6 pawn will protect her.",
+  lesson:"Qg7#. The pawn on f6 supports the queen. Pawns that reach the 6th rank near the enemy king are very dangerous."},
+ {name:"Damiano's Mate", fen:"5rk1/5p2/6P1/8/8/8/8/6KQ w - - 0 1",
+  task:"The h-file is open and your pawn is ready to help.",
+  hint:"Go straight up the h-file. The g6 pawn defends the square.",
+  lesson:"Qh7#. The g6 pawn guards the queen, and Black's own rook and pawn take away f8 and f7."},
+ {name:"Anastasia's Mate", fen:"r7/4N1pk/8/8/8/8/8/1K1R4 w - - 0 1",
+  task:"Knight plus rook against a king on the edge.",
+  hint:"The knight on e7 covers g6 and g8. Find a check on the h-file.",
+  lesson:"Rh1#. The knight blocks the escape squares, Black's own g7 pawn blocks the rest, and the rook finishes on the open file."},
+ {name:"Epaulette Mate", fen:"3rkr2/8/8/8/8/8/Q7/6K1 w - - 0 1",
+  task:"The black rooks sit on the king's shoulders like epaulettes on a uniform.",
+  hint:"Check from the front, two squares away.",
+  lesson:"Qe6#. The queen covers d7, e7 and f7, and the king's own rooks block d8 and f8."},
+ {name:"Opera Mate", fen:"4k3/4np2/8/B7/8/8/8/3R2K1 w - - 0 1",
+  task:"Named after Paul Morphy's famous game at the Paris Opera, 1858.",
+  hint:"Your bishop on a5 guards d8. Use the open d-file.",
+  lesson:"Rd8#. The bishop protects the rook, and Black's own knight and pawn block the escape squares. Morphy finished with this exact idea."},
+ {name:"Boden's Mate", fen:"2kr4/3p4/8/8/5B2/8/4B3/6K1 w - - 0 1",
+  task:"Two bishops on crossing diagonals. The king has castled queenside.",
+  hint:"One bishop already covers b8 and d6. The other checks from a6.",
+  lesson:"Ba6#. The two bishops make an X across the king. Black's rook and pawn block d8 and d7."}
+];
+
+const STORE = "cma-progress-v1";
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORE)) || {}; } catch(e) { progress = {}; }
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch(e){} }
+
+let idx = 0, game, board, mistakes = 0, hintUsed = false, solved = false;
+const $msg = document.getElementById('msg');
+
+function unlocked(i){ return i === 0 || (progress[i-1] || 0) > 0; }
+function earned(){ return Math.max(1, 3 - mistakes - (hintUsed ? 1 : 0)); }
+
+function renderStars(n){
+  document.querySelectorAll('#pstars b').forEach((b,k)=>b.classList.toggle('on', k < n));
+}
+function renderMap(){
+  const el = document.getElementById('levels'); el.innerHTML = '';
+  let total = 0;
+  LEVELS.forEach((L,i)=>{
+    const s = progress[i] || 0; total += s;
+    const b = document.createElement('button');
+    b.className = 'lvl' + (i===idx?' cur':'') + (unlocked(i)?'':' locked');
+    b.id = 'lvl-'+i;
+    b.innerHTML = `<span class="n">Level ${i+1}</span><span class="t">${unlocked(i)?L.name:'Locked'}</span><span class="s">${'★'.repeat(s)}${'☆'.repeat(3-s)}</span>`;
+    b.onclick = ()=>{ if(unlocked(i)) load(i); };
+    el.appendChild(b);
+  });
+  document.getElementById('total').textContent = total;
+}
+function clearHL(){ $('#board .square-55d63').removeClass('hl-mate hl-move'); }
+
+function load(i){
+  clearSel();
+  idx = i; const L = LEVELS[i];
+  game = new Chess(L.fen); mistakes = 0; hintUsed = false; solved = false;
+  board.position(L.fen, false); clearHL();
+  document.getElementById('lvlno').textContent = `Level ${i+1} of ${LEVELS.length}`;
+  document.getElementById('pname').textContent = L.name;
+  document.getElementById('ptask').textContent = L.task;
+  document.getElementById('lesson').hidden = true;
+  document.getElementById('hint').disabled = false;
+  document.getElementById('next').disabled = !(progress[i] > 0) || i === LEVELS.length-1;
+  $msg.className = 'msg'; $msg.textContent = 'Drag a white piece, or tap it and then tap a square.';
+  renderStars(3); renderMap();
+}
+
+function onDragStart(src, piece){
+  if (solved || piece[0] !== 'w') return false;
+}
+let sel = null;
+function clearSel(){ sel = null; $('#board .sel-sq, #board .tgt-sq').removeClass('sel-sq tgt-sq cap-sq'); }
+function selectSq(sq){
+  if (sel === sq){ clearSel(); return; }
+  clearSel(); sel = sq;
+  $('#board .square-'+sq).addClass('sel-sq');
+  game.moves({square: sq, verbose: true}).forEach(m=>{
+    const $s = $('#board .square-'+m.to); $s.addClass('tgt-sq'); if (m.captured) $s.addClass('cap-sq');
+  });
+}
+function onDrop(from, to){
+  if (from === to){ if (!solved) selectSq(from); return 'snapback'; }
+  clearSel();
+  return tryMove(from, to);
+}
+function tryMove(from, to){
+  const mv = game.move({from, to, promotion:'q'});
+  if (!mv) return 'snapback';
+  if (game.in_checkmate()){
+    solved = true;
+    const s = earned();
+    progress[idx] = Math.max(progress[idx] || 0, s); save();
+    const ksq = findKing('b');
+    clearHL(); $('#board .square-'+to).addClass('hl-move'); $('#board .square-'+ksq).addClass('hl-mate');
+    $msg.className = 'msg ok';
+    $msg.textContent = `Checkmate! ${mv.san} · ${s} star${s>1?'s':''} earned.`;
+    const les = document.getElementById('lesson'); les.textContent = LEVELS[idx].lesson; les.hidden = false;
+    document.getElementById('hint').disabled = true;
+    document.getElementById('next').disabled = idx === LEVELS.length-1;
+    if (idx === LEVELS.length-1) $msg.textContent += ' You finished every pattern!';
+    renderStars(s); renderMap(); confetti();
+    return;
+  }
+  const why = game.in_check() ? `${mv.san} is check, but the king can escape or the checker can be taken.` : `${mv.san} isn't check. Black gets a free move.`;
+  game.undo(); mistakes++;
+  $msg.className = 'msg bad'; $msg.textContent = 'Not mate. ' + why + ' Try again.';
+  renderStars(earned());
+  return 'snapback';
+}
+function findKing(c){
+  const files='abcdefgh';
+  for (let r=1;r<=8;r++) for (let f=0;f<8;f++){ const sq=files[f]+r, p=game.get(sq); if(p && p.type==='k' && p.color===c) return sq; }
+}
+
+document.getElementById('hint').onclick = ()=>{
+  if (solved) return;
+  hintUsed = true; document.getElementById('hint').disabled = true;
+  $msg.className = 'msg'; $msg.textContent = 'Hint: ' + LEVELS[idx].hint; renderStars(earned());
+};
+document.getElementById('reset').onclick = ()=>load(idx);
+document.getElementById('next').onclick = ()=>{ if (idx < LEVELS.length-1) load(idx+1); };
+document.getElementById('wipe').onclick = (e)=>{
+  const b = e.currentTarget;
+  if (b.dataset.armed){ progress = {}; save(); delete b.dataset.armed; b.textContent='Reset progress'; load(0); }
+  else { b.dataset.armed = '1'; b.textContent = 'Click again to confirm'; setTimeout(()=>{delete b.dataset.armed; b.textContent='Reset progress';}, 3000); }
+};
+
+// Small confetti burst on checkmate
+const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function confetti(){
+  if (reduce) return;
+  cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ['#f2b632','#2f5bd3','#1f9d63','#d64545','#ffffff'];
+  const parts = Array.from({length:120},()=>({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:Math.random()*-12-2,s:Math.random()*6+4,c:cols[Math.random()*cols.length|0],r:Math.random()*6}));
+  let t = 0;
+  (function step(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore();});
+    if (++t < 90) requestAnimationFrame(step); else cx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+$('#board').on('click', '.square-55d63', function(){
+  if (solved || !sel) return;
+  const sq = $(this).attr('data-square'); const p = game.get(sq);
+  if (p && p.color === 'w') return; // white pieces are handled by onDrop (select)
+  const from = sel; clearSel();
+  const r = tryMove(from, sq);
+  board.position(game.fen(), r !== 'snapback');
+});
+board = Chessboard('board', {
+  draggable: true, position: LEVELS[0].fen,
+  pieceTheme: p => PIECES[p],
+  onDragStart, onDrop,
+  onSnapEnd: ()=>board.position(game.fen())
+});
+window.addEventListener('resize', ()=>board.resize());
+// open on the first unsolved level
+let start = LEVELS.findIndex((_,i)=>!(progress[i]>0)); if (start < 0) start = 0;
+load(start);
+</script>
+
+</body>
+</html>

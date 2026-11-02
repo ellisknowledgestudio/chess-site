@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Openings Trainer — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn complete chess opening repertoires for White and Black, at Beginner, Club and Advanced level, and drill them move by move with spaced repetition.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root{
+    --bg: #12140f;
+    --panel: #1c2018;
+    --panel-2: #232a1e;
+    --line: #333c2b;
+    --ivory: #efe7d2;
+    --muted: #8c9482;
+    --gold: #c9a24b;
+    --gold-dim: #8a723b;
+    --felt-dark: #5f6f4f;
+    --felt-light: #ede4cd;
+    --danger: #a85a4a;
+    --success: #8fbf7a;
+    --select: rgba(201,162,75,0.55);
+    --legal-dot: rgba(28,32,24,0.35);
+    --lastmove: rgba(201,162,75,0.22);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, rgba(201,162,75,0.06), transparent 55%),
+      var(--bg);
+    color: var(--ivory);
+    font-family: 'Inter', sans-serif;
+    min-height:100vh;
+    padding: 0 0 60px;
+  }
+  .wrap{ padding: 28px 20px 0; max-width: 1180px; margin: 0 auto; }
+
+  header{
+    display:flex; align-items:baseline; justify-content:space-between;
+    flex-wrap:wrap; gap:10px 24px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+  }
+  header .title-block{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    margin:0;
+    color: var(--felt-light);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .status-line{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .status-line b{color: var(--ivory); font-weight:600;}
+
+  button{
+    font-family:'Inter', sans-serif;
+    font-weight:500;
+    font-size: 13px;
+    color: var(--ivory);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 9px 14px;
+    border-radius: 5px;
+    cursor:pointer;
+    transition: border-color .15s ease, transform .1s ease, background .15s ease;
+  }
+  button:hover{border-color: var(--gold-dim); background:#28311f;}
+  button:active{transform: translateY(1px);}
+  button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  button.primary{
+    background: var(--gold);
+    color: #1a1a12;
+    border-color: var(--gold);
+    font-weight:600;
+  }
+  button.primary:hover{background:#dab35c;}
+  button.ghost{background:transparent;}
+  button:disabled{opacity:0.45; cursor:default; transform:none;}
+  .controls{display:flex; flex-wrap:wrap; gap:8px;}
+
+  code{
+    background: var(--panel-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.92em;
+  }
+  .hint{ font-size: 12px; color: var(--muted); line-height:1.5; }
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--panel-2);}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
+
+  /* ---------------- Dashboard ---------------- */
+  #dashboardView{display:flex; flex-direction:column; gap:22px;}
+  .warn-banner{
+    background: rgba(168,90,74,0.14);
+    border: 1px solid var(--danger);
+    color: #e6a595;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height:1.6;
+  }
+  .rep-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .rep-card-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    flex-wrap:wrap; gap:14px;
+  }
+  .rep-card h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:22px; margin:0 0 4px;
+    color: var(--ivory);
+  }
+  .rep-card .rep-side{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--gold);
+  }
+  .stat-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .stat-pill{
+    background: var(--panel-2); border:1px solid var(--line); border-radius:7px;
+    padding: 10px 16px; min-width:88px;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .stat-pill .num{font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:600; color:var(--ivory);}
+  .stat-pill .lbl{font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);}
+  .stat-pill.due .num{color:var(--gold);}
+  .stat-pill.mastered .num{color:var(--success);}
+
+  .lines-table{
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow:hidden;
+  }
+  .lines-head, .line-row{
+    display:grid;
+    grid-template-columns: 1.3fr 1.6fr 86px 110px 70px;
+    gap: 10px;
+    align-items:center;
+    padding: 10px 14px;
+  }
+  .lines-head{
+    background: var(--panel-2);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--muted);
+  }
+  .line-row{ border-top:1px solid var(--line); font-size:13px; }
+  .line-row .group{color:var(--muted); font-size:12px;}
+  .line-row .moves{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ivory);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .badge{
+    font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.06em;
+    text-transform:uppercase; padding:3px 8px; border-radius:20px; text-align:center;
+    display:inline-block;
+  }
+  .badge.new{background: rgba(201,162,75,0.16); color:var(--gold);}
+  .badge.due{background: rgba(168,90,74,0.2); color:#e6a595;}
+  .badge.learning{background: rgba(140,148,130,0.18); color:var(--muted);}
+  .badge.mastered{background: rgba(143,191,122,0.16); color:var(--success);}
+  .line-row button{padding:6px 10px; font-size:12px;}
+
+  /* cards are half-width, so lines always use the compact stacked layout */
+  .rep-card .lines-head{display:none;}
+  .rep-card .line-row{grid-template-columns: 1fr auto auto auto; row-gap:6px;}
+  .rep-card .line-row .moves{grid-column:1/-1; grid-row:2; white-space:normal; color:var(--muted);}
+  @media (max-width: 700px){
+    .lines-head{display:none;}
+    .line-row{grid-template-columns: 1fr auto; grid-template-areas: "name badge" "group group" "moves moves" "action action"; row-gap:4px;}
+  }
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:12px 24px; align-items:center;}
+  .tb-group{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+  .tb-label{font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-right:4px;}
+  .chip{border-radius:20px; padding:6px 12px; font-size:12px;}
+  .chip.on{background:var(--gold); color:#1a1a12; border-color:var(--gold); font-weight:600;}
+  .tb-check{font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:6px; cursor:pointer;}
+  .tb-check input{accent-color: var(--gold);}
+  .level-note{margin:0;}
+  .level-note b{color:var(--ivory);}
+  .review-all{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .review-all:empty{display:none;}
+  .section-head{margin-top:14px; border-top:1px solid var(--line); padding-top:22px;}
+  .section-head h2{font-family:'Fraunces', serif; font-weight:600; font-size:26px; margin:0 0 4px; color:var(--felt-light);}
+  .section-head p{margin:0; max-width:70ch;}
+  .rep-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap:18px; align-items:start;}
+  .rep-card h3{font-family:'Fraunces', serif; font-weight:600; font-size:21px; margin:0 0 4px; color:var(--ivory);}
+  .rep-card .lines-table{grid-column:1/-1;}
+  .meter{height:5px; background:var(--panel-2); border-radius:3px; overflow:hidden;}
+  .meter i{display:block; height:100%; background:var(--success);}
+  .line-row .group{display:block; margin-top:2px;}
+  .badge.lvl-beginner{background:rgba(143,191,122,0.12); color:var(--success);}
+  .badge.lvl-club{background:rgba(201,162,75,0.14); color:var(--gold);}
+  .badge.lvl-advanced{background:rgba(168,90,74,0.18); color:#e6a595;}
+
+  /* ---------------- Training ---------------- */
+  #trainingView{display:none;}
+  #trainingView.active{display:block;}
+  #dashboardView.hidden{display:none;}
+
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(320px, 520px) 1fr;
+    gap: 32px;
+    align-items:start;
+  }
+  @media (max-width: 860px){ .layout{grid-template-columns: 1fr;} }
+
+  .board-col{display:flex; flex-direction:column; gap:14px;}
+  .board-frame{
+    background: linear-gradient(160deg, #6b4a2c, #4a3220);
+    padding: 14px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .board-outer{
+    display:grid;
+    grid-template-columns: 18px 1fr;
+    grid-template-rows: 1fr 18px;
+    gap: 2px;
+  }
+  #board{
+    grid-column: 2; grid-row: 1;
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width:100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 2px;
+    overflow:hidden;
+    user-select:none;
+    touch-action:none;
+  }
+  .rank-labels{ grid-column:1; grid-row:1; display:grid; grid-template-rows: repeat(8, 1fr); }
+  .file-labels{ grid-column:2; grid-row:2; display:grid; grid-template-columns: repeat(8, 1fr); }
+  .rank-labels span, .file-labels span{
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-size: 10px; color: var(--felt-light); opacity:0.55;
+  }
+  .square{
+    position:relative; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size: clamp(24px, 6vw, 44px); line-height:1;
+  }
+  .square.light{ background: var(--felt-light); }
+  .square.dark{ background: var(--felt-dark); }
+  .square.selected::before{ content:''; position:absolute; inset:0; background: var(--select); }
+  .square.lastmove::before{ content:''; position:absolute; inset:0; background: var(--lastmove); }
+  .square.legal-move::after{ content:''; position:absolute; width:28%; height:28%; border-radius:50%; background: var(--legal-dot); }
+  .square.legal-capture::after{ content:''; position:absolute; inset:8%; border-radius:50%; background: transparent; box-shadow: inset 0 0 0 4px var(--legal-dot); }
+  .square.hint-square::before{ content:''; position:absolute; inset:0; box-shadow: inset 0 0 0 3px var(--success); }
+  .piece{ position:relative; z-index:2; pointer-events:none; }
+  .piece.piece-dragging{ opacity:0.22; }
+  .drag-ghost{
+    position:fixed; z-index:200; pointer-events:none;
+    font-size: clamp(24px, 6vw, 44px); line-height:1;
+    transform: translate(-50%,-50%) scale(1.08);
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,0.5));
+  }
+  .piece.white-piece{
+    color:#f7f2e4; font-size:1.08em;
+    text-shadow: -1px -1px 0 #1a1a12, 1px -1px 0 #1a1a12, -1px 1px 0 #1a1a12, 1px 1px 0 #1a1a12, 0 3px 5px rgba(0,0,0,0.45);
+  }
+  .piece.black-piece{
+    color:#211c14; font-size:1.08em;
+    text-shadow: -1px -1px 0 #f7f2e4, 1px -1px 0 #f7f2e4, -1px 1px 0 #f7f2e4, 1px 1px 0 #f7f2e4, 0 2px 3px rgba(0,0,0,0.35);
+  }
+
+  .panel{
+    background: var(--panel);
+    border:1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px;
+    display:flex; flex-direction:column; gap:14px;
+    min-height: 400px;
+  }
+  .panel .rep-side{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--gold);
+  }
+  .panel h2{ font-family:'Fraunces', serif; font-weight:600; font-size:20px; margin:2px 0 0; color:var(--ivory); }
+  .panel .line-group{ font-size:12.5px; color:var(--muted); }
+  .panel .note{ font-size: 13px; color: var(--muted); line-height:1.55; }
+  .progress-line{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted);
+    letter-spacing:0.04em;
+  }
+
+  .feedback{
+    border-radius: 6px; padding: 12px 14px; font-size: 14px; font-weight:500;
+    border: 1px solid var(--line); background: var(--panel-2); color: var(--ivory);
+    min-height: 22px;
+  }
+  .feedback.correct{ border-color: var(--success); color:#c3e0b3; background: rgba(143,191,122,0.12); }
+  .feedback.wrong{ border-color: var(--danger); color:#e6a595; background: rgba(168,90,74,0.14); }
+  .feedback.info{ color: var(--muted); }
+  .feedback.done{ border-color: var(--gold); color: var(--felt-light); background: rgba(201,162,75,0.14); }
+
+  .move-strip{
+    font-family:'JetBrains Mono', monospace; font-size: 13px; color: var(--muted);
+    background: var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding: 10px 12px; line-height:1.7; min-height: 44px;
+  }
+  .move-strip b{ color: var(--ivory); font-weight:600; }
+  .move-strip .current{ color: var(--gold); }
+
+  .session-summary{ display:flex; flex-direction:column; gap:12px; }
+  .summary-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 8px 12px; background: var(--panel-2); border:1px solid var(--line); border-radius:6px; font-size:13px;
+  }
+  .summary-row .ok{color:var(--success);}
+  .summary-row .lapse{color:#e6a595;}
+
+  .site-footer-note{
+    text-align:center; color:var(--muted); font-size:11px;
+    font-family:'JetBrains Mono', monospace; margin-top:34px; letter-spacing:0.04em;
+  }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html" class="brand">Ellis Knowledge Studio<span>Chess</span></a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="analysis-board.html">Analysis Board</a>
+    <a href="openings-trainer.html" class="current">Openings Trainer</a>
+    <a href="checkmate-academy.html">Checkmate Academy</a>
+    <a href="endgames/">Endgames</a>
+    <a href="coach/">AI Coach</a>
+    <a href="junior-coaching.html">Junior Coaching</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <h1>Openings Trainer</h1>
+      <span class="eyebrow">Full repertoires · White &amp; Black</span>
+    </div>
+    <div class="status-line" id="statusLine">Loading repertoire…</div>
+  </header>
+
+  <div id="warnBanner" class="warn-banner" style="display:none;"></div>
+
+  <!-- ============== DASHBOARD ============== -->
+  <div id="dashboardView">
+    <div id="repCards"></div>
+  </div>
+
+  <!-- ============== TRAINING ============== -->
+  <div id="trainingView">
+    <div class="layout">
+      <div class="board-col">
+        <div class="board-frame">
+          <div class="board-outer">
+            <div class="rank-labels" id="rankLabels"></div>
+            <div id="board"></div>
+            <div class="file-labels" id="fileLabels"></div>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="flipBtn">Flip board</button>
+          <button id="showAnswerBtn">Show answer</button>
+          <button id="skipLineBtn">Skip line</button>
+          <button class="ghost" id="exitSessionBtn">Exit session</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="trainingLineInfo">
+          <span class="rep-side" id="trainRepSide">WHITE REPERTOIRE</span>
+          <h2 id="trainLineName">—</h2>
+          <div class="line-group" id="trainLineGroup"></div>
+        </div>
+        <div class="progress-line" id="progressLine"></div>
+        <div class="feedback info" id="feedbackBox">Set up the board…</div>
+        <div class="move-strip" id="moveStrip"></div>
+        <p class="note" id="lineNote"></p>
+        <div id="summaryBox" class="session-summary" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="site-footer-note">ELLIS KNOWLEDGE STUDIO · CHESS · OPENINGS TRAINER · click a piece, then a highlighted square</p>
+</div>
+
+<script>
+// ===========================================================================
+// Minimal self-contained chess rules engine — identical copy of the one used
+// by analysis-board.html, so both tools share the same move-legality logic.
+// Supports: legal move generation, check/checkmate/stalemate, castling,
+// en passant, promotion, FEN load/export, and simple PGN movetext loading.
+// ===========================================================================
+function Chess(fen) {
+  const FILES = 'abcdefgh';
+  let board, turn, castling, epSquare, halfmove, fullmove, moveList;
+
+  const DIRS = {
+    b: [[1,1],[1,-1],[-1,1],[-1,-1]],
+    r: [[1,0],[-1,0],[0,1],[0,-1]],
+    q: [[1,1],[1,-1],[-1,1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]],
+    n: [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]],
+    k: [[1,1],[1,-1],[-1,1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]]
+  };
+
+  function sqToRC(sq){ return [parseInt(sq[1],10)-1, sq.charCodeAt(0)-97]; }
+  function rcToSq(r,f){ return FILES[f] + (r+1); }
+  function inBounds(r,f){ return r>=0 && r<8 && f>=0 && f<8; }
+  function cloneBoard(b){ return b.map(row=>row.map(c=>c?{type:c.type,color:c.color}:null)); }
+
+  function setStart(){
+    board = Array.from({length:8},()=>Array(8).fill(null));
+    const backRank = ['r','n','b','q','k','b','n','r'];
+    for (let f=0; f<8; f++){
+      board[0][f] = {type:backRank[f], color:'w'};
+      board[1][f] = {type:'p', color:'w'};
+      board[6][f] = {type:'p', color:'b'};
+      board[7][f] = {type:backRank[f], color:'b'};
+    }
+    turn='w';
+    castling={wK:true,wQ:true,bK:true,bQ:true};
+    epSquare=null; halfmove=0; fullmove=1; moveList=[];
+  }
+
+  function clearBoardState(){
+    board = Array.from({length:8},()=>Array(8).fill(null));
+    turn='w'; castling={wK:false,wQ:false,bK:false,bQ:false};
+    epSquare=null; halfmove=0; fullmove=1; moveList=[];
+  }
+
+  function loadFen(fenStr){
+    try{
+      const parts = fenStr.trim().split(/\s+/);
+      if (parts.length < 1) return false;
+      const rows = parts[0].split('/');
+      if (rows.length !== 8) return false;
+      const newBoard = Array.from({length:8},()=>Array(8).fill(null));
+      for (let i=0;i<8;i++){
+        const rank = 7-i;
+        let file=0;
+        for (const ch of rows[i]){
+          if (/\d/.test(ch)){ file += parseInt(ch,10); }
+          else {
+            const color = ch === ch.toUpperCase() ? 'w' : 'b';
+            const type = ch.toLowerCase();
+            if ('pnbrqk'.indexOf(type) === -1) return false;
+            if (file>7) return false;
+            newBoard[rank][file] = {type,color};
+            file++;
+          }
+        }
+        if (file !== 8) return false;
+      }
+      const turnPart = parts[1] === 'b' ? 'b' : 'w';
+      const castlePart = parts[2] || '-';
+      const newCastling = {
+        wK: castlePart.indexOf('K')!==-1, wQ: castlePart.indexOf('Q')!==-1,
+        bK: castlePart.indexOf('k')!==-1, bQ: castlePart.indexOf('q')!==-1
+      };
+      const epPart = parts[3] && parts[3] !== '-' ? parts[3] : null;
+      const half = parseInt(parts[4],10); const full = parseInt(parts[5],10);
+      board = newBoard; turn = turnPart; castling = newCastling; epSquare = epPart;
+      halfmove = isNaN(half)?0:half; fullmove = isNaN(full)?1:full; moveList=[];
+      return true;
+    } catch(e){ return false; }
+  }
+
+  function toFen(){
+    let rows=[];
+    for (let r=7;r>=0;r--){
+      let row=''; let empty=0;
+      for (let f=0; f<8; f++){
+        const c = board[r][f];
+        if (!c){ empty++; }
+        else {
+          if (empty>0){ row+=empty; empty=0; }
+          row += c.color==='w'? c.type.toUpperCase() : c.type;
+        }
+      }
+      if (empty>0) row+=empty;
+      rows.push(row);
+    }
+    const boardStr = rows.join('/');
+    let castleStr = '';
+    if (castling.wK) castleStr+='K';
+    if (castling.wQ) castleStr+='Q';
+    if (castling.bK) castleStr+='k';
+    if (castling.bQ) castleStr+='q';
+    if (!castleStr) castleStr='-';
+    const epStr = epSquare || '-';
+    return boardStr + ' ' + turn + ' ' + castleStr + ' ' + epStr + ' ' + halfmove + ' ' + fullmove;
+  }
+
+  function pieceAt(sq){ const rc=sqToRC(sq); return board[rc[0]][rc[1]]; }
+
+  function findKing(color){
+    for (let r=0;r<8;r++) for (let f=0;f<8;f++){
+      const c=board[r][f];
+      if (c && c.type==='k' && c.color===color) return rcToSq(r,f);
+    }
+    return null;
+  }
+
+  function isAttacked(sq, byColor, useBoard){
+    const b = useBoard || board;
+    const rc = sqToRC(sq); const tr=rc[0], tf=rc[1];
+    const pr = tr + (byColor==='w' ? -1 : 1);
+    for (let i=0;i<2;i++){
+      const df = i===0?-1:1;
+      const pf = tf+df;
+      if (inBounds(pr,pf)){
+        const c = b[pr][pf];
+        if (c && c.type==='p' && c.color===byColor) return true;
+      }
+    }
+    for (const d of DIRS.n){
+      const r=tr+d[0], f=tf+d[1];
+      if (inBounds(r,f)){
+        const c=b[r][f];
+        if (c && c.type==='n' && c.color===byColor) return true;
+      }
+    }
+    for (const d of DIRS.k){
+      const r=tr+d[0], f=tf+d[1];
+      if (inBounds(r,f)){
+        const c=b[r][f];
+        if (c && c.type==='k' && c.color===byColor) return true;
+      }
+    }
+    for (const d of DIRS.b){
+      let r=tr+d[0], f=tf+d[1];
+      while (inBounds(r,f)){
+        const c=b[r][f];
+        if (c){
+          if (c.color===byColor && (c.type==='b'||c.type==='q')) return true;
+          break;
+        }
+        r+=d[0]; f+=d[1];
+      }
+    }
+    for (const d of DIRS.r){
+      let r=tr+d[0], f=tf+d[1];
+      while (inBounds(r,f)){
+        const c=b[r][f];
+        if (c){
+          if (c.color===byColor && (c.type==='r'||c.type==='q')) return true;
+          break;
+        }
+        r+=d[0]; f+=d[1];
+      }
+    }
+    return false;
+  }
+
+  function addPawnMove(moves, from, to, piece, promoRank, destRank, capturedType){
+    const isPromo = destRank === promoRank;
+    if (isPromo){
+      ['q','r','b','n'].forEach(pt => {
+        moves.push({from,to,piece:'p',color:piece.color,captured:capturedType||null,promotion:pt,flags:capturedType?'cp':'p'});
+      });
+    } else {
+      moves.push({from,to,piece:'p',color:piece.color,captured:capturedType||null,promotion:null,flags:capturedType?'c':'n'});
+    }
+  }
+
+  function addCastlingMoves(moves, color, r, f){
+    const rights = color==='w' ? {K:castling.wK,Q:castling.wQ} : {K:castling.bK,Q:castling.bQ};
+    const rank = color==='w' ? 0 : 7;
+    if (r!==rank || f!==4) return;
+    const opp = color==='w'?'b':'w';
+    if (isAttacked(rcToSq(rank,4), opp)) return;
+    if (rights.K){
+      if (!board[rank][5] && !board[rank][6] && board[rank][7] && board[rank][7].type==='r' && board[rank][7].color===color){
+        if (!isAttacked(rcToSq(rank,5),opp) && !isAttacked(rcToSq(rank,6),opp)){
+          moves.push({from:rcToSq(rank,4), to:rcToSq(rank,6), piece:'k', color, captured:null, promotion:null, flags:'k'});
+        }
+      }
+    }
+    if (rights.Q){
+      if (!board[rank][3] && !board[rank][2] && !board[rank][1] && board[rank][0] && board[rank][0].type==='r' && board[rank][0].color===color){
+        if (!isAttacked(rcToSq(rank,3),opp) && !isAttacked(rcToSq(rank,2),opp)){
+          moves.push({from:rcToSq(rank,4), to:rcToSq(rank,2), piece:'k', color, captured:null, promotion:null, flags:'q'});
+        }
+      }
+    }
+  }
+
+  function generatePseudoMoves(color, onlySquare){
+    const moves = [];
+    for (let r=0;r<8;r++){
+      for (let f=0;f<8;f++){
+        const c = board[r][f];
+        if (!c || c.color!==color) continue;
+        const fromSq = rcToSq(r,f);
+        if (onlySquare && fromSq !== onlySquare) continue;
+        if (c.type==='p'){
+          const dir = color==='w'?1:-1;
+          const startRank = color==='w'?1:6;
+          const promoRank = color==='w'?7:0;
+          if (inBounds(r+dir,f) && !board[r+dir][f]){
+            addPawnMove(moves, fromSq, rcToSq(r+dir,f), c, promoRank, r+dir, false);
+            if (r===startRank && !board[r+2*dir][f]){
+              moves.push({from:fromSq,to:rcToSq(r+2*dir,f),piece:'p',color,captured:null,promotion:null,flags:'b',epTarget:rcToSq(r+dir,f)});
+            }
+          }
+          for (let i=0;i<2;i++){
+            const df = i===0?-1:1;
+            const nf=f+df, nr=r+dir;
+            if (!inBounds(nr,nf)) continue;
+            const target = board[nr][nf];
+            if (target && target.color!==color){
+              addPawnMove(moves, fromSq, rcToSq(nr,nf), c, promoRank, nr, target.type);
+            } else if (!target && epSquare === rcToSq(nr,nf)){
+              moves.push({from:fromSq,to:rcToSq(nr,nf),piece:'p',color,captured:'p',promotion:null,flags:'e'});
+            }
+          }
+        } else if (c.type==='n' || c.type==='k'){
+          for (const d of DIRS[c.type]){
+            const nr=r+d[0], nf=f+d[1];
+            if (!inBounds(nr,nf)) continue;
+            const target = board[nr][nf];
+            if (!target || target.color!==color){
+              moves.push({from:fromSq,to:rcToSq(nr,nf),piece:c.type,color,captured: target?target.type:null, promotion:null, flags: target?'c':'n'});
+            }
+          }
+          if (c.type==='k'){
+            addCastlingMoves(moves, color, r, f);
+          }
+        } else {
+          for (const d of DIRS[c.type]){
+            let nr=r+d[0], nf=f+d[1];
+            while (inBounds(nr,nf)){
+              const target = board[nr][nf];
+              if (!target){
+                moves.push({from:fromSq,to:rcToSq(nr,nf),piece:c.type,color,captured:null,promotion:null,flags:'n'});
+              } else {
+                if (target.color!==color){
+                  moves.push({from:fromSq,to:rcToSq(nr,nf),piece:c.type,color,captured:target.type,promotion:null,flags:'c'});
+                }
+                break;
+              }
+              nr+=d[0]; nf+=d[1];
+            }
+          }
+        }
+      }
+    }
+    return moves;
+  }
+
+  function applyMoveToBoard(mv, targetBoard, targetCastling){
+    const fr0 = sqToRC(mv.from), to0 = sqToRC(mv.to);
+    const fr=fr0[0], ff=fr0[1], tr=to0[0], tf=to0[1];
+    const piece = targetBoard[fr][ff];
+    targetBoard[fr][ff] = null;
+    if (mv.flags === 'e'){
+      const capRank = mv.color==='w' ? tr-1 : tr+1;
+      targetBoard[capRank][tf] = null;
+    }
+    let placed = {type: piece.type, color: piece.color};
+    if (mv.promotion) placed = {type: mv.promotion, color: piece.color};
+    targetBoard[tr][tf] = placed;
+    if (mv.flags === 'k'){
+      const rank = fr;
+      targetBoard[rank][5] = targetBoard[rank][7];
+      targetBoard[rank][7] = null;
+    } else if (mv.flags === 'q'){
+      const rank = fr;
+      targetBoard[rank][3] = targetBoard[rank][0];
+      targetBoard[rank][0] = null;
+    }
+    if (targetCastling){
+      if (piece.type==='k'){
+        if (piece.color==='w'){ targetCastling.wK=false; targetCastling.wQ=false; }
+        else { targetCastling.bK=false; targetCastling.bQ=false; }
+      }
+      if (piece.type==='r'){
+        if (mv.from==='a1') targetCastling.wQ=false;
+        if (mv.from==='h1') targetCastling.wK=false;
+        if (mv.from==='a8') targetCastling.bQ=false;
+        if (mv.from==='h8') targetCastling.bK=false;
+      }
+      if (mv.to==='a1') targetCastling.wQ=false;
+      if (mv.to==='h1') targetCastling.wK=false;
+      if (mv.to==='a8') targetCastling.bQ=false;
+      if (mv.to==='h8') targetCastling.bK=false;
+    }
+  }
+
+  function legalMovesFor(color, onlySquare){
+    const pseudo = generatePseudoMoves(color, onlySquare);
+    const legal = [];
+    for (const mv of pseudo){
+      const testBoard = cloneBoard(board);
+      applyMoveToBoard(mv, testBoard, null);
+      let kingSq = null;
+      for (let r=0;r<8 && !kingSq;r++) for (let f=0;f<8 && !kingSq;f++){
+        const c=testBoard[r][f];
+        if (c && c.type==='k' && c.color===color) kingSq = rcToSq(r,f);
+      }
+      const opp = color==='w'?'b':'w';
+      if (kingSq && !isAttacked(kingSq, opp, testBoard)){
+        legal.push(mv);
+      }
+    }
+    return legal;
+  }
+
+  function epSquareAfter(mv){
+    return mv.flags==='b' ? mv.epTarget : null;
+  }
+
+  function anyLegalMoveInPosition(testBoard, testCastling, color, testEp){
+    const savedBoard=board, savedCastling=castling, savedEp=epSquare;
+    board=testBoard; castling=testCastling; epSquare=testEp;
+    const moves = legalMovesFor(color);
+    board=savedBoard; castling=savedCastling; epSquare=savedEp;
+    return moves.length>0;
+  }
+
+  function finalizeSan(base, mv){
+    const testBoard = cloneBoard(board);
+    const testCastling = Object.assign({}, castling);
+    applyMoveToBoard(mv, testBoard, testCastling);
+    const opp = mv.color==='w'?'b':'w';
+    let oppKingSq = null;
+    for (let r=0;r<8 && !oppKingSq;r++) for (let f=0;f<8 && !oppKingSq;f++){
+      const c=testBoard[r][f];
+      if (c && c.type==='k' && c.color===opp) oppKingSq = rcToSq(r,f);
+    }
+    let suffix='';
+    if (oppKingSq && isAttacked(oppKingSq, mv.color, testBoard)){
+      const hasEscape = anyLegalMoveInPosition(testBoard, testCastling, opp, epSquareAfter(mv));
+      suffix = hasEscape ? '+' : '#';
+    }
+    return base + suffix;
+  }
+
+  function sanForMove(mv, legalSiblings){
+    if (mv.flags==='k') return finalizeSan('O-O', mv);
+    if (mv.flags==='q') return finalizeSan('O-O-O', mv);
+    const pieceLetter = mv.piece==='p' ? '' : mv.piece.toUpperCase();
+    let disambig='';
+    if (mv.piece!=='p'){
+      const siblings = legalSiblings.filter(m => m!==mv && m.piece===mv.piece && m.to===mv.to);
+      if (siblings.length){
+        const sameFile = siblings.some(m=>m.from[0]===mv.from[0]);
+        const sameRank = siblings.some(m=>m.from[1]===mv.from[1]);
+        if (!sameFile) disambig = mv.from[0];
+        else if (!sameRank) disambig = mv.from[1];
+        else disambig = mv.from;
+      }
+    }
+    const capture = mv.captured ? 'x' : '';
+    const fromFile = (mv.piece==='p' && mv.captured) ? mv.from[0] : '';
+    let san = pieceLetter + (pieceLetter ? disambig : (fromFile+disambig)) + capture + mv.to;
+    if (mv.promotion) san += '=' + mv.promotion.toUpperCase();
+    return finalizeSan(san, mv);
+  }
+
+  function doMove(mv){
+    applyMoveToBoard(mv, board, castling);
+    epSquare = epSquareAfter(mv);
+    if (mv.color==='b') fullmove++;
+    if (mv.piece==='p' || mv.captured) halfmove=0; else halfmove++;
+    turn = turn==='w'?'b':'w';
+  }
+
+  setStart();
+  if (fen) loadFen(fen);
+
+  this.reset = function(){ setStart(); };
+  this.clear = function(){ clearBoardState(); };
+  this.load = function(fenStr){ return loadFen(fenStr); };
+  this.fen = function(){ return toFen(); };
+  this.get = function(sq){ const p = pieceAt(sq); return p ? {type:p.type,color:p.color} : null; };
+  this.put = function(piece, sq){
+    const rc = sqToRC(sq);
+    if (!inBounds(rc[0],rc[1])) return false;
+    board[rc[0]][rc[1]] = {type:piece.type, color:piece.color};
+    return true;
+  };
+  this.remove = function(sq){
+    const rc = sqToRC(sq);
+    const p = board[rc[0]][rc[1]];
+    board[rc[0]][rc[1]] = null;
+    return p ? {type:p.type,color:p.color} : null;
+  };
+  this.setTurn = function(color){ turn = (color==='b') ? 'b' : 'w'; };
+  this.turn = function(){ return turn; };
+  this.board = function(){
+    const out=[];
+    for (let r=7;r>=0;r--){
+      const row=[];
+      for (let f=0;f<8;f++){
+        const c=board[r][f];
+        row.push(c?{type:c.type,color:c.color}:null);
+      }
+      out.push(row);
+    }
+    return out;
+  };
+  this.in_check = function(){
+    const ks = findKing(turn);
+    if (!ks) return false;
+    const opp = turn==='w'?'b':'w';
+    return isAttacked(ks, opp);
+  };
+  this.in_checkmate = function(){
+    return this.in_check() && legalMovesFor(turn).length===0;
+  };
+  this.in_stalemate = function(){
+    return !this.in_check() && legalMovesFor(turn).length===0;
+  };
+  this.in_draw = function(){
+    if (this.in_stalemate()) return true;
+    let pieces=[];
+    for (let r=0;r<8;r++) for (let f=0;f<8;f++){
+      const c=board[r][f];
+      if (c && c.type!=='k') pieces.push(c);
+    }
+    if (pieces.length===0) return true;
+    if (pieces.length===1 && (pieces[0].type==='b'||pieces[0].type==='n')) return true;
+    return false;
+  };
+  this.moves = function(opts){
+    opts = opts || {};
+    const legal = legalMovesFor(turn, opts.square);
+    if (!opts.verbose){
+      return legal.map(m => sanForMove(m, legal));
+    }
+    return legal.map(m => {
+      const san = sanForMove(m, legal);
+      return {from:m.from, to:m.to, piece:m.piece, color:m.color, captured:m.captured, promotion:m.promotion, flags:m.flags, san};
+    });
+  };
+  this.move = function(input){
+    const legal = legalMovesFor(turn);
+    let chosen = null;
+    if (typeof input === 'string'){
+      const clean = input.replace(/[+#!?]+$/,'');
+      for (const m of legal){
+        const san = sanForMove(m, legal).replace(/[+#]+$/,'');
+        if (san === clean){ chosen = m; break; }
+      }
+    } else if (input && input.from && input.to){
+      const candidates = legal.filter(m => m.from===input.from && m.to===input.to);
+      if (candidates.length===1){ chosen = candidates[0]; }
+      else if (candidates.length>1){
+        const promo = input.promotion || 'q';
+        chosen = candidates.find(m => m.promotion===promo) || candidates[0];
+      }
+    }
+    if (!chosen) return null;
+    const san = sanForMove(chosen, legal);
+    doMove(chosen);
+    const result = {from:chosen.from, to:chosen.to, piece:chosen.piece, color:chosen.color, captured:chosen.captured, promotion:chosen.promotion, flags:chosen.flags, san};
+    moveList.push(result);
+    return result;
+  };
+  this.history = function(opts){
+    opts = opts || {};
+    if (opts.verbose) return moveList.slice();
+    return moveList.map(m=>m.san);
+  };
+  this.load_pgn = function(pgnText){
+    let text = pgnText.replace(/\[[^\]]*\]/g,' ');
+    text = text.replace(/\{[^}]*\}/g,' ');
+    text = text.replace(/\d+\.(\.\.)?/g,' ');
+    text = text.replace(/(1-0|0-1|1\/2-1\/2|\*)\s*$/,' ');
+    const tokens = text.split(/\s+/).map(t=>t.trim()).filter(Boolean);
+    const savedBoard=cloneBoard(board), savedTurn=turn, savedCastling=Object.assign({},castling),
+          savedEp=epSquare, savedHalf=halfmove, savedFull=fullmove, savedMoveList=moveList.slice();
+    for (const tok of tokens){
+      const res = this.move(tok);
+      if (!res){
+        board=savedBoard; turn=savedTurn; castling=savedCastling; epSquare=savedEp;
+        halfmove=savedHalf; fullmove=savedFull; moveList=savedMoveList;
+        return false;
+      }
+    }
+    return true;
+  };
+}
+
+// ===========================================================================
+// REPERTOIRE DATA
+// ---------------------------------------------------------------------------
+// This is the only part of the file you should need to touch to add more
+// lines later. Each repertoire is a named opening, played from one side
+// ("w" or "b"). Each line is a full sequence of moves in plain PGN movetext
+// (move numbers optional, engine ignores them) from the very first move.
+//
+// Each repertoire also has a `section` ('white', 'black-e4' or 'black-d4')
+// and each line a `level` ('beginner', 'club' or 'advanced'). Levels are
+// cumulative: Club shows Beginner + Club lines, Advanced shows everything.
+// Line ids must never change once published: progress is stored by id.
+//
+// Rules of thumb when adding lines:
+//  - Your own moves (the side named in `side`) should be the ONE move you've
+//    chosen to play in that position — don't give yourself two different
+//    options at the same position, since you can only play one over the board.
+//  - The opponent's replies are where you branch: add a separate line for
+//    each reply you want to be ready for, repeating the shared moves that
+//    come before the branch. Lines that share a prefix are shown together
+//    in the "group" column automatically if you give them the same `group`.
+//  - Every line is validated against the rules engine when the page loads.
+//    If you make a typo (illegal move, wrong disambiguation, etc.) that line
+//    is skipped and listed in a warning banner instead of crashing the page.
+// ===========================================================================
+const REPERTOIRES = [
+  // =========================================================================
+  // WHITE · 1.e4
+  // =========================================================================
+  {
+    id: 'scotch',
+    name: 'Scotch Game',
+    section: 'white',
+    side: 'w',
+    blurb: 'Your main weapon against 1...e5 2...Nc6: open the centre at once with 3.d4 and play with free, active pieces.',
+    lines: [
+      {
+        id: 'scotch-basics', level: 'beginner',
+        group: 'Schmidt Variation (4...Nf6)',
+        name: 'The core idea — 5.Nxc6 and 6.e5',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nxc6 bxc6 6.e5 Qe7 7.Qe2 Nd5 8.c4',
+        note: 'The heart of the Scotch: take on c6 to damage Black\'s pawns, push e5 to chase the f6-knight, and c4 kicks it again. You gain space with every move. The Club level continues this line.'
+      },
+      {
+        id: 'scotch-nxd4-early', level: 'beginner',
+        group: 'Early knight trade (3...Nxd4)',
+        name: '3...Nxd4 — queen to the centre',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 Nxd4 4.Nxd4 exd4 5.Qxd4 Nf6 6.e5 Qe7 7.Bb5',
+        note: 'A common club reply. Your queen lands safely on d4, nothing can chase it quickly, and e5 plus Bb5 keeps Black tied up. You are simply better developed.'
+      },
+      {
+        id: 'lolli', level: 'beginner',
+        group: 'Lolli Variation (4...Nxd4)',
+        name: 'Main line',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nxd4 5.Qxd4 Ne7 6.Bc4 Nc6 7.Qd3',
+        note: 'Trading knights early looks modest, but the queen sits comfortably on d4/d3 and White gets an easy lead in development with a small, safe space edge.'
+      },
+      {
+        id: 'schmidt-mieses', level: 'club',
+        group: 'Schmidt Variation (4...Nf6)',
+        name: 'Mieses line — 6.e5',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nxc6 bxc6 6.e5 Qe7 7.Qe2 Nd5 8.c4 Ba6',
+        note: 'Black\'s most natural try against the knight and e4-pawn. 6.e5 grabs space and is the main try at top level; after 8.c4 the knight is chased and Black shows the point of ...Ba6, hitting c4.'
+      },
+      {
+        id: 'classical-nge7', level: 'club',
+        group: 'Classical Variation (4...Bc5)',
+        name: 'Main line — 6...Nge7 7.Bc4',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Bc5 5.Be3 Qf6 6.c3 Nge7 7.Bc4',
+        note: 'The traditional main line: Be3 challenges the bishop, Qf6 keeps an eye on d4, and c3 plus Bc4 finish development actively before Black castles.'
+      },
+      {
+        id: 'steinitz-main', level: 'club',
+        group: 'Steinitz Variation (4...Qh4)',
+        name: 'Main line refutation',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Qh4 5.Nc3 Bb4 6.Be2 Qxe4 7.Nb5 Bxc3+ 8.bxc3 Kd8 9.O-O',
+        note: 'Black grabs the e4-pawn but falls behind in development and safety. Stay calm through move 8 — Nb5 and bxc3 are forced-feeling but correct, and O-O leaves White comfortably ahead.'
+      },
+      {
+        id: 'scotch-mieses-deep', level: 'advanced',
+        group: 'Schmidt Variation (4...Nf6)',
+        name: 'Mieses — 9.b3 and the fianchetto',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nxc6 bxc6 6.e5 Qe7 7.Qe2 Nd5 8.c4 Ba6 9.b3 O-O-O 10.g3 Re8 11.Bb2',
+        note: 'b3 holds c4 so the pin on the e-file stops hurting, and the double fianchetto (Bb2, Bg2) supports e5. Black castles long and will try ...f6 to break the centre; keep the e5-pawn defended before you castle.'
+      },
+      {
+        id: 'scotch-classical-bb6', level: 'advanced',
+        group: 'Classical Variation (4...Bc5)',
+        name: '5...Bb6 6.Nf5 — the knight raid',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Bc5 5.Be3 Bb6 6.Nf5 d6 7.Nxg7+ Kf8 8.Nh5 Qh4 9.Ng3 Nf6 10.Nc3',
+        note: 'If Black answers Be3 with ...Bb6, the knight jumps to f5 and grabs g7 with check. Black loses the right to castle and gets some activity for the pawn; calm development with Nc3, Qd2 and O-O-O keeps your extra pawn.'
+      }
+    ]
+  },
+  {
+    id: 'italian',
+    name: 'Italian Game',
+    section: 'white',
+    side: 'w',
+    blurb: 'A quieter alternative to the Scotch against 2...Nc6: c3 and d3, slow manoeuvring and a well-timed d4.',
+    lines: [
+      {
+        id: 'giuoco-basic', level: 'beginner',
+        group: 'Giuoco Piano (3...Bc5)',
+        name: 'Develop, castle, Re1',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O O-O 7.Re1',
+        note: 'The skeleton every Italian player needs: c3 prepares d4 one day, d3 keeps e4 safe, castle and put the rook on e1. Nothing to memorise beyond good development.'
+      },
+      {
+        id: 'two-knights-basic', level: 'beginner',
+        group: 'Two Knights Defense (3...Nf6)',
+        name: '4.d3 — calm and solid',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Nf6 4.d3 Be7 5.O-O O-O 6.Re1 d6 7.c3',
+        note: 'Against 3...Nf6, 4.d3 protects e4 and avoids the tactical Fried Liver jungle. Same plan as the Giuoco: castle, Re1, c3, then Nbd2-f1-g3.'
+      },
+      {
+        id: 'hungarian', level: 'beginner',
+        group: 'Hungarian Defence (3...Be7)',
+        name: '4.d4 — take the centre',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Be7 4.d4 d6 5.Nc3 Nf6 6.h3 O-O 7.O-O',
+        note: 'When Black plays passively with ...Be7, grab the centre with d4 straight away. h3 stops ...Bg4 pinning your knight, and you keep a pleasant space advantage.'
+      },
+      {
+        id: 'giuoco-piano-main', level: 'club',
+        group: 'Giuoco Piano (3...Bc5)',
+        name: 'Main line — c3 & d3 system',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O a6 7.a4 Ba7 8.Re1 h6 9.h3',
+        note: 'Today\'s most common approach: c3 and d3 together, keeping the centre flexible rather than rushing d4. a4 discourages ...b5, Ba7 tucks the bishop onto a safe diagonal, and Re1/h3 prepare a slow build-up before deciding on d4 later.'
+      },
+      {
+        id: 'two-knights-d3-main', level: 'club',
+        group: 'Two Knights Defense (3...Nf6)',
+        name: 'Main line — 4.d3',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Nf6 4.d3 Bc5 5.O-O O-O 6.c3 Bb6 7.b4 d6 8.a4 a6 9.Be3 Bxe3 10.fxe3 d5 11.exd5 Nxd5',
+        note: 'The calm reply to 3...Nf6, sidestepping the sharp 4.Ng5 complications. b4-a4 gains queenside space, and after the trade on e3 White\'s doubled e-pawns actually help control d4/f4 — a fair, well-tested balance.'
+      },
+      {
+        id: 'giuoco-nbd2', level: 'advanced',
+        group: 'Giuoco Piano (3...Bc5)',
+        name: 'Knight tour — Nbd2-f1-g3',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O a6 7.a4 Ba7 8.Re1 O-O 9.h3 h6 10.Nbd2 Re8 11.Nf1',
+        note: 'The classic slow plan: the b1-knight travels d2-f1-g3 to eye f5 and h5, while Be3 can trade off Black\'s strong a7-bishop. Only then think about d4.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-petroff',
+    name: 'vs Petroff Defence',
+    section: 'white',
+    side: 'w',
+    blurb: 'Against 2...Nf6: take on e5, avoid the famous trap, then castle long with 5.Nc3 for an easy, active game.',
+    lines: [
+      {
+        id: 'petroff-trap', level: 'beginner',
+        group: 'Copycat mistake (3...Nxe4?)',
+        name: '4.Qe2! and the queen trap',
+        pgn: '1.e4 e5 2.Nf3 Nf6 3.Nxe5 Nxe4 4.Qe2 Nf6 5.Nc6+',
+        note: 'Copying White with 3...Nxe4 is a mistake. After 4.Qe2 the e-file is open, and if Black retreats 4...Nf6?? the discovered check 5.Nc6+ wins the queen on d8.'
+      },
+      {
+        id: 'petroff-trap-qe7', level: 'beginner',
+        group: 'Copycat mistake (3...Nxe4?)',
+        name: '4...Qe7 — White wins a pawn',
+        pgn: '1.e4 e5 2.Nf3 Nf6 3.Nxe5 Nxe4 4.Qe2 Qe7 5.Qxe4 d6 6.d4 dxe5 7.dxe5',
+        note: 'Black\'s best after the copycat is 4...Qe7, but after the trades White is simply a clean pawn up. Remember: in the Petroff, Black must play 3...d6 first.'
+      },
+      {
+        id: 'petroff-nc3', level: 'club',
+        group: 'Main line (3...d6)',
+        name: '5.Nc3 — opposite-side castling',
+        pgn: '1.e4 e5 2.Nf3 Nf6 3.Nxe5 d6 4.Nf3 Nxe4 5.Nc3 Nxc3 6.dxc3 Be7 7.Be3 Nc6 8.Qd2 Be6 9.O-O-O',
+        note: 'The modern anti-boredom weapon. 5.Nc3 forces the knight trade, your pieces come out fast, and after O-O-O you can push the kingside pawns. Simple plans, real winning chances.'
+      },
+      {
+        id: 'petroff-nc3-qd2', level: 'advanced',
+        group: 'Main line (3...d6)',
+        name: '5.Nc3 with ...Bf5',
+        pgn: '1.e4 e5 2.Nf3 Nf6 3.Nxe5 d6 4.Nf3 Nxe4 5.Nc3 Nxc3 6.dxc3 Nc6 7.Bf4 Be7 8.Qd2 Bf5 9.O-O-O Qd7',
+        note: 'Same idea with Bf4 instead of Be3. Both sides castle long here, so the game turns on who opens files faster — h4-h5 and Nd4 are typical for White.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-philidor',
+    name: 'vs Philidor Defence',
+    section: 'white',
+    side: 'w',
+    blurb: 'Against 2...d6: hit the centre with 3.d4 and punish the common mistakes.',
+    lines: [
+      {
+        id: 'philidor-bg4', level: 'beginner',
+        group: 'Early ...Bg4',
+        name: '3...Bg4? 4.dxe5 — the queen comes to b3',
+        pgn: '1.e4 e5 2.Nf3 d6 3.d4 Bg4 4.dxe5 Bxf3 5.Qxf3 dxe5 6.Bc4 Nf6 7.Qb3',
+        note: 'Black gives up the bishop pair to keep pawns level, but your queen and bishop now attack f7 and b7 at the same time. Black will lose a pawn.'
+      },
+      {
+        id: 'philidor-exd4', level: 'club',
+        group: 'Exchange line (3...exd4)',
+        name: '4.Nxd4 — space and easy development',
+        pgn: '1.e4 e5 2.Nf3 d6 3.d4 exd4 4.Nxd4 Nf6 5.Nc3 Be7 6.Bf4 O-O 7.Qd2',
+        note: 'Black gives up the centre. You get more space, natural squares for every piece, and the option of castling long and pushing g4.'
+      },
+      {
+        id: 'philidor-nd7', level: 'club',
+        group: 'Hanham set-up (3...Nd7)',
+        name: '4.Bc4 — pressure on f7',
+        pgn: '1.e4 e5 2.Nf3 d6 3.d4 Nd7 4.Bc4 c6 5.O-O Be7 6.a4',
+        note: 'The bishop on c4 eyes f7 and makes Black careful. a4 stops ...b5 from kicking the bishop. Plan: Nc3, Re1, and keep the tension in the centre.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-sicilian',
+    name: 'vs Sicilian — Alapin (2.c3)',
+    section: 'white',
+    side: 'w',
+    blurb: 'A low-theory, high-sense system against 1...c5: prepare d4 with c3 and get a big pawn centre.',
+    lines: [
+      {
+        id: 'alapin-d5', level: 'beginner',
+        group: '2...d5',
+        name: '2...d5 3.exd5 Qxd5 4.d4',
+        pgn: '1.e4 c5 2.c3 d5 3.exd5 Qxd5 4.d4 Nf6 5.Nf3 Bg4 6.Be2 e6 7.O-O Nc6 8.Be3 cxd4 9.cxd4 Be7 10.Nc3',
+        note: 'Black\'s queen comes out early. You develop with tempo, Nc3 hits the queen, and you often end up with an isolated d-pawn that gives your pieces lots of activity.'
+      },
+      {
+        id: 'alapin-e6', level: 'beginner',
+        group: '2...e6',
+        name: '2...e6 — French-style',
+        pgn: '1.e4 c5 2.c3 e6 3.d4 d5 4.exd5 exd5 5.Nf3 Nc6 6.Bb5 Bd6 7.dxc5 Bxc5 8.O-O Ne7 9.Nbd2 O-O 10.Nb3',
+        note: 'After the exchange Black has an isolated d5-pawn. Nb3 and Nbd4 blockade it — put a piece in front of an isolated pawn and attack it later.'
+      },
+      {
+        id: 'alapin-nf6', level: 'club',
+        group: '2...Nf6',
+        name: '2...Nf6 3.e5 Nd5 4.d4',
+        pgn: '1.e4 c5 2.c3 Nf6 3.e5 Nd5 4.d4 cxd4 5.Nf3 e6 6.cxd4 d6 7.Bc4 Nc6 8.O-O Be7 9.Qe2 O-O 10.Nc3',
+        note: 'The main battleground. Your e5-pawn gains space, the knight on d5 is a target, and with Bc4, Qe2 and Rd1 you keep a comfortable edge.'
+      },
+      {
+        id: 'alapin-d6', level: 'club',
+        group: '2...d6',
+        name: '2...d6 — build the big centre',
+        pgn: '1.e4 c5 2.c3 d6 3.d4 Nf6 4.Bd3 cxd4 5.cxd4 g6 6.Nc3 Bg7 7.h3 O-O 8.Nf3',
+        note: 'Black lets you have both e4 and d4. Keep them protected, castle, and later look for d5 or e5 to gain space.'
+      },
+      {
+        id: 'alapin-nf6-bb5', level: 'advanced',
+        group: '2...Nf6',
+        name: '2...Nf6 with ...Nc6 — 8.Bb5',
+        pgn: '1.e4 c5 2.c3 Nf6 3.e5 Nd5 4.d4 cxd4 5.Nf3 Nc6 6.cxd4 d6 7.Bc4 Nb6 8.Bb5 dxe5 9.Nxe5 Bd7 10.Nxd7 Qxd7 11.Nc3',
+        note: 'When Black hits c4 with ...Nb6, the bishop jumps to b5 to pin the c6-knight. After the trades you have an isolated d-pawn but very active pieces and an easy plan: O-O, Be3, Rc1.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-french',
+    name: 'vs French — Advance (3.e5)',
+    section: 'white',
+    side: 'w',
+    blurb: 'Gain space with 3.e5, support it with c3 and Nf3, and play on the kingside.',
+    lines: [
+      {
+        id: 'french-adv-basic', level: 'beginner',
+        group: '3...c5 4.c3',
+        name: 'The pawn chain — 5...Bd7',
+        pgn: '1.e4 e6 2.d4 d5 3.e5 c5 4.c3 Nc6 5.Nf3 Bd7 6.Be2 Nge7 7.Na3 cxd4 8.cxd4 Nf5 9.Nc2',
+        note: 'Your chain d4-e5 cramps Black. c3 and Nf3 keep d4 safe; Na3-c2 is a neat route that guards d4 again. Black always attacks the base of the chain (d4) — your job is to keep it.'
+      },
+      {
+        id: 'french-adv-qb6', level: 'club',
+        group: '3...c5 4.c3',
+        name: '5...Qb6 6.Be2 — the main line',
+        pgn: '1.e4 e6 2.d4 d5 3.e5 c5 4.c3 Nc6 5.Nf3 Qb6 6.Be2 cxd4 7.cxd4 Nh6 8.Nc3 Nf5 9.Na4',
+        note: 'Black piles up on d4 with queen and knights. Na4 kicks the queen and covers b6/c5. Don\'t grab material with the d4 pawn — just keep it defended and play b4 or Bf4 later.'
+      },
+      {
+        id: 'french-adv-b6', level: 'club',
+        group: '3...b6',
+        name: '3...b6 — trade the bad bishop',
+        pgn: '1.e4 e6 2.d4 d5 3.e5 b6 4.c3 Qd7 5.Nf3 Ba6 6.Bxa6 Nxa6 7.O-O',
+        note: 'Black wants to swap off the "bad" light-squared bishop. Let it happen, castle, and the knight on a6 is clumsy. Your space advantage remains.'
+      },
+      {
+        id: 'french-adv-na4', level: 'advanced',
+        group: '3...c5 4.c3',
+        name: '9.Na4 Qa5+ — trading the good bishop',
+        pgn: '1.e4 e6 2.d4 d5 3.e5 c5 4.c3 Nc6 5.Nf3 Qb6 6.Be2 cxd4 7.cxd4 Nh6 8.Nc3 Nf5 9.Na4 Qa5+ 10.Bd2 Bb4 11.Bc3',
+        note: 'After Na4 the queen checks from a5 and Black offers a bishop trade on b4. Bc3 keeps d4 covered; you stay with a safe space advantage and Black\'s light-squared bishop is still the problem piece.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-caro',
+    name: 'vs Caro-Kann — Advance (3.e5)',
+    section: 'white',
+    side: 'w',
+    blurb: 'The same space-gaining approach as against the French: 3.e5, quick development, and c4 to open the queenside.',
+    lines: [
+      {
+        id: 'caro-adv-basic', level: 'beginner',
+        group: '3...Bf5',
+        name: 'Short system — 4.Nf3 and 5.Be2',
+        pgn: '1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Be2 c5 6.Be3 cxd4 7.Nxd4 Ne7 8.O-O',
+        note: 'Simple and sound: develop, guard d4 with Be3 and castle. If Black swaps on d4, your knight lands on a great central square. The pawn on e5 gives your pieces more room than Black\'s.'
+      },
+      {
+        id: 'caro-adv-c5', level: 'club',
+        group: '3...c5',
+        name: '3...c5 4.dxc5',
+        pgn: '1.e4 c6 2.d4 d5 3.e5 c5 4.dxc5 e6 5.Nf3 Bxc5 6.Bd3 Nc6 7.O-O',
+        note: 'Black plays ...c5 in one go. Take it, develop quickly and use the e5-pawn as a spearhead for a kingside attack with Bd3 and Qe2.'
+      },
+      {
+        id: 'caro-adv-short', level: 'club',
+        group: '3...Bf5',
+        name: '5...c5 6.Be3 — then c4',
+        pgn: '1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Be2 c5 6.Be3 Nd7 7.O-O Ne7 8.c4',
+        note: 'Be3 supports d4 against ...c5, and once you have castled c4 opens the queenside where your pieces are better placed. A plan used by many top players.'
+      },
+      {
+        id: 'caro-adv-nd7', level: 'advanced',
+        group: '3...Bf5',
+        name: '5...Nd7 — the knight route Nbd2-b3',
+        pgn: '1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Be2 Nd7 6.O-O Ne7 7.Nbd2 h6 8.Nb3',
+        note: 'If Black delays ...c5, put a knight on b3 to control c5 and stop the freeing break. Then Bd2, c3 and a queenside expansion.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-scandi',
+    name: 'vs Scandinavian',
+    section: 'white',
+    side: 'w',
+    blurb: 'Against 1...d5: take, develop with tempo on the queen, and use your lead in development.',
+    lines: [
+      {
+        id: 'scandi-qa5', level: 'beginner',
+        group: '2...Qxd5 3.Nc3',
+        name: '3...Qa5 — main line',
+        pgn: '1.e4 d5 2.exd5 Qxd5 3.Nc3 Qa5 4.d4 Nf6 5.Nf3 c6 6.Bc4 Bf5 7.Bd2 e6 8.Qe2 Bb4 9.O-O-O',
+        note: 'Every White move develops a piece. Bd2 un-pins the c3-knight, Qe2 and O-O-O bring everything into play, and Nd5 tricks hang in the air.'
+      },
+      {
+        id: 'scandi-qd6', level: 'club',
+        group: '2...Qxd5 3.Nc3',
+        name: '3...Qd6 — fianchetto set-up',
+        pgn: '1.e4 d5 2.exd5 Qxd5 3.Nc3 Qd6 4.d4 Nf6 5.Nf3 a6 6.g3 Bg4 7.Bg2 Nc6 8.O-O',
+        note: 'The modern queen retreat. The Bg2 fianchetto hits the long diagonal and keeps your king safe; Bf4 or Nb5 can harass the d6-queen later.'
+      },
+      {
+        id: 'scandi-qd8', level: 'club',
+        group: '2...Qxd5 3.Nc3',
+        name: '3...Qd8 — the retreat',
+        pgn: '1.e4 d5 2.exd5 Qxd5 3.Nc3 Qd8 4.d4 Nf6 5.Nf3 Bg4 6.h3 Bxf3 7.Qxf3 c6 8.Be3 e6 9.Bd3',
+        note: 'Black gives you the bishop pair to finish development. Castle long and use the bishops; Black is solid but passive.'
+      },
+      {
+        id: 'scandi-nf6', level: 'club',
+        group: '2...Nf6',
+        name: '2...Nf6 3.d4 Nxd5 4.c4',
+        pgn: '1.e4 d5 2.exd5 Nf6 3.d4 Nxd5 4.c4 Nb6 5.Nf3 g6 6.Nc3 Bg7 7.h3',
+        note: 'Chase the knight with c4 and keep a big pawn centre. h3 stops ...Bg4. Black will pressure d4, so keep it well protected.'
+      }
+    ]
+  },
+  {
+    id: 'w-vs-pirc',
+    name: 'vs Pirc, Modern & Alekhine',
+    section: 'white',
+    side: 'w',
+    blurb: 'Against the hypermodern defences: build the centre, and against the Pirc/Modern use the simple Be3-Qd2 attack.',
+    lines: [
+      {
+        id: 'pirc-150', level: 'beginner',
+        group: 'Pirc (1...d6 2...Nf6 3...g6)',
+        name: 'Be3, Qd2, castle long',
+        pgn: '1.e4 d6 2.d4 Nf6 3.Nc3 g6 4.Be3 Bg7 5.Qd2 O-O 6.O-O-O c6 7.f3',
+        note: 'The easiest attacking plan in chess: Be3 and Qd2 aim at h6 to swap off the g7-bishop, f3 holds e4, and then h4-h5 opens the h-file against the castled king.'
+      },
+      {
+        id: 'pirc-c6', level: 'club',
+        group: 'Pirc (1...d6 2...Nf6 3...g6)',
+        name: '4...c6 5.Qd2 b5 — Black waits',
+        pgn: '1.e4 d6 2.d4 Nf6 3.Nc3 g6 4.Be3 c6 5.Qd2 b5 6.Bd3 Nbd7 7.Nf3',
+        note: 'Black delays castling and expands on the queenside. Don\'t castle long into ...b4; develop normally with Bd3 and Nf3, then decide.'
+      },
+      {
+        id: 'modern-g6', level: 'club',
+        group: 'Modern (1...g6)',
+        name: '1...g6 — same plan',
+        pgn: '1.e4 g6 2.d4 Bg7 3.Nc3 d6 4.Be3 a6 5.Qd2 Nd7 6.f4',
+        note: 'Without ...Nf6 Black is more flexible, but the Be3-Qd2 plan still works. f4 grabs extra space; e5 can follow to cramp Black.'
+      },
+      {
+        id: 'alekhine-modern', level: 'club',
+        group: 'Alekhine (1...Nf6)',
+        name: 'Modern Variation — 4.Nf3',
+        pgn: '1.e4 Nf6 2.e5 Nd5 3.d4 d6 4.Nf3 Bg4 5.Be2 e6 6.O-O Be7 7.c4 Nb6 8.h3 Bh5 9.exd6 cxd6 10.Nc3',
+        note: 'Chase the knight once with c4, then trade on d6 and develop. You keep more space and a nice centre with no risk.'
+      },
+      {
+        id: 'alekhine-g6', level: 'advanced',
+        group: 'Alekhine (1...Nf6)',
+        name: '4...dxe5 and 4...g6 ideas',
+        pgn: '1.e4 Nf6 2.e5 Nd5 3.d4 d6 4.Nf3 dxe5 5.Nxe5 g6 6.Bc4 c6 7.O-O Bg7 8.Re1',
+        note: 'If Black takes on e5 early, your knight lands on a great central square and Bc4 hits d5 and f7. Re1 adds pressure down the e-file.'
+      }
+    ]
+  },
+
+  // =========================================================================
+  // BLACK vs 1.e4 — 1...e5
+  // =========================================================================
+  {
+    id: 'b-vs-ruy',
+    name: 'vs Ruy Lopez — Closed (3...a6)',
+    section: 'black-e4',
+    side: 'b',
+    blurb: 'Meet 3.Bb5 with the Morphy Defence and the solid Closed Ruy Lopez, plus the Exchange and 5.d3 lines.',
+    lines: [
+      {
+        id: 'ruy-closed-basic', level: 'beginner',
+        group: 'Closed Ruy Lopez',
+        name: 'The Morphy set-up',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O',
+        note: 'Ask the bishop with ...a6, develop with ...Nf6 and ...Be7, then ...b5 to push it away from the c6-knight. Castle and the position is rock solid.'
+      },
+      {
+        id: 'ruy-exchange', level: 'beginner',
+        group: 'Exchange Variation (4.Bxc6)',
+        name: '4.Bxc6 dxc6 5.O-O f6',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Bxc6 dxc6 5.O-O f6 6.d4 exd4 7.Nxd4 c5 8.Nb3 Qxd1 9.Rxd1 Bg4 10.f3 Be6',
+        note: 'Don\'t fear the Exchange. You have the bishop pair, ...f6 holds e5 calmly, and after the queen trade your bishops make the ending comfortable.'
+      },
+      {
+        id: 'ruy-zaitsev', level: 'club',
+        group: 'Closed Ruy Lopez',
+        name: 'Zaitsev — 9...Bb7 10...Re8',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 Bb7 10.d4 Re8',
+        note: 'Bb7 and Re8 pressure e4 and prepare ...Bf8 and ...exd4. A classical, principled main line; the fight is all about the e4 and d4 squares.'
+      },
+      {
+        id: 'ruy-d3', level: 'club',
+        group: '5.d3 (Anti-Berlin style)',
+        name: '5.d3 d6 — keep it simple',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.d3 d6 6.c3 Be7 7.O-O O-O 8.Re1 b5 9.Bc2',
+        note: 'Quiet modern Ruy. Mirror White: ...d6, ...Be7, castle, ...b5. Then ...Re8, ...Bf8 and ...h6 are standard regrouping moves.'
+      },
+      {
+        id: 'ruy-nc3', level: 'club',
+        group: '5.Nc3',
+        name: '5.Nc3 b5 — the bishop retreats',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.Nc3 b5 6.Bb3 Be7 7.d3 d6',
+        note: 'Against early Nc3 just push the bishop back with ...b5 and develop. Look out for Ng5 hitting f7 before you castle.'
+      },
+      {
+        id: 'ruy-zaitsev-deep', level: 'advanced',
+        group: 'Closed Ruy Lopez',
+        name: 'Zaitsev — 11.Nbd2 Bf8',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 Bb7 10.d4 Re8 11.Nbd2 Bf8 12.a4 h6 13.Bc2 exd4 14.cxd4 Nb4 15.Bb1 c5',
+        note: 'The real Zaitsev middlegame: ...exd4 and ...Nb4 hit the centre and the c2-bishop, then ...c5 strikes at d4. Sharp and rich; know these moves before playing it in a serious game.'
+      }
+    ]
+  },
+  {
+    id: 'b-vs-italian',
+    name: 'vs Italian & Evans (3...Bc5)',
+    section: 'black-e4',
+    side: 'b',
+    blurb: 'Meet 3.Bc4 with 3...Bc5: the Giuoco Piano, the open 5.d4 lines and the Evans Gambit.',
+    lines: [
+      {
+        id: 'bi-giuoco-basic', level: 'beginner',
+        group: 'Giuoco Pianissimo (4.c3 5.d3)',
+        name: 'Develop and castle',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O O-O',
+        note: 'Symmetrical and safe. Watch for Bg5 pins and Ng5 attacks on f7; ...h6 and ...a6 (with ...Ba7) are the standard ways to keep everything secure.'
+      },
+      {
+        id: 'bi-o-o', level: 'beginner',
+        group: '4.O-O',
+        name: '4.O-O Nf6 5.d3 d6',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.O-O Nf6 5.d3 d6 6.c3 O-O',
+        note: 'Same structure as the Pianissimo, just a different move order. Develop normally and castle.'
+      },
+      {
+        id: 'bi-pianissimo', level: 'club',
+        group: 'Giuoco Pianissimo (4.c3 5.d3)',
+        name: '...a6, ...Ba7, ...h6',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O O-O 7.Re1 a6 8.Bb3 Ba7 9.h3 h6 10.Nbd2 Re8',
+        note: 'The modern main line. ...a6 and ...Ba7 save the bishop from d4 and b4 kicks, ...h6 stops Bg5 and Ng5. Plan ...Be6 to trade off White\'s strong bishop.'
+      },
+      {
+        id: 'bi-d4-bb4', level: 'club',
+        group: 'Open lines (4.c3 Nf6 5.d4)',
+        name: '5.d4 exd4 6.cxd4 Bb4+',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d4 exd4 6.cxd4 Bb4+ 7.Bd2 Bxd2+ 8.Nbxd2 d5 9.exd5 Nxd5 10.Qb3 Nce7 11.O-O O-O',
+        note: 'The classical answer to the big centre: check, trade bishops, and strike with ...d5. White gets an isolated d-pawn; you get a safe blockade on d5.'
+      },
+      {
+        id: 'bi-d4-e5', level: 'club',
+        group: 'Open lines (4.c3 Nf6 5.d4)',
+        name: '6.e5 d5! 7.Bb5 Ne4',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d4 exd4 6.e5 d5 7.Bb5 Ne4 8.cxd4 Bb4+',
+        note: 'When the knight is attacked, counter-attack: ...d5 hits the bishop, ...Ne4 lands on a strong square, and ...Bb4+ completes development with tempo.'
+      },
+      {
+        id: 'bi-evans', level: 'advanced',
+        group: 'Evans Gambit (4.b4)',
+        name: 'Lasker Defence — return the pawn',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.b4 Bxb4 5.c3 Ba5 6.d4 d6 7.O-O Bb6 8.dxe5 dxe5 9.Qxd8+ Nxd8 10.Nxe5 Be6',
+        note: 'Take the gambit pawn, then give it back to kill White\'s attack. After the queen trade you have a healthy, slightly better ending with the bishop pair.'
+      }
+    ]
+  },
+  {
+    id: 'b-vs-scotch',
+    name: 'vs Scotch (3.d4)',
+    section: 'black-e4',
+    side: 'b',
+    blurb: 'Take on d4 and hit e4 with ...Nf6: the Schmidt Variation, the Scotch Four Knights and both Scotch gambits.',
+    lines: [
+      {
+        id: 'bs-bd3', level: 'beginner',
+        group: 'Schmidt (4...Nf6)',
+        name: '5.Nxc6 bxc6 6.Bd3 d5',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nxc6 bxc6 6.Bd3 d5 7.exd5 cxd5 8.O-O Be7 9.Re1 O-O',
+        note: 'After the trade on c6, ...d5 at once frees your game. You get the centre pawn and an open b-file for your rook.'
+      },
+      {
+        id: 'bs-mieses', level: 'club',
+        group: 'Schmidt (4...Nf6)',
+        name: 'Mieses — 6.e5 Qe7',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nxc6 bxc6 6.e5 Qe7 7.Qe2 Nd5 8.c4 Ba6 9.b3 O-O-O',
+        note: 'The knight must move, so ...Qe7 pins the e5-pawn first. After ...Ba6 the c4-pawn is pinned to the queen, and you castle long and break with ...f6 or ...d6.'
+      },
+      {
+        id: 'bs-four-knights', level: 'club',
+        group: 'Scotch Four Knights (4...Nf6 5.Nc3)',
+        name: '5.Nc3 Bb4 — the main line',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Nxd4 Nf6 5.Nc3 Bb4 6.Nxc6 bxc6 7.Bd3 d5 8.exd5 cxd5 9.O-O O-O 10.Bg5 c6',
+        note: 'Pin the c3-knight and hit e4. ...d5 and ...c6 give you a solid centre; the Bg5 pin is uncomfortable but ...h6 or ...Be7 handle it.'
+      },
+      {
+        id: 'bs-scotch-gambit', level: 'club',
+        group: 'Scotch Gambit (4.Bc4)',
+        name: '4.Bc4 Bc5 — into the Italian',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Bc4 Bc5 5.c3 Nf6 6.e5 d5 7.Bb5 Ne4 8.cxd4 Bb4+',
+        note: 'This transposes to your Italian lines — the same counter-attack with ...d5, ...Ne4 and ...Bb4+ works perfectly.'
+      },
+      {
+        id: 'bs-goring', level: 'advanced',
+        group: 'Göring Gambit (4.c3)',
+        name: '4.c3 d5 — decline in style',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.c3 d5 5.exd5 Qxd5 6.cxd4 Bg4 7.Be2 Bb4+ 8.Nc3',
+        note: 'Don\'t take a second pawn. ...d5 hits back in the centre, ...Bg4 pressures d4 and ...Bb4+ develops with check. Black has easy equality.'
+      }
+    ]
+  },
+  {
+    id: 'b-vs-e4-others',
+    name: 'vs other 1.e4 e5 lines',
+    section: 'black-e4',
+    side: 'b',
+    blurb: 'Early queen attacks, the Four Knights, Ponziani, Vienna, King\'s Gambit, Bishop\'s Opening and Centre Game.',
+    lines: [
+      {
+        id: 'bo-scholars', level: 'beginner',
+        group: 'Early queen attack (2.Qh5)',
+        name: 'Stopping Scholar\'s Mate',
+        pgn: '1.e4 e5 2.Qh5 Nc6 3.Bc4 g6 4.Qf3 Nf6 5.Ne2 Bg7 6.Nbc3 d6',
+        note: 'Protect e5 with ...Nc6, block the queen with ...g6, then block f7 again with ...Nf6. The early queen will be chased around and you will be ahead in development.'
+      },
+      {
+        id: 'bo-four-knights', level: 'beginner',
+        group: 'Four Knights (3.Nc3)',
+        name: 'Rubinstein — 4.Bb5 Nd4',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Nc3 Nf6 4.Bb5 Nd4 5.Nxd4 exd4 6.e5 dxc3 7.exf6 Qxf6 8.dxc3 Qe5+ 9.Qe2 Qxe2+ 10.Bxe2',
+        note: 'The active Rubinstein Defence: ...Nd4 sidesteps the pin and forces trades into a level ending. Easy to learn and very solid.'
+      },
+      {
+        id: 'bo-four-knights-d4', level: 'club',
+        group: 'Four Knights (3.Nc3)',
+        name: '4.d4 — Scotch Four Knights',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.Nc3 Nf6 4.d4 exd4 5.Nxd4 Bb4 6.Nxc6 bxc6 7.Bd3 d5',
+        note: 'This transposes to your Scotch Four Knights line. Same plan: pin, ...d5, castle.'
+      },
+      {
+        id: 'bo-ponziani', level: 'club',
+        group: 'Ponziani (3.c3)',
+        name: '3.c3 Nf6 4.d4 Nxe4',
+        pgn: '1.e4 e5 2.Nf3 Nc6 3.c3 Nf6 4.d4 Nxe4 5.d5 Ne7 6.Nxe5 Ng6 7.Nxg6 hxg6',
+        note: 'Counter-attack on e4 instead of defending. After the trades your rook is already on the half-open h-file and the position is fully equal.'
+      },
+      {
+        id: 'bo-centre-game', level: 'club',
+        group: 'Centre Game (2.d4)',
+        name: '2.d4 exd4 3.Qxd4 Nc6',
+        pgn: '1.e4 e5 2.d4 exd4 3.Qxd4 Nc6 4.Qe3 Nf6 5.Nc3 Bb4 6.Bd2 O-O 7.O-O-O Re8',
+        note: 'Develop with tempo on the queen. ...Re8 hits e4 straight away; White\'s early queen has cost time and you are comfortable.'
+      },
+      {
+        id: 'bo-vienna-f4', level: 'club',
+        group: 'Vienna (2.Nc3)',
+        name: '2...Nf6 3.f4 d5',
+        pgn: '1.e4 e5 2.Nc3 Nf6 3.f4 d5 4.fxe5 Nxe4 5.Nf3 Be7 6.d4 O-O 7.Bd3 f5',
+        note: 'The answer to a pawn break is a central counter-strike: ...d5, then ...Nxe4 and ...f5 hold a strong knight on e4.'
+      },
+      {
+        id: 'bo-vienna-bc4', level: 'club',
+        group: 'Vienna (2.Nc3)',
+        name: '3.Bc4 Nc6 4.d3 Na5',
+        pgn: '1.e4 e5 2.Nc3 Nf6 3.Bc4 Nc6 4.d3 Na5 5.Nge2 Nxc4 6.dxc4 Bc5',
+        note: 'Grab the bishop pair by trading off White\'s best piece. ...Bc5 develops actively and the game is balanced.'
+      },
+      {
+        id: 'bo-bishops', level: 'club',
+        group: 'Bishop\'s Opening (2.Bc4)',
+        name: '2.Bc4 Nf6 3.d3 c6',
+        pgn: '1.e4 e5 2.Bc4 Nf6 3.d3 c6 4.Nf3 d5 5.Bb3 Bd6 6.Nc3 Be6',
+        note: '...c6 and ...d5 build a broad centre and blunt the c4-bishop. ...Be6 develops and challenges the bishop on b3.'
+      },
+      {
+        id: 'bo-kings-gambit', level: 'advanced',
+        group: 'King\'s Gambit (2.f4)',
+        name: '2...exf4 3.Nf3 d5',
+        pgn: '1.e4 e5 2.f4 exf4 3.Nf3 d5 4.exd5 Nf6 5.Bc4 Nxd5 6.O-O Be7',
+        note: 'Take the pawn, then hit back with ...d5. The knight lands on d5 to guard f4, and ...Be7 and ...O-O leave Black solid and a pawn up for now.'
+      }
+    ]
+  },
+
+  // =========================================================================
+  // BLACK vs 1.d4 and others — Queen's Gambit Declined set-up
+  // =========================================================================
+  {
+    id: 'b-qgd',
+    name: 'Queen\'s Gambit Declined',
+    section: 'black-d4',
+    side: 'b',
+    blurb: '1...d5 and 2...e6: the classical, solid answer to the Queen\'s Gambit, with the Tartakower and the Exchange Variation.',
+    lines: [
+      {
+        id: 'qgd-basic', level: 'beginner',
+        group: 'Orthodox (4.Bg5)',
+        name: 'The classical set-up',
+        pgn: '1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 Be7 5.e3 O-O 6.Nf3 h6 7.Bh4 b6',
+        note: 'Hold d5 with ...e6 and ...Nf6, unpin with ...Be7, castle, and ...b6 prepares ...Bb7 for the light-squared bishop — the piece that is hardest to develop in the QGD.'
+      },
+      {
+        id: 'qgd-nf3', level: 'beginner',
+        group: '3.Nf3 / 4.Nf3',
+        name: '4.Nf3 Be7 5.Bf4 — the modern Bf4',
+        pgn: '1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3 Be7 5.Bf4 O-O 6.e3 c5 7.dxc5 Bxc5 8.Qc2 Nc6 9.a3 Qa5',
+        note: 'Against Bf4, hit back with ...c5. After the trade your bishop is active on c5 and ...Qa5 pins the c3-knight.'
+      },
+      {
+        id: 'qgd-tartakower', level: 'club',
+        group: 'Orthodox (4.Bg5)',
+        name: 'Tartakower — 8.cxd5',
+        pgn: '1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 Be7 5.e3 O-O 6.Nf3 h6 7.Bh4 b6 8.cxd5 Nxd5 9.Bxe7 Qxe7 10.Nxd5 exd5 11.Rc1 Be6',
+        note: 'The trades free your position. You get "hanging pawns" or an isolated pawn later, but your pieces are active and ...c5 is the key break.'
+      },
+      {
+        id: 'qgd-exchange', level: 'club',
+        group: 'Exchange Variation (4.cxd5)',
+        name: '4.cxd5 exd5 5.Bg5 — Carlsbad structure',
+        pgn: '1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.cxd5 exd5 5.Bg5 Be7 6.e3 O-O 7.Bd3 Nbd7 8.Qc2 Re8 9.Nge2 Nf8 10.O-O c6',
+        note: 'The Carlsbad structure: White plays for a minority attack with b4-b5, you play on the kingside with ...Nf8-g6 and ...Ne4. Learn this structure — it appears in many openings.'
+      },
+      {
+        id: 'qgd-catalan', level: 'club',
+        group: '3.Nf3 / 4.Nf3',
+        name: 'Catalan — 4.g3 dxc4',
+        pgn: '1.d4 d5 2.c4 e6 3.Nf3 Nf6 4.g3 Be7 5.Bg2 O-O 6.O-O dxc4 7.Qc2 a6 8.Qxc4 b5 9.Qc2 Bb7',
+        note: 'Take the c4-pawn, then use the time White spends winning it back to play ...a6, ...b5 and ...Bb7, blunting the strong g2-bishop.'
+      },
+      {
+        id: 'qgd-tartakower-deep', level: 'advanced',
+        group: 'Orthodox (4.Bg5)',
+        name: 'Tartakower — 12.Qa4 c5',
+        pgn: '1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 Be7 5.e3 O-O 6.Nf3 h6 7.Bh4 b6 8.cxd5 Nxd5 9.Bxe7 Qxe7 10.Nxd5 exd5 11.Rc1 Be6 12.Qa4 c5 13.Qa3 Rc8',
+        note: 'White pressures c5 with Qa4-a3; you hold with ...Rc8 and accept hanging pawns on c5 and d5. Active pieces compensate — a well-known, solid main line.'
+      }
+    ]
+  },
+  {
+    id: 'b-vs-d4-systems',
+    name: 'vs London, Colle & 1.Nf3/1.c4',
+    section: 'black-d4',
+    side: 'b',
+    blurb: 'The same ...d5, ...e6, ...Nf6 set-up against systems and flank openings, with ...c5 as the key break.',
+    lines: [
+      {
+        id: 'sys-london', level: 'beginner',
+        group: 'London System',
+        name: 'London — ...c5 and ...Bd6',
+        pgn: '1.d4 d5 2.Nf3 Nf6 3.Bf4 c5 4.e3 Nc6 5.Nbd2 e6 6.c3 Bd6 7.Bg3 O-O 8.Bd3 b6',
+        note: 'Against the London, ...c5 and ...Bd6 challenge White\'s favourite bishop. Castle, ...b6 and ...Bb7, and you have no problems at all.'
+      },
+      {
+        id: 'sys-colle', level: 'club',
+        group: 'Colle-Zukertort',
+        name: 'Colle — 4.Bd3 c5 5.b3',
+        pgn: '1.d4 d5 2.Nf3 Nf6 3.e3 e6 4.Bd3 c5 5.b3 Nc6 6.O-O Bd6 7.Bb2 O-O',
+        note: 'White aims for Ne5 and a kingside attack. Mirror the development, castle, and watch the b1-h7 diagonal — ...b6 and ...Bb7 contest the long diagonal.'
+      },
+      {
+        id: 'sys-english', level: 'club',
+        group: 'English (1.c4)',
+        name: '1.c4 e6 — a QGD set-up',
+        pgn: '1.c4 e6 2.Nf3 d5 3.g3 Nf6 4.Bg2 Be7 5.O-O O-O 6.b3 c5 7.Bb2 Nc6 8.e3 b6',
+        note: 'If White avoids d4, build a big centre with ...d5 and ...c5. ...b6 and ...Bb7 meet the double fianchetto.'
+      },
+      {
+        id: 'sys-kia', level: 'club',
+        group: 'Réti / KIA (1.Nf3)',
+        name: '1.Nf3 d5 2.g3 — King\'s Indian Attack',
+        pgn: '1.Nf3 d5 2.g3 Nf6 3.Bg2 e6 4.O-O Be7 5.d3 O-O 6.Nbd2 c5 7.e4 Nc6 8.Re1 b5',
+        note: 'Against the KIA, White attacks on the kingside after e5. You race on the queenside with ...b5, ...a5 and ...b4 — speed matters.'
+      },
+      {
+        id: 'sys-nf3-c4', level: 'advanced',
+        group: 'Réti / KIA (1.Nf3)',
+        name: '1.Nf3 d5 2.c4 e6 — transposition to QGD',
+        pgn: '1.Nf3 d5 2.c4 e6 3.d4 Nf6 4.Nc3 Be7 5.Bg5 h6 6.Bh4 O-O 7.e3 b6',
+        note: 'Different move order, same position: you are back in your Tartakower QGD. Knowing transpositions saves you a lot of learning.'
+      }
+    ]
+  }
+];
+
+// ===========================================================================
+// Repertoire loading / validation
+// ===========================================================================
+function parseRepertoires(source){
+  const parsed = [];
+  const invalid = [];
+  for (const rep of source){
+    const lines = [];
+    for (const lineDef of rep.lines){
+      const g = new Chess();
+      const tokens = lineDef.pgn.replace(/\d+\.(\.\.)?/g,' ').trim().split(/\s+/).filter(Boolean);
+      const moves = [];
+      let ok = true;
+      let failToken = null;
+      for (const tok of tokens){
+        const res = g.move(tok);
+        if (!res){ ok = false; failToken = tok; break; }
+        moves.push(res);
+      }
+      if (ok && moves.length){
+        lines.push(Object.assign({}, lineDef, { repId: rep.id, repName: rep.name, side: rep.side, level: lineDef.level || 'club', moves, startFen: new Chess().fen() }));
+      } else {
+        invalid.push(rep.name + ' → "' + lineDef.name + '"' + (failToken ? (' (failed at "' + failToken + '")') : ' (no moves parsed)'));
+      }
+    }
+    parsed.push({ id: rep.id, name: rep.name, side: rep.side, section: rep.section || (rep.side === 'w' ? 'white' : 'black-e4'), blurb: rep.blurb, lines });
+  }
+  return { repertoires: parsed, invalid };
+}
+
+const { repertoires: REPS, invalid: INVALID_LINES } = parseRepertoires(REPERTOIRES);
+
+// ===========================================================================
+// Spaced-repetition storage (localStorage, per browser)
+// ===========================================================================
+const STORAGE_KEY = 'eks_openings_progress_v1';
+const BOX_INTERVAL_DAYS = [0, 1, 3, 7, 16, 35]; // index = box number 0..5
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e){ return {}; }
+}
+function saveProgress(data){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){ /* storage unavailable */ }
+}
+let PROGRESS = loadProgress();
+
+// ---- Dashboard preferences (level, section, preview) ----
+const PREFS_KEY = 'eks_openings_prefs_v1';
+const LEVELS = ['beginner', 'club', 'advanced'];
+const LEVEL_LABEL = { beginner: 'Beginner', club: 'Club', advanced: 'Advanced' };
+const SECTIONS = [
+  { id: 'white',    label: 'White · 1.e4',          blurb: 'Your White repertoire after 1.e4 — a choice of Scotch or Italian against 1...e5, plus a system against every other defence.' },
+  { id: 'black-e4', label: 'Black vs 1.e4',         blurb: '1...e5 against everything: the Closed Ruy Lopez, the Italian with 3...Bc5, the Scotch and all the sidelines.' },
+  { id: 'black-d4', label: 'Black vs 1.d4 & others', blurb: 'One set-up for everything else: ...d5, ...e6, ...Nf6 — the Queen\'s Gambit Declined, with ...c5 against systems and flank openings.' }
+];
+let PREFS = { level: 'beginner', section: 'all', preview: true };
+try { PREFS = Object.assign(PREFS, JSON.parse(localStorage.getItem(PREFS_KEY) || '{}')); } catch(e){}
+function savePrefs(){ try { localStorage.setItem(PREFS_KEY, JSON.stringify(PREFS)); } catch(e){} }
+function levelAllowed(line){ return LEVELS.indexOf(line.level) <= LEVELS.indexOf(PREFS.level); }
+function visibleLines(rep){ return rep.lines.filter(levelAllowed); }
+
+function entryFor(repId, lineId){
+  return (PROGRESS[repId] && PROGRESS[repId][lineId]) || null;
+}
+function statusFor(entry){
+  if (!entry) return 'new';
+  if (new Date(entry.due) <= new Date()) return 'due';
+  return entry.box >= 4 ? 'mastered' : 'learning';
+}
+function gradeLine(repId, lineId, mistakes){
+  if (!PROGRESS[repId]) PROGRESS[repId] = {};
+  const prev = PROGRESS[repId][lineId] || { box: 0, reps: 0, lapses: 0 };
+  const box = mistakes === 0 ? Math.min(prev.box + 1, 5) : 0;
+  const due = new Date(Date.now() + BOX_INTERVAL_DAYS[box] * 86400000).toISOString();
+  const entry = { box, due, reps: prev.reps + 1, lapses: prev.lapses + (mistakes > 0 ? 1 : 0) };
+  PROGRESS[repId][lineId] = entry;
+  saveProgress(PROGRESS);
+  return entry;
+}
+
+// ===========================================================================
+// Dashboard rendering
+// ===========================================================================
+const dashboardView = document.getElementById('dashboardView');
+const trainingView = document.getElementById('trainingView');
+const repCardsEl = document.getElementById('repCards');
+const statusLine = document.getElementById('statusLine');
+const warnBanner = document.getElementById('warnBanner');
+
+if (INVALID_LINES.length){
+  warnBanner.style.display = 'block';
+  warnBanner.innerHTML = '⚠ ' + INVALID_LINES.length + ' line(s) could not be loaded and were skipped:<br>' +
+    INVALID_LINES.map(s => '&middot; ' + s).join('<br>');
+}
+
+function fmtDue(entry){
+  if (!entry) return 'New';
+  const d = new Date(entry.due);
+  const now = new Date();
+  if (d <= now) return 'Due now';
+  const days = Math.ceil((d - now) / 86400000);
+  return 'in ' + days + 'd';
+}
+
+function renderDashboard(){
+  repCardsEl.innerHTML = '';
+  let totalDue = 0, totalNew = 0, totalLines = 0, totalMastered = 0;
+  const allDueQueue = [];
+
+  // ---- toolbar: level, section, preview, review-all ----
+  const bar = document.createElement('div');
+  bar.className = 'toolbar';
+  bar.innerHTML =
+    '<div class="tb-group"><span class="tb-label">Level</span>' +
+      LEVELS.map(l => '<button class="chip' + (PREFS.level === l ? ' on' : '') + '" data-level="' + l + '">' + LEVEL_LABEL[l] + '</button>').join('') +
+    '</div>' +
+    '<div class="tb-group"><span class="tb-label">Show</span>' +
+      '<button class="chip' + (PREFS.section === 'all' ? ' on' : '') + '" data-section="all">Everything</button>' +
+      SECTIONS.map(sec => '<button class="chip' + (PREFS.section === sec.id ? ' on' : '') + '" data-section="' + sec.id + '">' + sec.label + '</button>').join('') +
+    '</div>' +
+    '<label class="tb-check"><input type="checkbox" id="previewToggle"' + (PREFS.preview ? ' checked' : '') + '> Show me new lines first</label>';
+  repCardsEl.appendChild(bar);
+  bar.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => { PREFS.level = b.dataset.level; savePrefs(); renderDashboard(); }));
+  bar.querySelectorAll('[data-section]').forEach(b => b.addEventListener('click', () => { PREFS.section = b.dataset.section; savePrefs(); renderDashboard(); }));
+  bar.querySelector('#previewToggle').addEventListener('change', e => { PREFS.preview = e.target.checked; savePrefs(); });
+
+  const levelNote = document.createElement('p');
+  levelNote.className = 'hint level-note';
+  levelNote.innerHTML = {
+    beginner: '<b>Beginner</b> — the key ideas and the traps to know, in short lines. Start here.',
+    club: '<b>Club</b> — adds the main lines a 1200–1900 player meets over the board.',
+    advanced: '<b>Advanced</b> — everything, including deeper main lines and sharp tries.'
+  }[PREFS.level];
+  repCardsEl.appendChild(levelNote);
+
+  const reviewWrap = document.createElement('div');
+  reviewWrap.className = 'review-all';
+  repCardsEl.appendChild(reviewWrap);
+
+  SECTIONS.forEach(sec => {
+    if (PREFS.section !== 'all' && PREFS.section !== sec.id) return;
+    const reps = REPS.filter(r => r.section === sec.id);
+    if (!reps.length) return;
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = '<h2>' + sec.label + '</h2><p class="hint">' + sec.blurb + '</p>';
+    repCardsEl.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'rep-grid';
+    repCardsEl.appendChild(grid);
+
+    reps.forEach(rep => {
+      const lines = visibleLines(rep);
+      const counts = { new: 0, due: 0, learning: 0, mastered: 0 };
+      lines.forEach(line => {
+        const entry = entryFor(rep.id, line.id);
+        const st = statusFor(entry);
+        counts[st]++;
+        if (st === 'due') allDueQueue.push({ line, due: entry.due });
+      });
+      totalDue += counts.due; totalNew += counts.new; totalLines += lines.length; totalMastered += counts.mastered;
+
+      const card = document.createElement('div');
+      card.className = 'rep-card';
+      const pct = lines.length ? Math.round(100 * counts.mastered / lines.length) : 0;
+
+      const top = document.createElement('div');
+      top.className = 'rep-card-top';
+      top.innerHTML =
+        '<div><span class="rep-side">' + (rep.side === 'w' ? 'White repertoire' : 'Black repertoire') + '</span>' +
+        '<h3>' + rep.name + '</h3>' +
+        '<p class="hint" style="margin:0;">' + (rep.blurb || '') + '</p></div>';
+      card.appendChild(top);
+
+      const stats = document.createElement('div');
+      stats.className = 'stat-row';
+      stats.innerHTML =
+        statPill(counts.due, 'Due', 'due') +
+        statPill(counts.new, 'New', '') +
+        statPill(counts.learning, 'Learning', '') +
+        statPill(counts.mastered, 'Mastered', 'mastered');
+      card.appendChild(stats);
+
+      const meter = document.createElement('div');
+      meter.className = 'meter';
+      meter.innerHTML = '<i style="width:' + pct + '%"></i>';
+      meter.title = pct + '% mastered';
+      card.appendChild(meter);
+
+      const actions = document.createElement('div');
+      actions.className = 'controls';
+      const startBtn = document.createElement('button');
+      startBtn.className = 'primary';
+      startBtn.textContent = counts.due ? 'Review ' + counts.due + ' due' + (counts.new ? ' + new' : '') : (counts.new ? 'Learn new lines' : 'Practise again');
+      startBtn.disabled = lines.length === 0;
+      startBtn.addEventListener('click', () => {
+        let q = buildQueue(rep);
+        if (!q.length) q = lines.slice().sort(() => Math.random() - 0.5).slice(0, 6); // nothing due: free practice
+        startSession(rep, q);
+      });
+      actions.appendChild(startBtn);
+      const toggle = document.createElement('button');
+      toggle.className = 'ghost';
+      toggle.textContent = 'Show ' + lines.length + ' line' + (lines.length === 1 ? '' : 's');
+      actions.appendChild(toggle);
+      card.appendChild(actions);
+
+      const table = document.createElement('div');
+      table.className = 'lines-table';
+      table.style.display = 'none';
+      table.innerHTML = '<div class="lines-head"><span>Line</span><span>Moves</span><span>Level</span><span>Status</span><span></span></div>';
+      lines.forEach(line => {
+        const entry = entryFor(rep.id, line.id);
+        const st = statusFor(entry);
+        const row = document.createElement('div');
+        row.className = 'line-row';
+        row.innerHTML =
+          '<span>' + line.name + '<span class="group">' + line.group + '</span></span>' +
+          '<span class="moves">' + line.pgn + '</span>' +
+          '<span><span class="badge lvl-' + line.level + '">' + LEVEL_LABEL[line.level] + '</span></span>' +
+          '<span class="badge ' + st + '">' + st + (st !== 'new' ? ' · ' + fmtDue(entry) : '') + '</span>';
+        const btn = document.createElement('button');
+        btn.textContent = 'Study';
+        btn.addEventListener('click', () => startSession(rep, [line]));
+        row.appendChild(btn);
+        table.appendChild(row);
+      });
+      toggle.addEventListener('click', () => {
+        const open = table.style.display === 'none';
+        table.style.display = open ? '' : 'none';
+        toggle.textContent = (open ? 'Hide ' : 'Show ') + lines.length + ' line' + (lines.length === 1 ? '' : 's');
+      });
+      card.appendChild(table);
+      grid.appendChild(card);
+    });
+  });
+
+  if (allDueQueue.length){
+    allDueQueue.sort((a,b) => new Date(a.due) - new Date(b.due));
+    const btn = document.createElement('button');
+    btn.className = 'primary';
+    btn.textContent = 'Review all ' + allDueQueue.length + ' due line' + (allDueQueue.length === 1 ? '' : 's');
+    btn.addEventListener('click', () => startSession(null, allDueQueue.map(d => d.line).slice(0, 30)));
+    reviewWrap.appendChild(btn);
+    const p = document.createElement('span');
+    p.className = 'hint';
+    p.textContent = 'Mixes every repertoire you can see, oldest first.';
+    reviewWrap.appendChild(p);
+  }
+
+  statusLine.innerHTML = '<b>' + totalDue + '</b> due · <b>' + totalNew + '</b> new · <b>' + totalMastered + '</b>/' + totalLines + ' mastered';
+}
+
+function statPill(n, label, extraClass){
+  return '<div class="stat-pill ' + extraClass + '"><span class="num">' + n + '</span><span class="lbl">' + label + '</span></div>';
+}
+
+function buildQueue(rep){
+  const due = [];
+  const fresh = [];
+  visibleLines(rep).forEach(line => {
+    const entry = entryFor(rep.id, line.id);
+    const st = statusFor(entry);
+    if (st === 'due') due.push({ line, due: entry.due });
+    else if (st === 'new') fresh.push(line);
+  });
+  due.sort((a,b) => new Date(a.due) - new Date(b.due));
+  // beginner lines first, and only a few new lines per session so they stick
+  fresh.sort((a,b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level));
+  return due.map(d => d.line).concat(fresh.slice(0, 4));
+}
+
+// ===========================================================================
+// Training runner
+// ===========================================================================
+const FILES = ['a','b','c','d','e','f','g','h'];
+const pieceUnicode = { p:'♟', n:'♞', b:'♝', r:'♜', q:'♛', k:'♚' };
+
+let session = null; // { rep, queue, index, stats:[] }
+let train = null;   // per-line state: { line, game, ply, mistakes, selected, legalTargets, hintSquares, locked, flipped }
+let dragState = null;        // {sourceSquare, color, type, moved, startX, startY, ghostEl}
+let suppressNextClick = false;
+
+const boardEl = document.getElementById('board');
+const feedbackBox = document.getElementById('feedbackBox');
+const moveStrip = document.getElementById('moveStrip');
+const progressLine = document.getElementById('progressLine');
+const trainLineName = document.getElementById('trainLineName');
+const trainLineGroup = document.getElementById('trainLineGroup');
+const trainRepSide = document.getElementById('trainRepSide');
+const lineNote = document.getElementById('lineNote');
+const summaryBox = document.getElementById('summaryBox');
+const trainingLineInfo = document.getElementById('trainingLineInfo');
+
+function startSession(rep, queue){
+  if (!queue.length){
+    feedbackFlash('info', 'Nothing to study here right now — nice work staying on top of it.');
+    return;
+  }
+  session = { rep, queue, index: 0, stats: [] };
+  dashboardView.classList.add('hidden');
+  trainingView.classList.add('active');
+  summaryBox.style.display = 'none';
+  trainingLineInfo.style.display = '';
+  document.querySelectorAll('#trainingView .controls button').forEach(b => b.disabled = false);
+  loadLine(session.queue[session.index]);
+}
+
+function endSession(){
+  session = null;
+  train = null;
+  trainingView.classList.remove('active');
+  dashboardView.classList.remove('hidden');
+  renderDashboard();
+}
+
+function loadLine(line){
+  train = {
+    line,
+    game: new Chess(),
+    ply: 0,
+    mistakes: 0,
+    selected: null,
+    legalTargets: [],
+    hintSquares: null,
+    locked: false,
+    flipped: line.side === 'b',
+    side: line.side
+  };
+  trainRepSide.textContent = (line.side === 'w' ? 'WHITE' : 'BLACK') + ' REPERTOIRE · ' + line.repName.toUpperCase() + ' · ' + LEVEL_LABEL[line.level].toUpperCase();
+  trainLineName.textContent = line.name;
+  trainLineGroup.textContent = line.group;
+  lineNote.textContent = line.note || '';
+  buildLabels();
+  renderBoard();
+  updateProgressLine();
+  updateMoveStrip();
+  if (PREFS.preview && !entryFor(line.repId, line.id)) { previewLine(); return; }
+  feedbackFlash('info', 'Your move as ' + (line.side === 'w' ? 'White' : 'Black') + '.');
+  maybeAutoAdvance();
+}
+
+// New lines: play the whole line through once, then reset and test.
+function previewLine(){
+  train.locked = true;
+  train.previewing = true;
+  const thisTrain = train;
+  feedbackFlash('info', 'New line — watch it once. You\'ll play it from memory straight after.');
+  const step = () => {
+    if (train !== thisTrain || !train.previewing) return;
+    if (train.ply >= train.line.moves.length){
+      setTimeout(() => {
+        if (train !== thisTrain || !train.previewing) return;
+        train.previewing = false;
+        train.game = new Chess();
+        train.ply = 0;
+        renderBoard(); updateProgressLine(); updateMoveStrip();
+        feedbackFlash('info', 'Your turn: play the line as ' + (train.side === 'w' ? 'White' : 'Black') + '.');
+        maybeAutoAdvance();
+      }, 1200);
+      return;
+    }
+    const mv = train.line.moves[train.ply];
+    train.game.move({ from: mv.from, to: mv.to, promotion: mv.promotion || undefined });
+    train.ply++;
+    renderBoard(); updateProgressLine(); updateMoveStrip(true);
+    setTimeout(step, 750);
+  };
+  setTimeout(step, 700);
+}
+
+function updateProgressLine(){
+  progressLine.textContent = 'Line ' + (session.index + 1) + ' of ' + session.queue.length +
+    ' · ' + train.ply + '/' + train.line.moves.length + ' plies played';
+}
+
+function updateMoveStrip(showAll){
+  const parts = [];
+  for (let i=0; i<train.line.moves.length; i++){
+    const mv = train.line.moves[i];
+    const num = Math.floor(i/2) + 1;
+    const prefix = (i % 2 === 0) ? (num + '.') : '';
+    const played = i < train.ply || showAll;
+    const cls = i === train.ply ? 'current' : '';
+    parts.push('<span class="' + cls + '">' + prefix + (played ? '<b>' + mv.san + '</b>' : (i===train.ply ? '?' : mv.san)) + '</span>');
+  }
+  moveStrip.innerHTML = parts.join(' ');
+}
+
+function feedbackFlash(kind, text){
+  feedbackBox.className = 'feedback ' + kind;
+  feedbackBox.textContent = text;
+}
+
+function currentMoveColor(){
+  return train.ply < train.line.moves.length ? train.line.moves[train.ply].color : null;
+}
+
+function maybeAutoAdvance(){
+  if (train.ply >= train.line.moves.length){
+    finishLine();
+    return;
+  }
+  const color = currentMoveColor();
+  if (color !== train.side){
+    // opponent's move — auto-play it after a short pause
+    train.locked = true;
+    const thisTrain = train;
+    setTimeout(() => {
+      if (train !== thisTrain) return;
+      const mv = train.line.moves[train.ply];
+      train.game.move({ from: mv.from, to: mv.to, promotion: mv.promotion || undefined });
+      train.ply++;
+      train.selected = null;
+      train.legalTargets = [];
+      train.hintSquares = null;
+      renderBoard();
+      updateProgressLine();
+      updateMoveStrip();
+      train.locked = false;
+      if (train.ply >= train.line.moves.length){ finishLine(); }
+      else { feedbackFlash('info', 'Your move.'); maybeAutoAdvance(); }
+    }, 550);
+  } else {
+    train.locked = false;
+  }
+}
+
+function finishLine(){
+  train.locked = true;
+  const entry = gradeLine(train.line.repId, train.line.id, train.mistakes);
+  session.stats.push({ line: train.line, mistakes: train.mistakes, entry });
+  feedbackFlash('done', train.mistakes === 0 ? 'Line complete — no mistakes! Next review ' + fmtDue(entry) + '.' : 'Line complete, with ' + train.mistakes + ' slip(s). Back into the box for tomorrow.');
+  const thisSession = session;
+  setTimeout(() => {
+    if (session !== thisSession) return; // user left or started another session
+    session.index++;
+    if (session.index < session.queue.length){
+      loadLine(session.queue[session.index]);
+    } else {
+      showSessionSummary();
+    }
+  }, 1500);
+}
+
+function showSessionSummary(){
+  trainingLineInfo.style.display = 'none';
+  progressLine.textContent = '';
+  moveStrip.innerHTML = '';
+  lineNote.textContent = '';
+  feedbackFlash('done', 'Session complete!');
+  summaryBox.style.display = 'flex';
+  summaryBox.innerHTML = '';
+  session.stats.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'summary-row';
+    row.innerHTML = '<span>' + s.line.name + '</span><span class="' + (s.mistakes===0?'ok':'lapse') + '">' +
+      (s.mistakes === 0 ? 'Clean' : s.mistakes + ' slip(s)') + '</span>';
+    summaryBox.appendChild(row);
+  });
+  const btn = document.createElement('button');
+  btn.className = 'primary';
+  btn.textContent = 'Back to dashboard';
+  btn.style.marginTop = '6px';
+  btn.addEventListener('click', endSession);
+  summaryBox.appendChild(btn);
+}
+
+// ---- Board rendering & interaction ----
+function buildLabels(){
+  const rankLabels = document.getElementById('rankLabels');
+  const fileLabels = document.getElementById('fileLabels');
+  rankLabels.innerHTML = '';
+  fileLabels.innerHTML = '';
+  const ranks = train.flipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
+  const files = train.flipped ? [...FILES].reverse() : FILES;
+  ranks.forEach(r => { const s = document.createElement('span'); s.textContent = r; rankLabels.appendChild(s); });
+  files.forEach(f => { const s = document.createElement('span'); s.textContent = f; fileLabels.appendChild(s); });
+}
+
+function lastMoveSquares(){
+  if (train.ply === 0) return null;
+  const mv = train.game.history({ verbose: true }).slice(-1)[0];
+  return mv ? { from: mv.from, to: mv.to } : null;
+}
+
+function renderBoard(){
+  boardEl.innerHTML = '';
+  const ranks = train.flipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
+  const files = train.flipped ? [...FILES].reverse() : FILES;
+  const lastMove = lastMoveSquares();
+
+  ranks.forEach(rank => {
+    files.forEach(file => {
+      const sq = file + rank;
+      const fileIdx = FILES.indexOf(file);
+      const isLight = (fileIdx + rank) % 2 === 0;
+      const div = document.createElement('div');
+      div.className = 'square ' + (isLight ? 'light' : 'dark');
+      div.dataset.square = sq;
+
+      if (train.selected === sq) div.classList.add('selected');
+      if (lastMove && (lastMove.from === sq || lastMove.to === sq)) div.classList.add('lastmove');
+      if (train.hintSquares && (train.hintSquares.from === sq || train.hintSquares.to === sq)) div.classList.add('hint-square');
+
+      const targetInfo = train.legalTargets.find(t => t.to === sq);
+      if (targetInfo) div.classList.add(targetInfo.captured ? 'legal-capture' : 'legal-move');
+
+      const piece = train.game.get(sq);
+      if (piece){
+        const span = document.createElement('span');
+        span.className = 'piece ' + (piece.color === 'w' ? 'white-piece' : 'black-piece');
+        span.textContent = pieceUnicode[piece.type];
+        if (dragState && dragState.moved && dragState.sourceSquare === sq){
+          span.classList.add('piece-dragging');
+        }
+        div.appendChild(span);
+      }
+
+      div.addEventListener('click', () => {
+        if (suppressNextClick){ suppressNextClick = false; return; }
+        onSquareClick(sq);
+      });
+      div.addEventListener('pointerdown', (e) => onSquarePointerDown(e, sq));
+      boardEl.appendChild(div);
+    });
+  });
+}
+
+function onSquareClick(sq){
+  if (!train || train.locked) return;
+  if (train.ply >= train.line.moves.length) return;
+  if (currentMoveColor() !== train.side) return;
+
+  if (train.selected){
+    const target = train.legalTargets.find(t => t.to === sq);
+    if (target){ attemptMove(train.selected, sq); return; }
+    const piece = train.game.get(sq);
+    if (piece && piece.color === train.game.turn()){ selectSquare(sq); }
+    else { train.selected = null; train.legalTargets = []; renderBoard(); }
+    return;
+  }
+  const piece = train.game.get(sq);
+  if (piece && piece.color === train.game.turn()){ selectSquare(sq); }
+}
+
+function selectSquare(sq){
+  train.selected = sq;
+  const moves = train.game.moves({ square: sq, verbose: true });
+  train.legalTargets = moves.map(m => ({ to: m.to, captured: !!m.captured || m.flags.indexOf('e') !== -1 }));
+  renderBoard();
+}
+
+function attemptMove(from, to){
+  const candidates = train.game.moves({ square: from, verbose: true });
+  const candidate = candidates.find(m => m.to === to) || null;
+  const expected = train.line.moves[train.ply];
+  const expectedSan = expected.san.replace(/[+#]+$/,'');
+  const candidateSan = candidate ? candidate.san.replace(/[+#]+$/,'') : null;
+
+  if (candidate && candidateSan === expectedSan){
+    train.game.move({ from, to, promotion: candidate.promotion || undefined });
+    train.ply++;
+    train.selected = null;
+    train.legalTargets = [];
+    train.hintSquares = null;
+    renderBoard();
+    updateProgressLine();
+    updateMoveStrip();
+    feedbackFlash('correct', 'Correct — ' + expectedSan + '.');
+    maybeAutoAdvance();
+  } else {
+    train.mistakes++;
+    train.selected = null;
+    train.legalTargets = [];
+    renderBoard();
+    if (train.mistakes >= 2){
+      revealHint();
+      feedbackFlash('wrong', 'Not quite. The move is highlighted — play it to continue.');
+    } else {
+      feedbackFlash('wrong', 'Not quite — try again.');
+    }
+  }
+}
+
+function revealHint(){
+  const expected = train.line.moves[train.ply];
+  train.hintSquares = { from: expected.from, to: expected.to };
+  renderBoard();
+}
+
+// ---- Drag & drop (mirrors the Analysis Board's pointer-drag interaction) ----
+function onSquarePointerDown(e, sq){
+  if (!train || train.locked) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const piece = train.game.get(sq);
+  if (!piece) return;
+  if (piece.color !== train.game.turn()) return;
+  if (currentMoveColor() !== train.side) return;
+  dragState = { sourceSquare: sq, color: piece.color, type: piece.type, moved: false, startX: e.clientX, startY: e.clientY, ghostEl: null };
+}
+
+function createGhost(state){
+  const el = document.createElement('div');
+  el.className = 'drag-ghost piece ' + (state.color === 'w' ? 'white-piece' : 'black-piece');
+  el.textContent = pieceUnicode[state.type];
+  document.body.appendChild(el);
+  state.ghostEl = el;
+}
+
+function positionGhost(state, x, y){
+  if (state.ghostEl){ state.ghostEl.style.left = x + 'px'; state.ghostEl.style.top = y + 'px'; }
+}
+
+function destroyGhost(state){
+  if (state && state.ghostEl && state.ghostEl.parentNode){
+    state.ghostEl.parentNode.removeChild(state.ghostEl);
+  }
+}
+
+function onGlobalPointerMove(e){
+  if (!dragState) return;
+  const dx = e.clientX - dragState.startX, dy = e.clientY - dragState.startY;
+  if (!dragState.moved){
+    if (Math.hypot(dx,dy) < 4) return;
+    dragState.moved = true;
+    createGhost(dragState);
+    selectSquare(dragState.sourceSquare);
+  }
+  positionGhost(dragState, e.clientX, e.clientY);
+}
+
+function onGlobalPointerUp(e){
+  if (!dragState) return;
+  const state = dragState;
+  const wasMoved = state.moved;
+  destroyGhost(state);
+  dragState = null;
+  if (!wasMoved) return;
+  suppressNextClick = true;
+  const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+  const squareEl = targetEl ? targetEl.closest('.square') : null;
+  const targetSq = squareEl ? squareEl.dataset.square : null;
+  handleDrop(state, targetSq);
+}
+
+function handleDrop(state, targetSq){
+  if (targetSq && targetSq !== state.sourceSquare){
+    attemptMove(state.sourceSquare, targetSq);
+  } else {
+    train.selected = null;
+    train.legalTargets = [];
+    renderBoard();
+  }
+}
+
+document.addEventListener('pointermove', onGlobalPointerMove);
+document.addEventListener('pointerup', onGlobalPointerUp);
+document.addEventListener('pointercancel', onGlobalPointerUp);
+
+document.getElementById('showAnswerBtn').addEventListener('click', () => {
+  if (!train || train.locked) return;
+  if (train.ply >= train.line.moves.length) return;
+  if (currentMoveColor() !== train.side) return;
+  train.mistakes++;
+  const mv = train.line.moves[train.ply];
+  train.game.move({ from: mv.from, to: mv.to, promotion: mv.promotion || undefined });
+  train.ply++;
+  train.selected = null;
+  train.legalTargets = [];
+  train.hintSquares = null;
+  renderBoard();
+  updateProgressLine();
+  updateMoveStrip();
+  feedbackFlash('wrong', 'Shown: ' + mv.san.replace(/[+#]+$/,'') + '.');
+  maybeAutoAdvance();
+});
+
+document.getElementById('flipBtn').addEventListener('click', () => {
+  if (!train) return;
+  train.flipped = !train.flipped;
+  buildLabels();
+  renderBoard();
+});
+
+document.getElementById('skipLineBtn').addEventListener('click', () => {
+  if (!session || !train) return;
+  train.previewing = false;
+  train.mistakes = Math.max(train.mistakes, 1);
+  train.ply = train.line.moves.length;
+  finishLine();
+});
+
+document.getElementById('exitSessionBtn').addEventListener('click', () => {
+  if (confirm('Exit this session? Progress on completed lines is already saved.')) { if (train) train.previewing = false; endSession(); }
+});
+
+// ===========================================================================
+renderDashboard();
+</script>
+</body>
+</html>

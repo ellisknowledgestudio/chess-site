@@ -1,0 +1,4 @@
+# server secrets and runtime data live outside public_html on Hostinger; never commit them
+coach-config.php
+coach-data/
+*.backup-*.html

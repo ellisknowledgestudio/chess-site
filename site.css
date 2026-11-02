@@ -1,0 +1,79 @@
+/* Ellis Knowledge Studio — Chess subdomain shared styles */
+:root{
+  --bg: #12140f;
+  --panel: #1c2018;
+  --panel-2: #232a1e;
+  --line: #333c2b;
+  --ivory: #efe7d2;
+  --muted: #8c9482;
+  --gold: #c9a24b;
+  --gold-dim: #8a723b;
+  --felt-dark: #5f6f4f;
+  --felt-light: #ede4cd;
+}
+
+.site-nav{
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px 24px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.site-nav .brand{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size: 19px;
+  color: var(--felt-light);
+  text-decoration:none;
+  letter-spacing: -0.01em;
+}
+.site-nav .brand span{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-left: 10px;
+  font-weight:400;
+}
+.site-nav .links{
+  display:flex; align-items:center; gap: 22px;
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.site-nav .links a{
+  color: var(--muted);
+  text-decoration:none;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+.site-nav .links a:hover{ color: var(--ivory); }
+.site-nav .links a.current{ color: var(--gold); border-bottom-color: var(--gold); }
+.site-nav .links span.soon{
+  color: var(--muted);
+  opacity: 0.55;
+  cursor: default;
+}
+
+.site-footer{
+  text-align:center;
+  color: var(--muted);
+  font-size: 12px;
+  font-family:'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  padding: 36px 20px 28px;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+
+.checker-divider{
+  display:flex;
+  height: 10px;
+  width: 100%;
+}
+.checker-divider span{ flex:1; }
+.checker-divider span:nth-child(odd){ background: var(--felt-light); }
+.checker-divider span:nth-child(even){ background: var(--felt-dark); }

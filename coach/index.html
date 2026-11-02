@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Chess Coach | Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Play an AI chess coach at your level, then click any move to get a plain-English explanation of why it was good or bad. Free, in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
+<link rel="stylesheet" href="coach.css">
+<style>
+  :root {
+    --bg: #12140f; --fg: #efe7d2; --muted: #8c9482; --panel: #1c2018; --border: #333c2b;
+    --light: #ede4cd; --dark: #5f6f4f; --sel: rgba(201, 162, 75, .7); --last: rgba(201, 162, 75, .38);
+    --accent: #c9a24b; --accent-ink: #1a1a12;
+    color-scheme: dark;
+  }
+  body .ekc:not(.ekc-light) {
+    --ekc-bg: #1c2018; --ekc-fg: #efe7d2; --ekc-muted: #8c9482; --ekc-border: #333c2b;
+    --ekc-soft: #232a1e; --ekc-accent: #c9a24b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(ellipse at top left, rgba(201,162,75,0.07), transparent 55%), var(--bg); color: var(--fg); font: 15px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+  header.intro { max-width: 1100px; margin: 0 auto; padding: 40px 16px 6px; }
+  header.intro .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+  header.intro h1 { margin: 0; font-family: "Fraunces", serif; font-weight: 600; font-size: clamp(30px, 4.6vw, 44px); line-height: 1.08; letter-spacing: -.015em; color: var(--light); }
+  header.intro h1 small { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 2px 6px; vertical-align: 8px; margin-left: 8px; font-weight: 500; }
+  header.intro p { margin: 10px 0 0; color: var(--muted); max-width: 70ch; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 20px; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+  .board { touch-action: none; width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.15); user-select: none; }
+  .sq { position: relative; min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .sq.l { background: var(--light); } .sq.d { background: var(--dark); }
+  .sq.last::after, .sq.sel::after { content: ""; position: absolute; inset: 0; background: var(--last); }
+  .sq.sel::after { background: var(--sel); }
+  .sq.hint::before { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(0,0,0,.22); z-index: 2; }
+  .sq.hint.cap::before { width: 86%; height: 86%; background: transparent; border: 5px solid rgba(0,0,0,.2); }
+  .pc { position: relative; z-index: 1; font-size: min(9.4vw, 54px); line-height: 1; font-family: "Segoe UI Symbol", "DejaVu Sans", "Noto Sans Symbols 2", sans-serif; }
+  .pc.ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); }
+  .pc.w { color: #fff; -webkit-text-stroke: 1.6px #222; paint-order: stroke fill; }
+  .pc.b { color: #111; }
+  .coord { position: absolute; font-size: 11px; font-weight: 700; opacity: .8; z-index: 1; }
+  .coord.f { right: 3px; bottom: 1px; } .coord.r { left: 3px; top: 1px; }
+  .sq.l .coord { color: var(--dark); } .sq.d .coord { color: var(--light); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+  button, select, input { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; }
+  button { cursor: pointer; } button:disabled { opacity: .5; cursor: default; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .side { display: grid; gap: 16px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { margin: 0 0 8px; font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
+  .moves { display: flex; flex-wrap: wrap; gap: 2px 4px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; min-height: 24px; }
+  .moves .n { color: var(--muted); padding: 2px 0 2px 6px; }
+  .moves .m { padding: 2px 6px; border-radius: 5px; cursor: pointer; }
+  .moves .m.cur { background: var(--accent); color: var(--accent-ink); }
+  .moves .m.g-inaccuracy { color: #b7791f; } .moves .m.g-mistake { color: #d0671c; } .moves .m.g-blunder { color: #c0392b; font-weight: 700; }
+  .moves .m.cur.g-inaccuracy, .moves .m.cur.g-mistake, .moves .m.cur.g-blunder { color: var(--accent-ink); }
+  .moves .m.coach { font-style: italic; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .row input { flex: 1; min-width: 0; font-size: 13px; }
+  label { color: var(--muted); font-size: 14px; }
+  .status { color: var(--muted); font-size: 14px; margin-top: 8px; }
+</style>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "5cc90f3ffc2a4279aad9df861f599f5b"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="../index.html" class="brand">Ellis Knowledge Studio<span>Chess</span></a>
+  <div class="links">
+    <a href="../index.html">Home</a>
+    <a href="../analysis-board.html">Analysis Board</a>
+    <a href="../openings-trainer.html">Openings Trainer</a>
+    <a href="../checkmate-academy.html">Checkmate Academy</a>
+    <a href="../endgames/">Endgames</a>
+    <a href="./" class="current">AI Coach</a>
+      <a href="../junior-coaching.html">Junior Coaching</a>
+  </div>
+</nav>
+<div class="checker-divider"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<header class="intro">
+  <p class="eyebrow">Coaching tools</p>
+  <h1>AI Chess Coach <small>Beta</small></h1>
+  <p>Play the coach at your level, or move both sides yourself in analysis mode. Click any move in the list, then Explain, to hear why it was strong or weak in plain English.</p>
+</header>
+<main>
+  <section>
+    <div id="board" class="board" aria-label="Chess board"></div>
+    <div class="controls">
+      <button id="explain" class="primary" disabled>Explain this move</button>
+      <button id="undo">Undo</button>
+      <button id="flip">Flip</button>
+      <button id="reset">New game</button>
+    </div>
+    <div id="status" class="status" aria-live="polite"></div>
+  </section>
+  <section class="side">
+    <div class="card">
+      <h2>Play the coach</h2>
+      <div class="row">
+        <select id="color" aria-label="Your colour">
+          <option value="w">I play White</option>
+          <option value="b">I play Black</option>
+          <option value="r">Random colour</option>
+        </select>
+        <select id="strength" aria-label="Coach strength"></select>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="start" class="primary">Start game</button>
+        <button id="freeplay">Analysis mode</button>
+      </div>
+      <p id="mode" class="status" style="margin:10px 0 0"></p>
+      <p id="note" class="status" style="margin:4px 0 0;font-weight:600"></p>
+    </div>
+    <div id="coach"></div>
+    <div class="card">
+      <h2>Moves</h2>
+      <div id="moves" class="moves"></div>
+    </div>
+    <div class="card">
+      <h2>Settings</h2>
+      <div class="row" style="margin-bottom:10px">
+        <label for="level">Student level</label>
+        <select id="level">
+          <option value="beginner">Beginner (under 1200)</option>
+          <option value="club" selected>Club (1200–1800)</option>
+          <option value="advanced">Advanced (1800+)</option>
+        </select>
+      </div>
+      <div class="row">
+        <input id="fen" aria-label="Start from FEN" placeholder="Paste a FEN to start from a position">
+        <button id="loadfen">Load</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // If anything stops the board from starting, say so on the page instead of failing silently.
+  function showBoardError(msg) {
+    var s = document.getElementById('status');
+    if (s) { s.style.color = '#c0392b'; s.textContent = 'Board problem: ' + msg; }
+  }
+  if (location.protocol === 'file:') showBoardError('open this page from your website (https://…), not as a file on your computer.');
+  window.addEventListener('error', function (e) {
+    // Ignore files from other sites (fonts, analytics) that ad-blockers or networks may block.
+    var t = e.target, url = t && (t.src || t.href);
+    if (url && new URL(url, location.href).origin !== location.origin) return;
+    showBoardError(e.message || 'a file failed to load (check the vendor folder was uploaded).');
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) { showBoardError(String(e.reason && e.reason.message || e.reason)); });
+</script>
+<script type="module">
+import { Chess } from './vendor/chess.js';
+import { ChessCoach, EngineAnalyser, STRENGTHS } from './coach.js';
+
+const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟︎' };
+const $ = (id) => document.getElementById(id);
+
+let startFen = new Chess().fen();
+let history = [];     // [{san, fenBefore, from, to}]
+let cursor = 0;       // number of moves shown on the board
+let flipped = false;
+let selected = null;
+
+const coach = new ChessCoach({ container: $('coach'), level: $('level').value });
+
+// ---- play-the-coach state ----
+let mode = 'free';          // 'free' = move both sides, 'play' = student vs coach
+let coachColor = 'b';
+let thinking = false;
+let gameId = 0;             // bumps on reset/undo so a late engine reply is ignored
+let player = null;          // separate Stockfish used only for playing
+const SYM = { inaccuracy: '?!', mistake: '?', blunder: '??' };
+const NAMES = { inaccuracy: 'an inaccuracy', mistake: 'a mistake', blunder: 'a blunder' };
+
+for (const st of STRENGTHS) $('strength').insertAdjacentHTML('beforeend', `<option value="${st.id}">${st.label}</option>`);
+$('strength').value = '3';
+const strength = () => STRENGTHS.find((x) => x.id === +$('strength').value);
+
+function setMode(text) { $('mode').textContent = text; if (!text || /^You're|^Choose|^Analysis/.test(text)) $('note').textContent = ''; }
+
+async function coachReply() {
+  const g = game();
+  if (mode !== 'play' || g.isGameOver() || g.turn() !== coachColor || cursor !== history.length) return;
+  const id = gameId;
+  thinking = true; setMode('The coach is thinking…'); draw();
+  player ||= new EngineAnalyser();
+  const [uci] = await Promise.all([player.playMove(g.fen(), strength()), new Promise((r) => setTimeout(r, 350))]);
+  thinking = false;
+  if (id !== gameId || !uci) { draw(); return; }
+  const fenBefore = g.fen();
+  const m = g.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] || 'q' });
+  history.push({ san: m.san, fenBefore, from: m.from, to: m.to, by: 'coach' });
+  cursor = history.length;
+  setMode(g.isGameOver() ? gameOverText(g) : 'Your move.');
+  draw();
+}
+
+function gameOverText(g) {
+  if (g.isCheckmate()) return g.turn() === coachColor ? 'Checkmate – you beat the coach! 🎉' : 'Checkmate – the coach wins this time.';
+  return 'Draw.';
+}
+
+// Free engine grade of the student's move (no AI cost) → ?!/?/?? in the move list.
+async function gradeStudentMove(entry) {
+  try {
+    const a = await coach.grade(entry.fenBefore, entry.san);
+    if (!history.includes(entry)) return;
+    entry.grade = a.classification;
+    if (history.slice(-2).includes(entry)) {   // only comment on the latest move
+      $('note').textContent = SYM[a.classification]
+        ? `Coach: ${entry.san} was ${NAMES[a.classification]}. Click it in the move list, then Explain, to see why.` : '';
+    }
+    draw();
+  } catch (e) { console.warn(e); }
+}
+
+function game() {
+  const g = new Chess(startFen);
+  for (const h of history.slice(0, cursor)) g.move(h.san);
+  return g;
+}
+
+function draw() {
+  const g = game();
+  const last = history[cursor - 1];
+  const hints = selected ? g.moves({ square: selected, verbose: true }) : [];
+  const board = $('board');
+  board.innerHTML = '';
+  for (let i = 0; i < 64; i++) {
+    const r = flipped ? i >> 3 : 7 - (i >> 3);
+    const f = flipped ? 7 - (i & 7) : i & 7;
+    const sq = 'abcdefgh'[f] + (r + 1);
+    const el = document.createElement('div');
+    el.className = 'sq ' + ((r + f) % 2 ? 'l' : 'd');
+    el.dataset.sq = sq;
+    if (last && (sq === last.from || sq === last.to)) el.classList.add('last');
+    if (sq === selected) el.classList.add('sel');
+    const h = hints.find((m) => m.to === sq);
+    if (h) el.classList.add('hint', ...(h.captured ? ['cap'] : []));
+    const p = g.get(sq);
+    if (p) el.innerHTML = `<span class="pc ${p.color}">${GLYPH[p.type]}</span>`;
+    if ((i & 7) === 0) el.insertAdjacentHTML('beforeend', `<span class="coord r">${r + 1}</span>`);
+    if (i >> 3 === 7) el.insertAdjacentHTML('beforeend', `<span class="coord f">${'abcdefgh'[f]}</span>`);
+    board.appendChild(el);
+  }
+  drawMoves();
+  $('explain').disabled = cursor === 0 || coach.busy;
+  const cur = history[cursor - 1];
+  $('explain').textContent = cur ? `Explain ${cur.by === 'coach' ? 'coach’s ' : ''}${moveLabel(cursor - 1)}` : 'Explain this move';
+  $('status').textContent = g.isCheckmate() ? 'Checkmate.' : g.isDraw() ? 'Draw.' : g.inCheck() ? 'Check!' : '';
+}
+
+function moveLabel(i) {
+  const [, side, , , , num] = history[i].fenBefore.split(' ');
+  return `${num}${side === 'w' ? '.' : '…'} ${history[i].san}`;
+}
+
+function drawMoves() {
+  const el = $('moves');
+  el.innerHTML = '';
+  history.forEach((h, i) => {
+    const [, side, , , , num] = h.fenBefore.split(' ');
+    if (side === 'w' || i === 0) el.insertAdjacentHTML('beforeend', `<span class="n">${num}.${side === 'b' ? '…' : ''}</span>`);
+    const m = document.createElement('span');
+    m.className = 'm' + (i === cursor - 1 ? ' cur' : '') + (h.grade ? ' g-' + h.grade : '') + (h.by === 'coach' ? ' coach' : '');
+    m.textContent = h.san + (SYM[h.grade] || '');
+    if (h.by === 'coach') m.title = 'Coach move';
+    m.onclick = () => { cursor = i + 1; selected = null; draw(); coachReply(); };
+    el.appendChild(m);
+  });
+}
+
+// ---- moving pieces: drag-and-drop or tap/click a piece then its square ----
+function tryMove(from, to) {
+  const g = game();
+  const mv = g.moves({ square: from, verbose: true }).find((m) => m.to === to);
+  if (!mv) return false;
+  const fenBefore = g.fen();
+  const played = g.move({ from: mv.from, to: mv.to, promotion: 'q' });
+  history = history.slice(0, cursor);        // playing from an earlier move starts a new branch
+  const entry = { san: played.san, fenBefore, from: played.from, to: played.to, by: 'student' };
+  history.push(entry);
+  cursor = history.length;
+  selected = null;
+  gameId++;
+  draw();
+  if (mode === 'play') {
+    $('note').textContent = '';
+    gradeStudentMove(entry);
+    if (g.isGameOver()) setMode(gameOverText(g)); else coachReply();
+  }
+  return true;
+}
+
+const sqAt = (x, y) => document.elementFromPoint(x, y)?.closest('#board .sq')?.dataset.sq;
+let drag = null; // { from, ghost }
+
+$('board').addEventListener('pointerdown', (e) => {
+  const sq = e.target.closest('.sq')?.dataset.sq;
+  if (!sq || e.button > 0) return;
+  e.preventDefault();
+  if (mode === 'play' && (thinking || game().turn() === coachColor)) return;
+  if (selected && tryMove(selected, sq)) return;
+  const g = game();
+  const p = g.get(sq);
+  if (!p || p.color !== g.turn()) { selected = null; draw(); return; }
+  selected = sq;
+  draw();
+  const pc = document.querySelector(`[data-sq="${sq}"] .pc`);
+  const size = pc.parentElement.getBoundingClientRect().width;
+  const ghost = pc.cloneNode(true);
+  ghost.classList.add('ghost');
+  ghost.style.fontSize = getComputedStyle(pc).fontSize;
+  ghost.style.width = ghost.style.height = size + 'px';
+  document.body.appendChild(ghost);
+  pc.style.opacity = '.35';
+  drag = { from: sq, ghost, pc };
+  moveGhost(e);
+  $('board').setPointerCapture(e.pointerId);
+});
+
+function moveGhost(e) {
+  if (!drag) return;
+  const s = parseFloat(drag.ghost.style.width);
+  drag.ghost.style.transform = `translate(${e.clientX - s / 2}px, ${e.clientY - s / 2}px)`;
+}
+$('board').addEventListener('pointermove', moveGhost);
+
+function endDrag(e, cancelled) {
+  if (!drag) return;
+  const { from, ghost, pc } = drag;
+  drag = null;
+  ghost.remove();
+  pc.style.opacity = '';
+  const to = cancelled ? null : sqAt(e.clientX, e.clientY);
+  if (to && to !== from) tryMove(from, to); // dropped on the same square = stays selected for tap-to-move
+}
+$('board').addEventListener('pointerup', (e) => endDrag(e, false));
+$('board').addEventListener('pointercancel', (e) => endDrag(e, true));
+
+$('explain').onclick = async () => {
+  const h = history[cursor - 1];
+  if (!h) return;
+  $('explain').disabled = true;
+  await coach.explainMove(h.fenBefore, h.san, { mover: h.by === 'coach' ? 'coach' : 'student' });
+  draw();
+};
+$('undo').onclick = () => {
+  if (!cursor || thinking) return;
+  gameId++;
+  history = history.slice(0, cursor);
+  if (mode === 'play') {
+    // take back the coach's reply AND your move, so it's your turn again
+    while (history.length) { if (history.pop().by === 'student') break; }
+  } else history.pop();
+  cursor = history.length; selected = null;
+  if (mode === 'play') setMode(game().turn() === coachColor ? '' : 'Your move.');
+  draw();
+  coachReply();   // e.g. undoing back to the start when the coach plays White
+};
+$('flip').onclick = () => { flipped = !flipped; draw(); };
+$('reset').onclick = () => {
+  gameId++; startFen = new Chess().fen(); history = []; cursor = 0; selected = null;
+  if (mode === 'play') { setMode(coachColor === 'w' ? '' : 'Your move.'); }
+  draw(); coachReply();
+};
+$('start').onclick = () => {
+  const c = $('color').value;
+  const me = c === 'r' ? (Math.random() < 0.5 ? 'w' : 'b') : c;
+  mode = 'play'; coachColor = me === 'w' ? 'b' : 'w'; flipped = me === 'b';
+  gameId++; history = []; cursor = 0; selected = null; thinking = false;
+  coach._idle();
+  setMode(`You're ${me === 'w' ? 'White' : 'Black'} against the coach (${strength().label}). ${me === new Chess(startFen).turn() ? 'Your move.' : ''}`);
+  draw(); coachReply();
+};
+$('freeplay').onclick = () => { mode = 'free'; gameId++; thinking = false; setMode('Analysis mode: move both sides yourself.'); draw(); };
+$('level').onchange = (e) => coach.setLevel(e.target.value);
+$('loadfen').onclick = () => {
+  const fen = $('fen').value.trim();
+  try { new Chess(fen); } catch { $('status').textContent = 'That FEN is not valid.'; return; }
+  startFen = fen; history = []; cursor = 0; selected = null;
+  flipped = fen.split(' ')[1] === 'b';
+  draw();
+};
+
+setMode('Choose your colour and the coach’s strength, then Start game.');
+draw();
+</script>
+<div class="site-footer">ELLIS KNOWLEDGE STUDIO · CHESS</div>
+</body>
+</html>

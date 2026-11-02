@@ -1,0 +1,66 @@
+/* Ellis Knowledge Studio – AI Chess Coach panel. Override the --ekc-* variables to match your site. */
+.ekc {
+  --ekc-bg: #ffffff;
+  --ekc-fg: #1f2328;
+  --ekc-muted: #626a73;
+  --ekc-border: #dfe3e8;
+  --ekc-soft: #f4f6f8;
+  --ekc-accent: #2f6f4f;
+  --ekc-best: #2f7d4f;
+  --ekc-excellent: #3f8f5f;
+  --ekc-good: #5b8a6e;
+  --ekc-inaccuracy: #b7791f;
+  --ekc-mistake: #d0671c;
+  --ekc-blunder: #c0392b;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ekc-fg);
+  background: var(--ekc-bg);
+  border: 1px solid var(--ekc-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  min-height: 140px;
+}
+@media (prefers-color-scheme: dark) {
+  .ekc:not(.ekc-light) {
+    --ekc-bg: #1c2024; --ekc-fg: #e8eaed; --ekc-muted: #9aa2ab;
+    --ekc-border: #30363d; --ekc-soft: #242a30;
+  }
+}
+.ekc p { margin: 0 0 8px; }
+.ekc-empty { display: flex; gap: 12px; align-items: flex-start; color: var(--ekc-muted); }
+.ekc-icon { font-size: 28px; line-height: 1; color: var(--ekc-accent); }
+.ekc-status { display: flex; gap: 10px; align-items: center; color: var(--ekc-muted); padding: 8px 0; }
+.ekc-spin {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--ekc-border); border-top-color: var(--ekc-accent);
+  animation: ekc-spin .8s linear infinite;
+}
+@keyframes ekc-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ekc-spin { animation-duration: 3s; } }
+
+.ekc-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 10px; }
+.ekc-badge {
+  font-size: 12px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
+  color: #fff; padding: 3px 8px; border-radius: 999px; background: var(--ekc-good);
+}
+.ekc-best { background: var(--ekc-best); }
+.ekc-excellent { background: var(--ekc-excellent); }
+.ekc-inaccuracy { background: var(--ekc-inaccuracy); }
+.ekc-mistake { background: var(--ekc-mistake); }
+.ekc-blunder { background: var(--ekc-blunder); }
+.ekc-move { font-weight: 700; font-size: 17px; }
+.ekc-eval { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--ekc-muted); font-size: 13px; }
+
+.ekc-takeaway {
+  background: var(--ekc-soft); border-left: 3px solid var(--ekc-accent);
+  padding: 8px 10px; border-radius: 0 8px 8px 0; margin-top: 10px !important;
+}
+.ekc-warn { font-size: 13px; color: var(--ekc-inaccuracy); }
+.ekc-error { color: var(--ekc-blunder); font-weight: 600; margin-bottom: 8px; }
+
+.ekc-lines { margin: 12px 0 0; font-size: 13px; display: grid; gap: 4px; }
+.ekc-lines div { display: flex; gap: 8px; flex-wrap: wrap; }
+.ekc-lines dt { color: var(--ekc-muted); min-width: 110px; }
+.ekc-lines dd { margin: 0; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+.ekc-foot { margin-top: 10px; font-size: 12px; color: var(--ekc-muted); }
+.ekc-foot:empty { display: none; }

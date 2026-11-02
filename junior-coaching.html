@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior Chess Coaching — 12-Week Roadmap · Ellis Knowledge Studio</title>
+  <meta name="description" content="A structured 12-week junior chess curriculum: tactics and checkmate patterns, opening principles, simple endgames and blunder-checking. Private coaching for juniors in Bournemouth and online.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HEX75KWYM8');
+  </script>
+
+  <style>
+    :root { --bg:#12140f; --panel:#1c2018; --panel-2:#232a1e; --line:#333c2b; --ivory:#efe7d2; --muted:#8c9482; --gold:#c9a24b; --gold-dim:#8a723b; --felt-dark:#5f6f4f; --felt-light:#ede4cd; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body { background: radial-gradient(ellipse at top left, rgba(201,162,75,0.07), transparent 55%), var(--bg); color: var(--ivory); font-family: Inter, sans-serif; min-height: 100vh; line-height: 1.6; }
+
+    .site-nav { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px 24px; padding:18px 28px; border-bottom:1px solid var(--line); background:var(--bg); }
+    .site-nav .brand { font-family:Fraunces, serif; font-weight:600; font-size:19px; color:var(--felt-light); text-decoration:none; letter-spacing:-0.01em; }
+    .site-nav .brand span { font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-left:10px; font-weight:400; }
+    .site-nav .links { display:flex; align-items:center; flex-wrap:wrap; gap:10px 22px; font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; }
+    .site-nav .links a { color:var(--muted); text-decoration:none; padding-bottom:3px; border-bottom:2px solid transparent; transition:color .15s, border-color .15s; }
+    .site-nav .links a:hover { color:var(--ivory); }
+    .site-nav .links a.current { color:var(--gold); border-bottom-color:var(--gold); }
+
+    .checker-divider { display:flex; height:10px; width:100%; }
+    .checker-divider span { flex:1 1 0%; }
+    .checker-divider span:nth-child(2n+1) { background:var(--felt-light); }
+    .checker-divider span:nth-child(2n) { background:var(--felt-dark); }
+
+    .wrap { max-width:1080px; margin:0 auto; padding:0 28px; }
+    .hero { position:relative; max-width:1080px; margin:0 auto; padding:90px 28px 60px; overflow:hidden; }
+    .hero-watermark { position:absolute; top:-60px; right:-20px; font-size:420px; line-height:1; color:var(--gold); opacity:.06; pointer-events:none; user-select:none; }
+    .eyebrow { font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin:0 0 18px; }
+    h1 { font-family:Fraunces, serif; font-weight:600; font-size:clamp(34px, 5.4vw, 58px); line-height:1.08; letter-spacing:-0.015em; margin:0 0 22px; max-width:16ch; color:var(--felt-light); position:relative; }
+    .hero p { font-size:17px; line-height:1.65; color:var(--muted); max-width:52ch; margin:0 0 34px; position:relative; }
+    .cta { display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#1a1a12; font-weight:600; font-size:15px; padding:13px 22px; border-radius:6px; text-decoration:none; transition:background .15s, transform .1s; }
+    .cta:hover { background:#dab35c; }
+    .cta:active { transform:translateY(1px); }
+    .cta .arrow { transition:transform .15s; }
+    .cta:hover .arrow { transform:translateX(3px); }
+    .cta.ghost { background:transparent; color:var(--ivory); border:1px solid var(--line); }
+    .cta.ghost:hover { border-color:var(--gold-dim); background:transparent; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:12px; position:relative; }
+
+    .stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; padding:0 0 60px; }
+    .stat { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px 22px; }
+    .stat b { display:block; font-family:Fraunces, serif; font-size:34px; font-weight:600; color:var(--gold); line-height:1.1; }
+    .stat span { font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+
+    section.block { padding:56px 0 8px; }
+    .block-head { display:flex; align-items:baseline; gap:18px; flex-wrap:wrap; margin-bottom:8px; }
+    .block-num { font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); }
+    h2 { font-family:Fraunces, serif; font-weight:600; font-size:clamp(26px, 3.4vw, 36px); line-height:1.15; color:var(--felt-light); margin:0 0 10px; }
+    .block-goal { color:var(--muted); font-size:16px; max-width:60ch; margin:0 0 26px; }
+
+    .weeks { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
+    .week { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:22px 20px; display:flex; flex-direction:column; gap:12px; transition:border-color .15s, transform .12s; }
+    .week:hover { border-color:var(--gold-dim); transform:translateY(-2px); }
+    .week-label { font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; }
+    .week-label i { font-style:normal; color:var(--gold); font-size:22px; line-height:1; }
+    .week h3 { font-family:Fraunces, serif; font-weight:600; font-size:20px; line-height:1.2; color:var(--felt-light); margin:0; }
+    .week p { margin:0; font-size:14.5px; color:var(--ivory); opacity:.88; }
+    .puzzle { margin-top:auto; padding-top:12px; border-top:1px dashed var(--line); font-size:13px; color:var(--muted); }
+    .puzzle b { display:block; font-family:"JetBrains Mono", monospace; font-weight:400; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:3px; }
+
+    .boss { margin-top:18px; background:var(--panel-2); border:1px solid var(--gold-dim); border-left:4px solid var(--gold); border-radius:10px; padding:18px 22px; display:flex; gap:16px; align-items:flex-start; }
+    .boss .crown { font-size:30px; color:var(--gold); line-height:1; }
+    .boss b { font-family:"JetBrains Mono", monospace; font-weight:400; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:4px; }
+    .boss p { margin:0; font-size:15px; }
+
+    .two-col { display:grid; grid-template-columns:1.2fr 1fr; gap:24px; padding:70px 0 20px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:28px 26px; }
+    .panel h2 { font-size:26px; }
+    .rhythm { list-style:none; padding:0; margin:18px 0 0; display:flex; flex-direction:column; gap:12px; }
+    .rhythm li { display:grid; grid-template-columns:70px 1fr; gap:14px; align-items:start; }
+    .rhythm .mins { font-family:"JetBrains Mono", monospace; font-size:12px; color:#1a1a12; background:var(--gold); border-radius:4px; padding:4px 0; text-align:center; }
+    .rhythm strong { color:var(--felt-light); font-weight:600; }
+    .rhythm span { color:var(--muted); font-size:14.5px; }
+    .bar { display:flex; height:12px; border-radius:6px; overflow:hidden; margin-top:6px; }
+    .bar div:nth-child(odd) { background:var(--felt-light); }
+    .bar div:nth-child(even) { background:var(--felt-dark); }
+    .ticks { list-style:none; padding:0; margin:16px 0 0; display:flex; flex-direction:column; gap:12px; }
+    .ticks li { padding-left:28px; position:relative; font-size:15px; }
+    .ticks li::before { content:"♟"; position:absolute; left:0; top:-1px; color:var(--gold); }
+    .ticks + h2 { margin-top:28px; }
+
+    .closing { text-align:center; padding:70px 28px 40px; }
+    .closing h2 { font-size:clamp(28px, 4vw, 40px); }
+    .closing p { color:var(--muted); max-width:52ch; margin:0 auto 28px; }
+    .closing .cta-row { justify-content:center; }
+
+    .site-footer { text-align:center; color:var(--muted); font-size:12px; font-family:"JetBrains Mono", monospace; letter-spacing:.04em; padding:36px 20px 28px; border-top:1px solid var(--line); margin-top:40px; }
+
+    @media (max-width: 900px) {
+      .weeks { grid-template-columns:repeat(2, 1fr); }
+      .stats { grid-template-columns:repeat(2, 1fr); }
+      .two-col { grid-template-columns:1fr; }
+    }
+    @media (max-width: 560px) {
+      .site-nav { padding:16px; }
+      .wrap, .hero { padding-left:16px; padding-right:16px; }
+      .hero { padding-top:60px; }
+      .hero-watermark { font-size:260px; top:-30px; }
+      .weeks { grid-template-columns:1fr; }
+      .panel { padding:22px 18px; }
+    }
+    @media print {
+      body { background:#fff; color:#111; }
+      .site-nav, .checker-divider, .cta-row, .hero-watermark { display:none; }
+      .week, .panel, .stat, .boss { background:#fff; border-color:#bbb; color:#111; break-inside:avoid; }
+      h1, h2, .week h3, .rhythm strong { color:#111; }
+      .week p, .boss p { color:#222; opacity:1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a href="index.html" class="brand">Ellis Knowledge Studio<span>Chess</span></a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="analysis-board.html">Analysis Board</a>
+      <a href="openings-trainer.html">Openings Trainer</a>
+      <a href="checkmate-academy.html">Checkmate Academy</a>
+      <a href="endgames/">Endgames</a>
+      <a href="coach/">AI Coach</a>
+      <a href="junior-coaching.html" class="current">Junior Coaching</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-watermark" aria-hidden="true">♞</div>
+    <p class="eyebrow">Junior coaching · 12-week programme</p>
+    <h1>From knowing the moves to winning the game.</h1>
+    <p>A structured roadmap for juniors who know how the pieces move and want to start winning. Three 4-week blocks take players from spotting tactics to playing sound openings and finishing endgames, with a fun challenge at the end of every block.</p>
+    <div class="cta-row">
+      <a class="cta" href="https://ellisknowledgestudio.com/contact">Book a trial session <span class="arrow">→</span></a>
+      <a class="cta ghost" href="#block-1">See the roadmap</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>12</b><span>Weeks</span></div>
+      <div class="stat"><b>3</b><span>Skill blocks</span></div>
+      <div class="stat"><b>60</b><span>Minutes a session</span></div>
+      <div class="stat"><b>3</b><span>Boss-level challenges</span></div>
+    </div>
+  </div>
+
+  <div class="checker-divider" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="wrap">
+
+    <!-- BLOCK 1 -->
+    <section class="block" id="block-1">
+      <div class="block-head"><span class="block-num">Block 1 · Weeks 1–4</span></div>
+      <h2>Tactical Awakenings &amp; Checkmate Patterns</h2>
+      <p class="block-goal">Players learn to see forcing moves and finish games with checkmate instead of stalling.</p>
+      <div class="weeks">
+        <article class="week">
+          <div class="week-label">Week 1 <i>♟</i></div>
+          <h3>Checks, Captures, Threats!</h3>
+          <p>Scan every forcing move before choosing one: the CCT habit.</p>
+          <div class="puzzle"><b>Puzzle type</b>"Find all the checks" scan puzzles</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 2 <i>♞</i></div>
+          <h3>The Fork Awakens</h3>
+          <p>Knight and pawn forks: one piece attacking two at once.</p>
+          <div class="puzzle"><b>Puzzle type</b>Spot-the-fork puzzles, 1 move</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 3 <i>♝</i></div>
+          <h3>Pinned to the Wall</h3>
+          <p>Pins and skewers along files, ranks and diagonals.</p>
+          <div class="puzzle"><b>Puzzle type</b>Win-material puzzles, 1–2 moves</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 4 <i>♚</i></div>
+          <h3>Checkmate Bootcamp</h3>
+          <p>Back-rank mate, queen-and-king mate and the rook "ladder" mate.</p>
+          <div class="puzzle"><b>Puzzle type</b>Mate-in-1 and mate-in-2</div>
+        </article>
+      </div>
+      <div class="boss">
+        <div class="crown" aria-hidden="true">♛</div>
+        <div><b>Boss level</b><p>The <strong>Tactics Gauntlet</strong>: 10 puzzles mixing all four themes. Score 7/10 or more to earn a certificate.</p></div>
+      </div>
+    </section>
+
+    <!-- BLOCK 2 -->
+    <section class="block" id="block-2">
+      <div class="block-head"><span class="block-num">Block 2 · Weeks 5–8</span></div>
+      <h2>Opening Principles &amp; Piece Activity</h2>
+      <p class="block-goal">Players start every game with a plan: pieces out quickly, centre controlled, king safe.</p>
+      <div class="weeks">
+        <article class="week">
+          <div class="week-label">Week 5 <i>♟</i></div>
+          <h3>Race to the Centre</h3>
+          <p>Control the centre with pawns (e4, d4) and pieces.</p>
+          <div class="puzzle"><b>Puzzle type</b>"Best first move" choice puzzles</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 6 <i>♞</i></div>
+          <h3>Wake Up Your Army</h3>
+          <p>Develop knights and bishops before moving any piece twice.</p>
+          <div class="puzzle"><b>Puzzle type</b>"Which move develops?" puzzles</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 7 <i>♜</i></div>
+          <h3>Castle Quest</h3>
+          <p>Castle early and keep the queen at home until the army is ready.</p>
+          <div class="puzzle"><b>Puzzle type</b>Punish-the-early-queen puzzles</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 8 <i>♛</i></div>
+          <h3>Opening Traps &amp; Tricks</h3>
+          <p>Recognise and avoid traps like Scholar's Mate, Légal's Mate and Fried Liver ideas.</p>
+          <div class="puzzle"><b>Puzzle type</b>Trap or safe? Defend-the-trap puzzles</div>
+        </article>
+      </div>
+      <div class="boss">
+        <div class="crown" aria-hidden="true">♛</div>
+        <div><b>Boss level</b><p><strong>Ten Moves to Glory</strong>: each player plays the first 10 moves against the coach, scoring points for development, castling and centre control.</p></div>
+      </div>
+    </section>
+
+    <!-- BLOCK 3 -->
+    <section class="block" id="block-3">
+      <div class="block-head"><span class="block-num">Block 3 · Weeks 9–12</span></div>
+      <h2>Simple Endgames &amp; Avoiding Blunders</h2>
+      <p class="block-goal">Players turn winning positions into wins and stop giving pieces away.</p>
+      <div class="weeks">
+        <article class="week">
+          <div class="week-label">Week 9 <i>♟</i></div>
+          <h3>Pawn Power-Up</h3>
+          <p>King and pawn vs king: the opposition and the "square of the pawn".</p>
+          <div class="puzzle"><b>Puzzle type</b>Can-the-king-catch-it? race puzzles</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 10 <i>♜</i></div>
+          <h3>Rook Rescue Mission</h3>
+          <p>Rooks behind passed pawns, and cutting off the enemy king.</p>
+          <div class="puzzle"><b>Puzzle type</b>Play-it-out positions vs coach or partner</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 11 <i>♝</i></div>
+          <h3>The Blunder Detective</h3>
+          <p>Before every move: what does their last move threaten, and is my piece safe?</p>
+          <div class="puzzle"><b>Puzzle type</b>Find-the-blunder game positions</div>
+        </article>
+        <article class="week">
+          <div class="week-label">Week 12 <i>♚</i></div>
+          <h3>Grandmaster Graduation</h3>
+          <p>Tactics, openings, endgames and blunder-checking, all together.</p>
+          <div class="puzzle"><b>Puzzle type</b>Mixed-theme puzzle rush + tournament</div>
+        </article>
+      </div>
+      <div class="boss">
+        <div class="crown" aria-hidden="true">♛</div>
+        <div><b>Boss level</b><p>A <strong>graduation tournament</strong>. Parents are invited to watch the final round and certificates are presented.</p></div>
+      </div>
+    </section>
+
+    <div class="two-col">
+      <div class="panel">
+        <p class="eyebrow">Every session</p>
+        <h2>The same 60-minute rhythm</h2>
+        <div class="bar" aria-hidden="true">
+          <div style="flex:10"></div><div style="flex:15"></div><div style="flex:15"></div><div style="flex:15"></div><div style="flex:5"></div>
+        </div>
+        <ul class="rhythm">
+          <li><div class="mins">10 min</div><div><strong>Warm-up.</strong> <span>A quick puzzle from last week's theme.</span></div></li>
+          <li><div class="mins">15 min</div><div><strong>Mini-lesson.</strong> <span>Today's idea on the demo board, with players guessing moves.</span></div></li>
+          <li><div class="mins">15 min</div><div><strong>Guided puzzles.</strong> <span>Solved in pairs, then shared with the group.</span></div></li>
+          <li><div class="mins">15 min</div><div><strong>Themed game.</strong> <span>A game that rewards today's idea, like bonus points for a fork.</span></div></li>
+          <li><div class="mins">5 min</div><div><strong>Reflection.</strong> <span>Each player names one thing they learned.</span></div></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <p class="eyebrow">For parents</p>
+        <h2>Tracking progress</h2>
+        <ul class="ticks">
+          <li>A puzzle score recorded every week, so improvement is visible.</li>
+          <li>A short progress note at the end of each block.</li>
+          <li>Optional online rating on Lichess or Chess.com between sessions.</li>
+        </ul>
+        <h2>How you can help</h2>
+        <ul class="ticks">
+          <li>Encourage 10 minutes of puzzles, 3–4 times a week.</li>
+          <li>Ask "What tactic did you learn today?" rather than "Did you win?"</li>
+          <li>Play a friendly game at home and let your child explain their moves.</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="closing">
+      <p class="eyebrow">Ready to start?</p>
+      <h2>Any block is a starting point.</h2>
+      <p>Each block stands on its own, so new players can join at week 1, 5 or 9. Book a trial session to find the right starting block for your child.</p>
+      <div class="cta-row">
+        <a class="cta" href="https://ellisknowledgestudio.com/contact">Book a trial session <span class="arrow">→</span></a>
+        <a class="cta ghost" href="javascript:window.print()">Print this roadmap</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">ELLIS KNOWLEDGE STUDIO · CHESS</footer>
+</body>
+</html>

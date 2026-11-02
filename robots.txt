@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /coach/demo/
+Disallow: /coach/api/
+Sitemap: https://chess.ellisknowledgestudio.com/sitemap.xml

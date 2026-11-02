@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italian Game — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn the Italian Game as White: key ideas, pawn structures and plans, a move-by-move line trainer for the Giuoco Piano and Two Knights, traps to know and a quick quiz. Free, in your browser.">
+<link rel="canonical" href="https://chess.ellisknowledgestudio.com/openings/italian-game/">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---- Palette: swap these to match the rest of the chess site ---- */
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffdf8;
+  --ink: #1f2328;
+  --muted: #5d6470;
+  --line: #e2d9c8;
+  --accent: #8a5a2b;
+  --accent-ink: #ffffff;
+  --accent-soft: #f1e4d2;
+  --good: #2f7d4f;
+  --good-soft: #e3f2e8;
+  --bad: #b3402e;
+  --bad-soft: #f7e3df;
+  --sq-light: #efd9b4;
+  --sq-dark: #b58863;
+  --sq-sel: #f4e46a;
+  --sq-last: rgba(214, 196, 60, 0.55);
+  --sq-hint: rgba(47, 125, 79, 0.55);
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* Header and nav */
+.site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
+.logo { text-decoration: none; color: var(--ink); line-height: 1.15; }
+.logo strong { display: block; font-family: var(--font-head); font-size: 1.1rem; }
+.logo span { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.site-nav a { text-decoration: none; color: var(--muted); font-size: .92rem; font-weight: 500; }
+.site-nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero { padding: 40px 0 24px; }
+.eyebrow { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 8px; }
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.2; margin: 0 0 12px; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.6rem; margin-top: 8px; }
+h3 { font-size: 1.15rem; }
+.lead { font-size: 1.08rem; color: var(--muted); max-width: 720px; margin: 0 0 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tags li { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
+
+section { padding: 28px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card p { margin: 0 0 8px; }
+.card ul { margin: 0; padding-left: 20px; }
+.moves-inline { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+/* Board */
+.board-shell { width: 100%; max-width: 480px; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; aspect-ratio: 1 / 1; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; user-select: none; }
+.sq { position: relative; border: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 8.2vw, 2.6rem); line-height: 1; cursor: pointer; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.sq.light { background: var(--sq-light); }
+.sq.dark { background: var(--sq-dark); }
+.sq.last::before { content: ""; position: absolute; inset: 0; background: var(--sq-last); }
+.sq.sel::before { content: ""; position: absolute; inset: 0; background: var(--sq-sel); opacity: .8; }
+.sq.hint::before { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 4px var(--sq-hint); background: rgba(47,125,79,.18); }
+.sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(31,35,40,.28); }
+.sq.target.occ::after { width: 86%; height: 86%; background: transparent; border: 4px solid rgba(31,35,40,.3); }
+.sq .pc { position: relative; z-index: 1; }
+.sq .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.sq .pc.b { color: #111; }
+.sq .co { position: absolute; z-index: 1; font-family: var(--font-body); font-size: .62rem; font-weight: 600; pointer-events: none; }
+.sq .co.f { right: 3px; bottom: 1px; }
+.sq .co.r { left: 3px; top: 1px; }
+.sq.light .co { color: var(--sq-dark); }
+.sq.dark .co { color: var(--sq-light); }
+.board { touch-action: none; }
+.drag-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); line-height: 1; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.drag-ghost .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.drag-ghost .pc.b { color: #111; }
+
+/* Trainer layout */
+.tool { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 24px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.panel h3 { margin-bottom: 6px; }
+.line-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.btn { font: inherit; font-size: .92rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px 14px; cursor: pointer; min-height: 40px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.btn.done::after { content: " \2713"; color: var(--good); }
+.btn:disabled { opacity: .5; cursor: default; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.feedback { border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: var(--accent-soft); min-height: 48px; }
+.feedback.good { background: var(--good-soft); color: var(--good); }
+.feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.movelist { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--bg); border-radius: 8px; padding: 10px 12px; min-height: 44px; word-wrap: break-word; }
+.movelist .cur { background: var(--sq-sel); border-radius: 4px; padding: 0 2px; }
+.small { font-size: .88rem; color: var(--muted); }
+.score { font-weight: 600; }
+
+/* Traps */
+.trap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+.trap .btn { margin-top: 6px; }
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links a { display: inline-block; text-decoration: none; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+.links a.alt { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); }
+
+.site-footer { border-top: 1px solid var(--line); padding: 24px 0 40px; margin-top: 24px; font-size: .78rem; letter-spacing: .14em; color: var(--muted); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+@media (max-width: 820px) {
+  .tool { grid-template-columns: 1fr; padding: 14px; }
+  .board-shell { margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../../index.html" aria-label="Ellis Knowledge Studio Chess home"><strong>Ellis Knowledge Studio</strong><span>Chess</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../analysis-board.html">Analysis Board</a></li>
+        <li><a href="../../openings-trainer.html">Openings Trainer</a></li>
+        <li><a href="../../checkmate-academy.html">Checkmate Academy</a></li>
+        <li><a href="../../endgames/">Endgames</a></li>
+        <li><a href="../../coach/">AI Coach</a></li>
+        <li><a href="../../junior-coaching.html">Junior Coaching</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <div class="hero">
+      <p class="eyebrow">Opening guide · White repertoire</p>
+      <h1>The Italian Game</h1>
+      <p class="lead">1.e4 e5 2.Nf3 Nc6 3.Bc4 — the bishop points straight at f7 and White builds a slow, flexible centre. This page gives you a complete club-level system against every sensible Black third move, then drills it move by move.</p>
+      <ul class="tags" aria-label="Opening details">
+        <li>ECO C50–C55</li>
+        <li>For White</li>
+        <li>Club level</li>
+        <li>Giuoco Piano &amp; Two Knights</li>
+      </ul>
+    </div>
+
+    <section id="overview" aria-labelledby="overview-h">
+      <h2 id="overview-h">Overview</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Key ideas</h3>
+          <ul>
+            <li>Develop fast: knight, bishop, castle, then a rook to e1.</li>
+            <li>Play <span class="moves-inline">c3</span> and <span class="moves-inline">d3</span> first, keep <span class="moves-inline">d4</span> in reserve for the moment Black cannot meet it comfortably.</li>
+            <li>The c4 bishop ties Black to f7. Keep it — retreat to b3 or c2 rather than swap it cheaply.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Typical plans</h3>
+          <ul>
+            <li>The knight tour <span class="moves-inline">Nbd2–f1–g3</span> (or e3) brings an extra piece towards the kingside.</li>
+            <li><span class="moves-inline">a4</span> gains space on the queenside and stops ...b5 harassing the bishop.</li>
+            <li><span class="moves-inline">h3</span> takes away g4 from Black's bishop and knight before you start manoeuvring.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pawn structures</h3>
+          <ul>
+            <li><strong>Slow centre</strong> (c3 + d3 v ...d6): closed and manoeuvring; the side that times d4 or ...d5 best usually takes over.</li>
+            <li><strong>Open centre</strong> (after d4 and exd4): quick piece play, open lines for your rooks and pressure on the e-file.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why the Italian?</h3>
+          <p>It is sound at every level, needs far less memorisation than the Ruy Lopez or Open Sicilians, and the plans repeat game after game — ideal if you want a reliable 1.e4 e5 weapon for league nights.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" aria-labelledby="trainer-h">
+      <h2 id="trainer-h">Line trainer</h2>
+      <p class="small">You play White. Click a piece, then its destination (or tab to a square and press Enter). Black replies automatically.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trainBoard" class="board" role="grid" aria-label="Line trainer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="lineName">Choose a line</h3>
+          <ul class="line-picker" id="linePicker" aria-label="Lines"></ul>
+          <p id="lineBlurb" class="small"></p>
+          <div id="trainFeedback" class="feedback" role="status" aria-live="polite">Pick a line to start.</div>
+          <div class="movelist" id="trainMoves" aria-label="Moves played"></div>
+          <div class="controls">
+            <button class="btn" id="hintBtn" type="button" aria-label="Show a hint for the next move">Hint</button>
+            <button class="btn" id="resetBtn" type="button" aria-label="Restart this line">Reset line</button>
+            <button class="btn" id="flipBtn" type="button" aria-label="Flip the board">Flip board</button>
+            <button class="btn primary" id="nextLineBtn" type="button" aria-label="Go to the next line">Next line</button>
+          </div>
+          <p class="small" id="trainStats"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="traps" aria-labelledby="traps-h">
+      <h2 id="traps-h">Traps to know</h2>
+      <p class="small">Two classic traps that arise straight out of this repertoire. Step through them on the board below.</p>
+      <div id="trapList"></div>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trapBoard" class="board" role="grid" aria-label="Trap viewer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="trapTitle">Choose a trap above</h3>
+          <div class="movelist" id="trapMoves" aria-label="Trap moves"></div>
+          <div id="trapNote" class="feedback" role="status" aria-live="polite">Use the buttons to step through the moves.</div>
+          <div class="controls">
+            <button class="btn" id="trapStart" type="button" aria-label="Go to start">&#9198; Start</button>
+            <button class="btn" id="trapBack" type="button" aria-label="Back one move">&#9664; Back</button>
+            <button class="btn" id="trapFwd" type="button" aria-label="Forward one move">Forward &#9654;</button>
+            <button class="btn" id="trapEnd" type="button" aria-label="Go to final position">End &#9197;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" aria-labelledby="quiz-h">
+      <h2 id="quiz-h">Quick quiz</h2>
+      <p class="small">One try per position. Play the move on the board.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="quizBoard" class="board" role="grid" aria-label="Quiz board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="quizTitle">Question 1</h3>
+          <p id="quizPrompt"></p>
+          <div id="quizFeedback" class="feedback" role="status" aria-live="polite">Your move.</div>
+          <p class="score" id="quizScore">Score: 0 / 0</p>
+          <div class="controls">
+            <button class="btn primary" id="quizNext" type="button" aria-label="Next question" disabled>Next question</button>
+            <button class="btn" id="quizRestart" type="button" aria-label="Restart the quiz">Restart quiz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" aria-labelledby="next-h">
+      <h2 id="next-h">Keep going</h2>
+      <p>Drill the lines with spaced repetition in the Openings Trainer, or set up any position from this page on the Analysis Board and check it with Stockfish.</p>
+      <div class="links">
+        <a href="../../openings-trainer.html">Openings Trainer →</a>
+        <a class="alt" href="../../analysis-board.html">Analysis Board →</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">ELLIS KNOWLEDGE STUDIO · CHESS · ITALIAN GAME</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var REPLY_DELAY = (typeof window.EKS_REPLY_DELAY === 'number') ? window.EKS_REPLY_DELAY : 450;
+  var FILES = 'abcdefgh';
+  var GLYPH = { w: { k: '♔', q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
+                b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' } };
+  var NAME = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+
+  /* ---------- Repertoire data (all lines checked with chess.js) ---------- */
+  var LINES = [
+    { id: 'pianissimo', name: 'Giuoco Piano: slow build-up',
+      blurb: '3...Bc5 4.c3 Nf6 5.d3 — the modern main line. Calm development, then a4, h3 and the knight heads for f1.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3 d6 O-O O-O Re1 a6 a4 Ba7 h3 h6 Nbd2 Re8 Nf1',
+      note: 'Typical set-up reached. Next comes Ng3 or Ne3, often Be3 to challenge the a7 bishop, and d4 when the moment is right.' },
+    { id: 'twoknights', name: 'Two Knights: 4.d3',
+      blurb: '3...Nf6 4.d3 — a quiet answer that keeps the e4 pawn safe and steers the game into Italian-style manoeuvring.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Be7 O-O O-O Re1 d6 c3 Na5 Bb5 a6 Ba4 b5 Bc2 c5 Nbd2',
+      note: 'When ...Na5 hits the bishop, Bb5–a4–c2 keeps it on the b1–h7 diagonal. Plans: Nf1–g3, h3 and d4 later.' },
+    { id: 'shilling', name: '3...Nd4 (Blackburne Shilling)',
+      blurb: 'Black offers the e5 pawn. Do not grab it — swap knights and use your lead in development.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 Nd4 Nxd4 exd4 c3 dxc3 Nxc3 d6 O-O Nf6 d4',
+      note: 'White has a broad centre and quick development. See the trap section for what happens after 4.Nxe5?' },
+    { id: 'hungarian', name: '3...Be7 (Hungarian Defence)',
+      blurb: 'A solid but passive reply. Strike in the centre at once with 4.d4.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 Be7 d4 exd4 Nxd4 d6 O-O Nf6 Nc3 O-O h3',
+      note: 'White has more space and freer pieces. Plans include f4, Be3 and a kingside build-up.' }
+  ];
+
+  var TRAPS = [
+    { id: 'shillingTrap', title: 'Blackburne Shilling trap (avoid 4.Nxe5?)',
+      text: 'After 3...Nd4 the e5 pawn looks free, but 4.Nxe5? Qg5! hits both the knight and g2. Greedy 5.Nxf7? loses to a smothered-style mate on f3.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Nxf7 Qxg2 Rf1 Qxe4+ Be2 Nf3#',
+      bad: 6,
+      notes: { 6: '4.Nxe5? — the mistake. 4.Nxd4 is the safe answer.', 7: '4...Qg5! attacks e5 and g2 at once.', 8: '5.Nxf7? forks queen and rook, but...', 9: '5...Qxg2 hits the rook.', 11: '6...Qxe4+ and the e-file opens.', 13: '7...Nf3# — checkmate. Lesson: answer 3...Nd4 with 4.Nxd4.' } },
+    { id: 'legalTrap', title: 'Légal’s trap (after 3...d6)',
+      text: 'If Black pins your knight with ...Bg4 and then keeps the pin with ...Bh5, the knight can jump into e5 anyway. Taking the queen walks into mate.',
+      moves: 'e4 e5 Nf3 Nc6 Bc4 d6 Nc3 Bg4 h3 Bh5 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#',
+      bad: 9,
+      notes: { 9: '5...Bh5? — keeps the pin but leaves e5 loose.', 10: '6.Nxe5! offers the queen.', 11: '6...Bxd1?? takes it. Black had to accept a pawn deficit with 6...Nxe5 or 6...dxe5.', 12: '7.Bxf7+ drives the king out.', 14: '8.Nd5# — three minor pieces deliver mate.' } }
+  ];
+
+  var QUIZ = [
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 Bc5', prompt: 'Black has played 3...Bc5. Which pawn move starts our slow-centre set-up?', accept: ['c3'],
+      explain: '4.c3 prepares d3 (or d4 later) and gives the bishop a retreat square on c2.' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 Nf6', prompt: 'The Two Knights: 3...Nf6 attacks e4. Play the repertoire move that defends it calmly.', accept: ['d3'],
+      explain: '4.d3 protects e4 and keeps the position in Italian territory.' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3 d6 O-O O-O Re1 a6', prompt: 'Black has played ...a6, hoping for ...b5. Gain queenside space first.', accept: ['a4'],
+      explain: '8.a4 stops ...b5 for now and gives the bishop a safe home on a2 if it is attacked.' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 Nd4', prompt: 'Black offers the e5 pawn with 3...Nd4. Play the safe, strong reply.', accept: ['Nxd4'],
+      explain: '4.Nxd4 exd4 and White develops with c3 or O-O. 4.Nxe5? runs into 4...Qg5!' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 d6 Nc3 Bg4 h3 Bh5', prompt: 'Black has kept the pin with 5...Bh5. Find the tactic.', accept: ['Nxe5'],
+      explain: '6.Nxe5! If 6...Bxd1?? 7.Bxf7+ Ke7 8.Nd5#. Black’s best is to give up a pawn.' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 d6 Nc3 Bg4 h3 Bh5 Nxe5 Bxd1 Bxf7+ Ke7', prompt: 'Black took the queen. Mate in one.', accept: ['Nd5#'],
+      explain: '8.Nd5# — the knight covers e7’s escape squares and the bishops do the rest.' },
+    { pre: 'e4 e5 Nf3 Nc6 Bc4 Be7', prompt: 'Against the passive 3...Be7, strike in the centre.', accept: ['d4'],
+      explain: '4.d4 grabs the centre; after 4...exd4 5.Nxd4 White has the freer game.' }
+  ];
+
+  function splitMoves(s) { return s ? s.split(' ') : []; }
+
+  /* ---------- Board component ---------- */
+  function Board(el, opts) {
+    this.el = el;
+    this.orientation = 'w';
+    this.game = null;
+    this.selected = null;
+    this.last = null;
+    this.hint = null;
+    this.interactive = false;
+    this.onMove = opts.onMove || null;
+    this.squares = {};
+    this.build();
+    this.initDrag();
+  }
+  Board.prototype.build = function () {
+    var self = this, r, f, sq, btn;
+    this.el.innerHTML = '';
+    this.squares = {};
+    for (r = 0; r < 8; r++) {
+      for (f = 0; f < 8; f++) {
+        var file = this.orientation === 'w' ? f : 7 - f;
+        var rank = this.orientation === 'w' ? 8 - r : r + 1;
+        sq = FILES.charAt(file) + rank;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sq ' + (((file + rank) % 2 === 0) ? 'light' : 'dark');
+        btn.setAttribute('data-sq', sq);
+        btn.setAttribute('role', 'gridcell');
+        btn.tabIndex = (r === 7 && f === 0) ? 0 : -1;
+        btn.addEventListener('click', (function (s) { return function () { self.clickSquare(s); }; })(sq));
+        btn.addEventListener('keydown', (function (s) { return function (e) { self.keyNav(e, s); }; })(sq));
+        this.el.appendChild(btn);
+        this.squares[sq] = btn;
+      }
+    }
+  };
+  Board.prototype.initDrag = function () {
+    var self = this, drag = null;
+    function sqAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      while (el && el !== self.el && !(el.getAttribute && el.getAttribute('data-sq'))) el = el.parentNode;
+      return (el && el !== self.el) ? el.getAttribute('data-sq') : null;
+    }
+    this.el.addEventListener('pointerdown', function (e) {
+      if (!self.interactive || !self.game || e.button !== 0) return;
+      var sq = sqAt(e.clientX, e.clientY);
+      if (!sq) return;
+      var p = self.game.get(sq);
+      if (!p || p.color !== self.game.turn()) return;
+      drag = { from: sq, x: e.clientX, y: e.clientY, ghost: null, moved: false };
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
+        drag.moved = true;
+        self.selected = drag.from;
+        self.render();
+        var src = self.squares[drag.from], pc = src.querySelector('.pc');
+        var g = document.createElement('div');
+        g.className = 'drag-ghost';
+        g.innerHTML = pc.outerHTML;
+        g.style.fontSize = window.getComputedStyle(src).fontSize;
+        document.body.appendChild(g);
+        drag.ghost = g;
+        pc.style.opacity = '0.25';
+      }
+      e.preventDefault();
+      drag.ghost.style.left = e.clientX + 'px';
+      drag.ghost.style.top = e.clientY + 'px';
+    }, { passive: false });
+    function end(e) {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (!d.moved) return;
+      if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+      var swallow = function (ev) { ev.stopPropagation(); self.el.removeEventListener('click', swallow, true); };
+      self.el.addEventListener('click', swallow, true);
+      setTimeout(function () { self.el.removeEventListener('click', swallow, true); }, 0);
+      var to = e.type === 'pointerup' ? sqAt(e.clientX, e.clientY) : null;
+      var ok = false, legal, i;
+      if (to && to !== d.from) {
+        legal = self.game.moves({ square: d.from, verbose: true });
+        for (i = 0; i < legal.length; i++) if (legal[i].to === to) ok = true;
+      }
+      self.selected = null;
+      self.render();
+      if (ok && self.onMove) self.onMove(d.from, to);
+    }
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+  };
+  Board.prototype.keyNav = function (e, sq) {
+    var dx = 0, dy = 0;
+    if (e.key === 'ArrowLeft') dx = -1; else if (e.key === 'ArrowRight') dx = 1;
+    else if (e.key === 'ArrowUp') dy = 1; else if (e.key === 'ArrowDown') dy = -1;
+    else return;
+    e.preventDefault();
+    if (this.orientation === 'b') { dx = -dx; dy = -dy; }
+    var f = FILES.indexOf(sq.charAt(0)) + dx, r = parseInt(sq.charAt(1), 10) + dy;
+    if (f < 0 || f > 7 || r < 1 || r > 8) return;
+    var next = this.squares[FILES.charAt(f) + r];
+    var k;
+    for (k in this.squares) { if (this.squares.hasOwnProperty(k)) this.squares[k].tabIndex = -1; }
+    next.tabIndex = 0;
+    next.focus();
+  };
+  Board.prototype.flip = function () {
+    this.orientation = this.orientation === 'w' ? 'b' : 'w';
+    this.build();
+    this.render();
+  };
+  Board.prototype.set = function (game, last) {
+    this.game = game;
+    this.last = last || null;
+    this.selected = null;
+    this.hint = null;
+    this.render();
+  };
+  Board.prototype.render = function () {
+    if (!this.game) return;
+    var targets = {}, k, i, moves;
+    if (this.selected) {
+      moves = this.game.moves({ square: this.selected, verbose: true });
+      for (i = 0; i < moves.length; i++) targets[moves[i].to] = true;
+    }
+    for (k in this.squares) {
+      if (!this.squares.hasOwnProperty(k)) continue;
+      var btn = this.squares[k];
+      var p = this.game.get(k);
+      var cls = btn.className.split(' ').slice(0, 2).join(' ');
+      if (this.last && (this.last.from === k || this.last.to === k)) cls += ' last';
+      if (this.selected === k) cls += ' sel';
+      if (this.hint && this.hint.indexOf(k) !== -1) cls += ' hint';
+      if (targets[k]) cls += ' target' + (p ? ' occ' : '');
+      btn.className = cls;
+      var html = '';
+      if (p) html += '<span class="pc ' + p.color + '" aria-hidden="true">' + GLYPH[p.color][p.type] + '</span>';
+      var file = k.charAt(0), rank = k.charAt(1);
+      var bottomRank = this.orientation === 'w' ? '1' : '8';
+      var leftFile = this.orientation === 'w' ? 'a' : 'h';
+      if (rank === bottomRank) html += '<span class="co f" aria-hidden="true">' + file + '</span>';
+      if (file === leftFile) html += '<span class="co r" aria-hidden="true">' + rank + '</span>';
+      btn.innerHTML = html;
+      btn.setAttribute('aria-label', k + (p ? ', ' + (p.color === 'w' ? 'white ' : 'black ') + NAME[p.type] : ', empty') + (targets[k] ? ', legal move' : ''));
+    }
+  };
+  Board.prototype.clickSquare = function (sq) {
+    if (!this.interactive || !this.game) return;
+    var p = this.game.get(sq);
+    if (this.selected) {
+      if (sq === this.selected) { this.selected = null; this.render(); return; }
+      var legal = this.game.moves({ square: this.selected, verbose: true });
+      var i, found = null;
+      for (i = 0; i < legal.length; i++) if (legal[i].to === sq) { found = legal[i]; break; }
+      if (found) {
+        var from = this.selected;
+        this.selected = null;
+        if (this.onMove) this.onMove(from, sq);
+        return;
+      }
+    }
+    if (p && p.color === this.game.turn()) { this.selected = sq; } else { this.selected = null; }
+    this.render();
+  };
+
+  function sanFor(game, from, to) {
+    var t = new Chess(game.fen());
+    var m = t.move({ from: from, to: to, promotion: 'q' });
+    return m ? m.san : null;
+  }
+  function movesText(list, upto, highlightIndex) {
+    var out = [], i;
+    for (i = 0; i < upto; i++) {
+      var txt = (i % 2 === 0 ? (i / 2 + 1) + '.' : '') + list[i];
+      if (i === highlightIndex) txt = '<span class="cur">' + txt + '</span>';
+      out.push(txt);
+    }
+    return out.join(' ');
+  }
+  function setFb(el, text, kind) {
+    el.className = 'feedback' + (kind ? ' ' + kind : '');
+    el.textContent = text;
+  }
+
+  /* ---------- Line trainer ---------- */
+  var T = { line: null, idx: 0, ply: 0, game: new Chess(), mistakes: 0, hintStage: 0, busy: false, done: {}, timer: null };
+  var trainBoard = new Board(document.getElementById('trainBoard'), { onMove: trainerMove });
+  var picker = document.getElementById('linePicker');
+  var trainFb = document.getElementById('trainFeedback');
+
+  function buildPicker() {
+    var i;
+    picker.innerHTML = '';
+    for (i = 0; i < LINES.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (T.done[LINES[i].id] ? ' done' : '');
+      b.textContent = LINES[i].name;
+      b.setAttribute('aria-pressed', T.idx === i && T.line ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Train line: ' + LINES[i].name + (T.done[LINES[i].id] ? ' (completed)' : ''));
+      b.addEventListener('click', (function (n) { return function () { startLine(n); }; })(i));
+      li.appendChild(b);
+      picker.appendChild(li);
+    }
+  }
+  function lineMoves() { return splitMoves(T.line.moves); }
+  function updateTrainUI() {
+    var mv = T.line ? lineMoves() : [];
+    document.getElementById('trainMoves').innerHTML = movesText(mv, T.ply, T.ply - 1) || '<span class="small">Start position</span>';
+    var count = 0, k;
+    for (k in T.done) if (T.done.hasOwnProperty(k)) count++;
+    document.getElementById('trainStats').textContent = 'Lines completed: ' + count + ' / ' + LINES.length + (T.line ? ' · Mistakes this line: ' + T.mistakes : '');
+  }
+  function startLine(n) {
+    if (T.timer) { clearTimeout(T.timer); T.timer = null; }
+    T.idx = n;
+    T.line = LINES[n];
+    T.ply = 0;
+    T.mistakes = 0;
+    T.hintStage = 0;
+    T.busy = false;
+    T.game = new Chess();
+    document.getElementById('lineName').textContent = T.line.name;
+    document.getElementById('lineBlurb').textContent = T.line.blurb;
+    trainBoard.interactive = true;
+    trainBoard.set(T.game, null);
+    setFb(trainFb, 'Your move as White.', '');
+    buildPicker();
+    updateTrainUI();
+  }
+  function trainerMove(from, to) {
+    if (!T.line || T.busy) return;
+    var mv = lineMoves();
+    var expected = mv[T.ply];
+    var san = sanFor(T.game, from, to);
+    if (san === expected) {
+      var m = T.game.move(expected);
+      T.ply++;
+      T.hintStage = 0;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      afterUserMove();
+    } else {
+      T.mistakes++;
+      trainBoard.set(T.game, trainBoard.last);
+      setFb(trainFb, (san || 'That move') + ' is not the repertoire move here. Try again, or press Hint.', 'bad');
+      updateTrainUI();
+    }
+  }
+  function afterUserMove() {
+    var mv = lineMoves();
+    if (T.ply >= mv.length) { finishLine(); return; }
+    setFb(trainFb, 'Correct. Black is thinking…', 'good');
+    T.busy = true;
+    var doReply = function () {
+      T.timer = null;
+      var m = T.game.move(mv[T.ply]);
+      T.ply++;
+      T.busy = false;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      if (T.ply >= mv.length) { finishLine(); return; }
+      setFb(trainFb, 'Black played ' + m.san + '. Your move.', '');
+    };
+    if (REPLY_DELAY > 0) T.timer = setTimeout(doReply, REPLY_DELAY); else doReply();
+  }
+  function finishLine() {
+    T.done[T.line.id] = true;
+    trainBoard.interactive = false;
+    setFb(trainFb, 'Line complete' + (T.mistakes ? ' with ' + T.mistakes + ' mistake' + (T.mistakes === 1 ? '' : 's') : ' with no mistakes') + '. ' + T.line.note, 'good');
+    buildPicker();
+    updateTrainUI();
+  }
+  document.getElementById('hintBtn').addEventListener('click', function () {
+    if (!T.line || T.busy || T.ply >= lineMoves().length) return;
+    var t = new Chess(T.game.fen());
+    var m = t.move(lineMoves()[T.ply]);
+    if (T.hintStage === 0) {
+      trainBoard.hint = [m.from];
+      setFb(trainFb, 'Hint: move the ' + NAME[m.piece] + ' on ' + m.from + '.', '');
+      T.hintStage = 1;
+    } else {
+      trainBoard.hint = [m.from, m.to];
+      setFb(trainFb, 'The move is ' + m.san + '.', '');
+    }
+    trainBoard.render();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () { if (T.line) startLine(T.idx); });
+  document.getElementById('flipBtn').addEventListener('click', function () { trainBoard.flip(); });
+  document.getElementById('nextLineBtn').addEventListener('click', function () { startLine(T.line ? (T.idx + 1) % LINES.length : 0); });
+
+  /* ---------- Trap viewer ---------- */
+  var V = { trap: null, ply: 0 };
+  var trapBoard = new Board(document.getElementById('trapBoard'), {});
+  function buildTraps() {
+    var list = document.getElementById('trapList'), i;
+    for (i = 0; i < TRAPS.length; i++) {
+      var d = document.createElement('div');
+      d.className = 'trap';
+      var h = document.createElement('h3'); h.textContent = TRAPS[i].title;
+      var p = document.createElement('p'); p.textContent = TRAPS[i].text;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn'; b.textContent = 'Show on board';
+      b.setAttribute('aria-label', 'Show ' + TRAPS[i].title + ' on the board');
+      b.addEventListener('click', (function (n) { return function () { loadTrap(n); }; })(i));
+      d.appendChild(h); d.appendChild(p); d.appendChild(b);
+      list.appendChild(d);
+    }
+  }
+  function loadTrap(n) {
+    V.trap = TRAPS[n];
+    document.getElementById('trapTitle').textContent = V.trap.title;
+    gotoTrap(V.trap.bad);
+  }
+  function gotoTrap(ply) {
+    if (!V.trap) return;
+    var mv = splitMoves(V.trap.moves);
+    if (ply < 0) ply = 0;
+    if (ply > mv.length) ply = mv.length;
+    V.ply = ply;
+    var g = new Chess(), last = null, i;
+    for (i = 0; i < ply; i++) last = g.move(mv[i]);
+    trapBoard.set(g, last);
+    document.getElementById('trapMoves').innerHTML = movesText(mv, mv.length, ply - 1);
+    var note = V.trap.notes[ply - 1];
+    setFb(document.getElementById('trapNote'), note || (ply === 0 ? 'Start position.' : 'Move ' + Math.ceil(ply / 2) + '. Step forward to continue.'), '');
+  }
+  document.getElementById('trapStart').addEventListener('click', function () { gotoTrap(0); });
+  document.getElementById('trapBack').addEventListener('click', function () { gotoTrap(V.ply - 1); });
+  document.getElementById('trapFwd').addEventListener('click', function () { gotoTrap(V.ply + 1); });
+  document.getElementById('trapEnd').addEventListener('click', function () { if (V.trap) gotoTrap(splitMoves(V.trap.moves).length); });
+
+  /* ---------- Quiz ---------- */
+  var Q = { i: 0, score: 0, answered: 0, game: null, locked: false };
+  var quizBoard = new Board(document.getElementById('quizBoard'), { onMove: quizMove });
+  var quizFb = document.getElementById('quizFeedback');
+  function loadQuestion() {
+    var item = QUIZ[Q.i], mv = splitMoves(item.pre), g = new Chess(), last = null, i;
+    for (i = 0; i < mv.length; i++) last = g.move(mv[i]);
+    Q.game = g;
+    Q.locked = false;
+    quizBoard.interactive = true;
+    quizBoard.set(g, last);
+    document.getElementById('quizTitle').textContent = 'Question ' + (Q.i + 1) + ' of ' + QUIZ.length;
+    document.getElementById('quizPrompt').innerHTML = '<span class="small">After ' + movesText(mv, mv.length, -1) + '</span><br>' + item.prompt;
+    setFb(quizFb, 'Your move (White).', '');
+    document.getElementById('quizNext').disabled = true;
+    document.getElementById('quizNext').textContent = Q.i === QUIZ.length - 1 ? 'See result' : 'Next question';
+    updateScore();
+  }
+  function updateScore() { document.getElementById('quizScore').textContent = 'Score: ' + Q.score + ' / ' + Q.answered; }
+  function quizMove(from, to) {
+    if (Q.locked) return;
+    var item = QUIZ[Q.i];
+    var san = sanFor(Q.game, from, to);
+    var ok = item.accept.indexOf(san) !== -1;
+    Q.locked = true;
+    Q.answered++;
+    if (ok) Q.score++;
+    var m = Q.game.move(ok ? san : item.accept[0]);
+    quizBoard.interactive = false;
+    quizBoard.set(Q.game, m);
+    setFb(quizFb, (ok ? 'Correct! ' : 'Not quite — you played ' + san + '. The answer is ' + item.accept[0] + '. ') + item.explain, ok ? 'good' : 'bad');
+    document.getElementById('quizNext').disabled = false;
+    updateScore();
+  }
+  document.getElementById('quizNext').addEventListener('click', function () {
+    if (Q.i < QUIZ.length - 1) { Q.i++; loadQuestion(); return; }
+    var pct = Math.round(100 * Q.score / QUIZ.length);
+    document.getElementById('quizTitle').textContent = 'Quiz complete';
+    document.getElementById('quizPrompt').textContent = '';
+    setFb(quizFb, 'You scored ' + Q.score + ' / ' + QUIZ.length + ' (' + pct + '%). ' + (pct === 100 ? 'Excellent — you know your Italian.' : 'Run the line trainer again, then retry.'), pct >= 70 ? 'good' : '');
+    document.getElementById('quizNext').disabled = true;
+  });
+  document.getElementById('quizRestart').addEventListener('click', function () { Q.i = 0; Q.score = 0; Q.answered = 0; loadQuestion(); });
+
+  /* ---------- Init ---------- */
+  buildPicker();
+  trainBoard.set(new Chess(), null);
+  updateTrainUI();
+  buildTraps();
+  trapBoard.set(new Chess(), null);
+  loadQuestion();
+
+  window.EKSItalian = { LINES: LINES, TRAPS: TRAPS, QUIZ: QUIZ, state: { T: T, Q: Q, V: V } };
+})();
+</script>
+</body>
+</html>

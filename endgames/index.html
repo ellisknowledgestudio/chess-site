@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Endgame Trainer · Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Practise the basic checkmates (queen, rook, two rooks, two bishops, bishop and knight) and key endgames against an AI coach that defends perfectly and grades every move.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
+<style>
+:root{
+  /* site.css supplies --bg, --panel, --line, --ivory, --muted, --gold, --gold-dim; fallbacks match the live site */
+  --ink:var(--ivory,#ece4d0); --muted-c:var(--muted,#98a08f);
+  --accent:var(--gold,#c9a24b); --accent-ink:#1a1a12; --accent-soft:rgba(201,162,75,.14);
+  --good:#8fbf7a; --ok:#d9b75a; --bad:#e07d6f; --info:#7fa8c9;
+  --light:#e8dcc0; --dark:#a07c55; --sel:rgba(201,162,75,.55); --last:rgba(201,162,75,.38); --hint:rgba(70,140,200,.75);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(ellipse at top left, rgba(201,162,75,0.07), transparent 55%),var(--bg,#14150f);color:var(--ink);font:16px/1.5 'Inter',system-ui,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.15;color:var(--ink)}
+.hero{padding:56px 0 8px}
+.hero .eyebrow{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--accent)}
+.hero h1{font-size:clamp(32px,5vw,52px);margin:10px 0 16px;max-width:18ch;letter-spacing:-.015em;color:var(--felt-light,var(--ink))}
+.hero p{color:var(--muted);max-width:720px;margin:0}
+.tabs{display:flex;gap:8px;margin:22px 0 14px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
+.tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding-bottom:40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.card .glyphs{font-family:"Noto Sans Symbols 2",serif;font-size:30px;line-height:1;letter-spacing:2px;color:var(--accent)}
+.card h3{margin:0;font-size:20px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.card .levels{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.lvl{flex:1;min-width:70px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:7px 6px;cursor:pointer;font:inherit;font-size:13px;text-align:center}
+.lvl:hover{border-color:var(--accent)}
+.lvl .st{display:block;color:var(--accent);font-size:12px;letter-spacing:1px;min-height:16px}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);align-self:flex-start}
+.tag.done{background:rgba(143,191,122,.16);color:var(--good)}
+.note{color:var(--muted);font-size:13px}
+
+/* trainer */
+#trainer{display:none;padding:18px 0 40px}
+.back{background:none;border:none;color:var(--accent);font:inherit;cursor:pointer;padding:0;margin-bottom:10px}
+.tlayout{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.tlayout{grid-template-columns:1fr}}
+.boardbox{position:relative;width:100%;max-width:560px}
+.board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1;border-radius:6px;overflow:hidden;box-shadow:var(--shadow);user-select:none;touch-action:none}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden}
+.sq.l{background:var(--light)} .sq.d{background:var(--dark)}
+.sq.last::before,.sq.sel::before,.sq.hint::before,.sq.hint2::before{content:"";position:absolute;inset:0}
+.sq.last::before{background:var(--last)}
+.sq.sel::before{background:var(--sel)}
+.sq.hint::before{box-shadow:inset 0 0 0 4px var(--hint);background:rgba(47,95,138,.18)}
+.sq.hint2::before{box-shadow:inset 0 0 0 4px var(--hint)}
+.sq.check::after{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(220,40,40,.75),rgba(220,40,40,0) 70%)}
+.sq .dot{position:absolute;width:28%;height:28%;border-radius:50%;background:rgba(20,30,30,.28);z-index:2;pointer-events:none}
+.sq .ring{position:absolute;inset:4%;border-radius:50%;border:5px solid rgba(20,30,30,.28);z-index:2;pointer-events:none}
+.coord{position:absolute;font-size:11px;font-weight:700;opacity:.75;pointer-events:none;z-index:1}
+.coord.f{right:4px;bottom:2px} .coord.r{left:4px;top:2px}
+.sq.l .coord{color:var(--dark)} .sq.d .coord{color:var(--light)}
+.pc{font-family:"Noto Sans Symbols 2","Segoe UI Symbol","DejaVu Sans",serif;font-size:min(9vw,54px);line-height:1;position:relative;z-index:3;cursor:default;pointer-events:none}
+.pc.w{color:#fbfaf6;-webkit-text-stroke:1.6px #1d1d1d;paint-order:stroke fill;text-shadow:0 2px 2px rgba(0,0,0,.25)}
+.pc.b{color:#1c1c1c;-webkit-text-stroke:1px #000;text-shadow:0 2px 2px rgba(0,0,0,.25)}
+.sq.mine{cursor:grab}
+.ghost{position:fixed;pointer-events:none;z-index:50;transform:translate(-50%,-50%)}
+.promo{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;border-radius:6px}
+.promo .box{background:var(--panel,#1e1f18);padding:14px;border-radius:12px;display:flex;gap:8px}
+.promo button{font-family:"Noto Sans Symbols 2",serif;font-size:42px;width:64px;height:64px;border-radius:10px;border:1px solid var(--line);background:var(--light);cursor:pointer;line-height:1}
+.overlay{position:absolute;inset:0;background:rgba(20,21,15,.86);display:none;align-items:center;justify-content:center;text-align:center;z-index:15;border-radius:6px;padding:20px;color:var(--ink)}
+.bar{height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;width:220px;margin:10px auto 0}
+.bar i{display:block;height:100%;background:var(--accent);width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.panel h2{margin:0 0 4px;font-size:24px}
+.goal{color:var(--muted);margin:0 0 12px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px}
+.stat b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.feed{height:230px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
+.msg{padding:8px 10px;border-radius:10px;font-size:14px;background:var(--panel);border-left:4px solid var(--info)}
+.msg.good{border-left-color:var(--good)} .msg.ok{border-left-color:var(--ok)} .msg.bad{border-left-color:var(--bad)} .msg.coach{border-left-color:var(--accent)}
+.msg .who{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:block}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.moves{margin-top:12px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;max-height:90px;overflow-y:auto}
+details.tech{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+details.tech summary{cursor:pointer;font-weight:600}
+details.tech ul{padding-left:20px;margin:8px 0 0}
+details.tech li{margin-bottom:6px;font-size:14px}
+.result{display:none;margin-top:12px;padding:12px;border-radius:10px;background:var(--accent-soft)}
+.result .stars{font-size:26px;color:var(--accent);letter-spacing:3px}
+</style>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "5cc90f3ffc2a4279aad9df861f599f5b"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+</head>
+<body>
+<nav class="site-nav">
+    <a href="../index.html" class="brand">Ellis Knowledge Studio<span>Chess</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../analysis-board.html">Analysis Board</a>
+      <a href="../openings-trainer.html">Openings Trainer</a>
+      <a href="../checkmate-academy.html">Checkmate Academy</a>
+      <a href="./" class="current">Endgames</a>
+      <a href="../coach/">AI Coach</a>
+      <a href="../junior-coaching.html">Junior Coaching</a>
+    </div>
+  </nav>
+
+  <div class="checker-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+<main class="wrap">
+  <section id="picker">
+    <div class="hero">
+      <div class="eyebrow">Endgame trainer</div>
+      <h1>You against a coach that never makes a mistake.</h1>
+      <p>Pick an ending and play it out. The AI coach defends with perfect play, from complete endgame tables, and grades every move you make: perfect, a little slow, or a slip that throws the win away. If you get stuck you can ask for a hint, take a move back, or watch the coach finish the job.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-tab="mates">Basic mates</button>
+      <button class="tab" data-tab="pawns">King and pawn</button>
+      <button class="tab" data-tab="lessons">Endgame lessons</button>
+    </div>
+    <div id="tab-mates" class="grid"></div>
+    <div id="tab-pawns" class="grid" hidden></div>
+    <div id="tab-lessons" class="grid" hidden></div>
+  </section>
+
+  <section id="trainer">
+    <button class="back" id="backBtn">← All endgames</button>
+    <div class="tlayout">
+      <div class="boardbox">
+        <div class="board" id="board"></div>
+        <div class="promo" id="promo"><div class="box"></div></div>
+        <div class="overlay" id="overlay"><div><div id="ovText">Coach is getting ready…</div><div class="bar"><i id="ovBar"></i></div></div></div>
+      </div>
+      <div class="panel">
+        <h2 id="tTitle"></h2>
+        <p class="goal" id="tGoal"></p>
+        <div class="stats">
+          <div class="stat" id="stEval"><span>Perfect play</span><b>–</b></div>
+          <div class="stat" id="stMoves"><span>Your moves</span><b>0</b></div>
+          <div class="stat" id="stAcc"><span>Perfect moves</span><b>–</b></div>
+        </div>
+        <div class="feed" id="feed" aria-live="polite"></div>
+        <div class="result" id="result"></div>
+        <div class="btns">
+          <button class="btn" id="hintBtn">Hint</button>
+          <button class="btn" id="undoBtn">Take back</button>
+          <button class="btn" id="watchBtn">Watch the coach</button>
+          <button class="btn" id="restartBtn">Restart</button>
+          <button class="btn primary" id="newBtn">New position</button>
+        </div>
+        <div class="moves" id="moves"></div>
+        <details class="tech" id="tech" open><summary>Technique notes</summary><ul id="techList"></ul></details>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="site-footer">ELLIS KNOWLEDGE STUDIO · CHESS</div>
+
+<script src="chess.js"></script>
+<script src="egcore.js"></script>
+<script>
+(function(){
+"use strict";
+var C = EGCore();
+var FILES = "abcdefgh";
+function sqIdx(name){ return FILES.indexOf(name[0]) + 8*(+name[1]-1); }
+function sqName(i){ return FILES[i&7] + ((i>>3)+1); }
+var GLYPH = {k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟︎"};
+
+/* ================= Content ================= */
+var MATES = [
+  {key:"Q", title:"Queen mate", glyphs:"♔♕ ♚", blurb:"The first mate every player needs. Box the king in with the queen, then bring your own king.",
+   levels:[["Short",3,5],["Medium",6,8],["Full",9,10]],
+   tech:["Put the queen a knight's move away from the enemy king. It shrinks the king's box without giving check.",
+         "Keep shrinking the box until the king is stuck on the edge, then stop and bring your own king up.",
+         "Before every quiet queen move, count the enemy king's squares. If it has none and isn't in check, that's stalemate.",
+         "Mate comes with the queen on the edge next to the king, protected by your king, or from a distance with your king facing theirs."]},
+  {key:"R", title:"Rook mate", glyphs:"♔♖ ♚", blurb:"The box method. Cut the king off, squeeze the box, and use opposition to deliver mate.",
+   levels:[["Short",4,7],["Medium",8,12],["Full",13,16]],
+   tech:["Use the rook to cut the enemy king into a box, then make the box smaller one line at a time.",
+         "Keep the rook protected, or far away from the enemy king. If the king attacks it, swing it to the far side of the board.",
+         "Bring your king toward theirs. When the kings face each other (opposition), a rook check along the edge drives them back.",
+         "When no useful king move is left, a waiting rook move along its line forces their king to give you the opposition."]},
+  {key:"RR", title:"Two rooks", glyphs:"♔♖♖ ♚", blurb:"The ladder (or lawnmower) mate. The rooks take turns pushing the king to the edge, and your king isn't needed.",
+   levels:[["Short",2,3],["Medium",4,5],["Full",6,7]],
+   tech:["One rook guards a rank or file, the other gives check on the next line along. Then they swap roles. That's the ladder.",
+         "If the enemy king gets close to a rook, move that rook to the far side of the same line. It still guards, but it's out of reach.",
+         "You don't need your king. The rooks do it all, and it's usually quicker not to bother with it."]},
+  {key:"BB", title:"Two bishops", glyphs:"♔♗♗ ♚", blurb:"Bishops side by side make a diagonal wall. Push the king into a corner and mate it there.",
+   levels:[["Short",4,8],["Medium",9,14],["Full",15,19]],
+   tech:["Put the bishops next to each other (for example c4 and d4). Together they cover two neighbouring diagonals, a wall the king can't cross.",
+         "Your king has to help. Use it to take squares away while the bishops step the wall closer.",
+         "Drive the king to the edge, then along it into a corner. Mate happens in the corner, or right next to it.",
+         "Watch for stalemate when the king is in the corner and has only one or two squares left."]},
+  {key:"BN", title:"Bishop and knight", glyphs:"♔♗♘ ♚", blurb:"The hardest basic mate. You have to drive the king into a corner the bishop controls.",
+   levels:[["Short",6,12],["Medium",13,22],["Full",23,33]],
+   tech:["Mate is only possible in a corner of the same colour as your bishop. A light-squared bishop needs a8 or h1, and a dark-squared one needs a1 or h8.",
+         "First drive the king to the edge. If it runs into the wrong corner, pull it along the edge toward the right one.",
+         "The knight's W-manoeuvre (Deletang's method) is the key: the knight hops in a W shape to cover the escape squares while the bishop guards the diagonal.",
+         "You have 50 moves. Perfect play never needs more than 33, so stay organised and don't drift."]}
+];
+var PAWNS = [
+  {id:"kpk-win", title:"Win with king and pawn", glyphs:"♔♙ ♚", side:"w", blurb:"Promote the pawn against the coach's best defence. Then you have to finish the mate too.",
+   tech:["Get your king in front of the pawn, not behind it. The key squares are the two squares in front of the pawn and their neighbours.",
+         "Opposition: when the kings face each other with one square between them, the side that doesn't have to move is winning the fight.",
+         "A spare pawn move can hand the move back to your opponent. Only use it when it gains the opposition.",
+         "Rook's pawns (a- and h-files) are usually drawn if the defending king reaches the corner."]},
+  {id:"kpk-def", title:"Hold the draw", glyphs:"♚ ♔♙", side:"b", blurb:"You have the lone king. Hold the draw against a coach that sets traps.",
+   tech:["Go straight back in front of the pawn. Retreat along the pawn's file, not to the side.",
+         "When their king steps up to face yours, take the opposition. When it steps aside, step across to match it.",
+         "If you're pushed back to the last rank, move straight back in front of the pawn. Stalemate is your friend.",
+         "Against a rook's pawn, just reach the corner. The king can't be driven out of it."]}
+];
+var LESSONS = [
+  {id:"opp-win", title:"The opposition", side:"w", fen:"8/8/3k4/8/3K4/8/3P4/8 w - - 0 1", goal:"promote",
+   blurb:"King and pawn against king. Find the move that wins the opposition.",
+   tech:["The kings face each other. Whoever is NOT to move holds the opposition.","Your pawn has a spare tempo. A one-square push hands the move to Black at exactly the right moment.","Once your king reaches a key square in front of the pawn, the pawn is unstoppable."]},
+  {id:"opp-hold", title:"Holding the opposition", side:"b", fen:"8/8/8/3k4/8/3K4/3P4/8 w - - 0 1", goal:"hold", holdMoves:20,
+   blurb:"Now you defend. The coach moves first. Keep the opposition and the pawn never queens.",
+   tech:["Whenever the white king steps forward, step in front of it so the kings face each other.","Don't step back when you don't need to. Losing ground loses the opposition."]},
+  {id:"lucena", title:"Lucena position", side:"w", fen:"1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", goal:"promote",
+   blurb:"The most important winning rook ending. Build a bridge so your king can escape the checks.",
+   tech:["First drive the enemy king further away with a rook check.","Then lift your rook to the 4th rank. That's the bridge.","Walk your king out. When the checks come, block with the rook on the 4th rank."]},
+  {id:"philidor", title:"Philidor defence", side:"b", fen:"4k3/R7/8/3KP3/8/8/8/6r1 b - - 0 1", goal:"hold", holdMoves:20,
+   blurb:"The key rook-ending draw. Your rook goes to the third rank and waits.",
+   tech:["Put your rook on your third rank (here, the 6th rank) to keep the white king out.","Once the pawn advances to that rank, swing the rook to the back and check from behind. The white king has nowhere to hide.","Keep your king in front of the pawn."]},
+  {id:"qp-centre", title:"Queen vs pawn on the 7th", side:"w", fen:"K7/8/8/8/8/8/2kp4/7Q w - - 0 1", goal:"bare",
+   blurb:"A centre pawn one step from queening. Check, check, until their king has to block the pawn, then bring your king one step closer.",
+   tech:["Use checks and pins to force the enemy king onto the queening square, in front of its own pawn.","Each time it blocks, you get a free move. Bring your king one step closer.","Repeat until your king arrives, then win the pawn."]},
+  {id:"qp-bishop", title:"The bishop's pawn trick", side:"b", fen:"K7/8/8/8/8/8/1kp5/7Q w - - 0 1", goal:"hold", holdMoves:15,
+   blurb:"Defending with a c-pawn. There's a stalemate trick that saves the game. Can you find it?",
+   tech:["When the queen forces your king in front of the pawn, look for the corner instead.","If taking the pawn would stalemate you, the queen can't take it. That's the trick."]},
+  {id:"qr", title:"Queen vs rook", side:"w", fen:"3k4/3r4/3K4/8/8/8/8/7Q w - - 0 1", goal:"bare",
+   blurb:"A theoretical win that strong players still find hard. Win the rook with forks and zugzwang.",
+   tech:["Keep the rook close to its king, and look for checks that fork the king and the rook.","Philidor's winning method is zugzwang. Make a waiting move so the rook has to leave its king.","Don't let the rook build a fortress or give you stalemate."]}
+];
+
+/* ================= Progress ================= */
+var STORE_KEY = "ellisEndgames.v1";
+var progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; } catch(e){ progress = {}; }
+function saveProgress(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch(e){} }
+function starStr(n){ return n ? "★★★".slice(0,n) + "☆☆☆".slice(0,3-n) : ""; }
+
+/* ================= Tables ================= */
+var TB = {};
+var FULL = {Q:1,R:1,P:1};
+var smallReady = null;
+function loadSmall(){
+  if (smallReady) return smallReady;
+  smallReady = new Promise(function(res){
+    var done = function(d){ TB.Q = d.Q; TB.R = d.R; TB.P = d.P; res(); };
+    try {
+      var w = new Worker("eg-worker.js");
+      w.onmessage = function(e){ done(e.data); w.terminate(); };
+      w.onerror = function(){ buildInline(done); };
+    } catch(e){ buildInline(done); }
+  });
+  return smallReady;
+}
+function buildInline(done){
+  setTimeout(function(){
+    var Q = C.solveMate(["Q"]), R = C.solveMate(["R"]), P = C.solveKPK(Q.btm, R.btm);
+    done({Q:Q.btm, R:R.btm, P:P.btm});
+  }, 30);
+}
+var bigLoads = {};
+function loadBig(key){
+  if (TB[key]) return Promise.resolve();
+  if (bigLoads[key]) return bigLoads[key];
+  bigLoads[key] = fetch("tables/k" + key.toLowerCase() + "k.bin.gz").then(function(r){
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.arrayBuffer();
+  }).then(function(buf){
+    var u = new Uint8Array(buf);
+    if (u[0] === 0x1f && u[1] === 0x8b) {
+      var ds = new DecompressionStream("gzip");
+      return new Response(new Blob([u]).stream().pipeThrough(ds)).arrayBuffer();
+    }
+    return buf; // the server already decompressed it
+  }).then(function(buf){ TB[key] = new Uint8Array(buf); })
+  .catch(function(e){ bigLoads[key] = null; throw e; });
+  return bigLoads[key];
+}
+function ensureTables(key){
+  var p = [loadSmall()];
+  if (key === "RR" || key === "BB" || key === "BN") p.push(loadBig(key));
+  return Promise.all(p);
+}
+
+/* ================= Table oracle ================= */
+// Position format used by the core: {w:[{t,s}], bk, stm}
+function posFromGame(g){
+  var b = g.board(), w = [], bk = -1, other = false;
+  for (var r = 0; r < 8; r++) for (var f = 0; f < 8; f++) {
+    var p = b[r][f]; if (!p) continue;
+    var s = (7-r)*8 + f;
+    if (p.color === "w") w.push({t:p.type.toUpperCase(), s:s});
+    else if (p.type === "k") bk = s; else other = true;
+  }
+  if (other) return null;
+  w.sort(function(a,b){ return a.t === "K" ? -1 : b.t === "K" ? 1 : 0; });
+  return {w:w, bk:bk, stm:g.turn()};
+}
+function orderedSquares(pos, key){
+  var types = C.TABLE_TYPES[key], used = [], out = [C.wk(pos).s, pos.bk];
+  for (var n = 0; n < types.length; n++)
+    for (var x = 0; x < pos.w.length; x++) { var u = pos.w[x]; if (u.t === types[n] && used.indexOf(x) < 0) { used.push(x); out.push(u.s); break; } }
+  return out;
+}
+/* plies until mate with black to move, or Infinity if not winning */
+function btmPlies(pos){
+  var key = C.matKey(pos), T = TB[key];
+  if (!T) return Infinity;
+  var v = FULL[key] ? T[C.indexOf(pos, key)] : T[C.redIndex(orderedSquares(pos, key))];
+  if (v >= 1 && v < 255) return v - 1;
+  // The tables count "Black can grab a piece" as a draw. Where the grab still
+  // leaves White winning (two rooks -> one rook), work out the true value.
+  if (key === "RR" && !fixDepth) {
+    fixDepth++;
+    try {
+    var ms = C.legalMoves(pos);
+    if (ms.some(function(m){ return m.capture; })) {
+      var worst = 0;
+      for (var i = 0; i < ms.length; i++) { var w = wtmPlies(C.makeMove(pos, ms[i])); if (w === Infinity) return Infinity; if (w + 1 > worst) worst = w + 1; }
+      return worst;
+    }
+    } finally { fixDepth--; }
+  }
+  return Infinity;
+}
+var fixDepth = 0;
+function wtmPlies(pos){
+  var ms = C.legalMoves(pos), best = Infinity;
+  for (var i = 0; i < ms.length; i++) { var v = btmPlies(C.makeMove(pos, ms[i])) + 1; if (v < best) best = v; }
+  return best;
+}
+function uciOf(m){ return sqName(m.from) + sqName(m.to) + (m.promo ? m.promo.toLowerCase() : ""); }
+/* Analysis from the side to move: {cat, plies, moves:[{uci, cat, plies}]} */
+function tableAnalyse(pos){
+  var ms = C.legalMoves(pos), out = [];
+  if (pos.stm === "w") {
+    var best = Infinity;
+    ms.forEach(function(m){
+      var v = btmPlies(C.makeMove(pos, m));
+      var e = {uci:uciOf(m), cat: v === Infinity ? "draw" : "win", plies: v === Infinity ? null : v + 1, m:m};
+      out.push(e); if (e.plies !== null && e.plies < best) best = e.plies;
+    });
+    return {cat: best === Infinity ? "draw" : "win", plies: best === Infinity ? null : best, moves: out};
+  }
+  var allLose = ms.length > 0, worst = 0;
+  ms.forEach(function(m){
+    var v = wtmPlies(C.makeMove(pos, m));
+    var e = {uci:uciOf(m), cat: v === Infinity ? "draw" : "loss", plies: v === Infinity ? null : v + 1, m:m};
+    out.push(e); if (e.cat === "draw") allLose = false; else if (e.plies > worst) worst = e.plies;
+  });
+  if (!ms.length) return {cat: C.inCheck(pos) ? "loss" : "draw", plies: 0, moves: []};
+  return {cat: allLose ? "loss" : "draw", plies: allLose ? worst : null, moves: out};
+}
+
+/* ================= Lichess tablebase (lessons) ================= */
+var tbCache = {};
+function tbFetch(fen){
+  if (tbCache[fen]) return tbCache[fen];
+  var p = fetch("https://tablebase.lichess.ovh/standard?fen=" + encodeURIComponent(fen)).then(function(r){
+    if (r.status === 429) throw new Error("busy");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  });
+  tbCache[fen] = p;
+  p.catch(function(){ delete tbCache[fen]; });
+  return p;
+}
+function mapCat(c){ // side-to-move category -> win/draw/loss
+  if (c === "win" || c === "maybe-win") return "win";
+  if (c === "loss" || c === "maybe-loss") return "loss";
+  return "draw";
+}
+function flip(c){ return c === "win" ? "loss" : c === "loss" ? "win" : "draw"; }
+function lichessAnalyse(fen){
+  return tbFetch(fen).then(function(j){
+    var moves = (j.moves || []).map(function(m){
+      var d = m.dtm != null ? m.dtm : m.dtz;
+      return {uci:m.uci, san:m.san, cat:flip(mapCat(m.category)), plies: d == null ? null : Math.abs(d) + 1};
+    });
+    var top = mapCat(j.category), d0 = j.dtm != null ? j.dtm : j.dtz;
+    return {cat: j.checkmate ? "loss" : top, plies: d0 == null ? null : Math.abs(d0), moves: moves};
+  });
+}
+
+/* ================= Trainer state ================= */
+var S = null;
+var game = null;
+var boardEl = document.getElementById("board");
+var feedEl = document.getElementById("feed");
+
+function analyse(){
+  if (S.kind === "lesson") return lichessAnalyse(game.fen());
+  var pos = posFromGame(game);
+  return Promise.resolve(tableAnalyse(pos));
+}
+
+function movesFromPlies(p){ return Math.ceil(p/2); }
+
+/* ---------- random start positions ---------- */
+function randSq(){ return Math.floor(Math.random()*64); }
+function sampleMate(key, lo, hi){
+  var types = C.TABLE_TYPES[key];
+  for (var tries = 0; tries < 60000; tries++) {
+    var used = {}, w = [], ok = true;
+    var wk = randSq(); used[wk] = 1; w.push({t:"K", s:wk});
+    for (var i = 0; i < types.length; i++) { var s = randSq(); if (used[s]) { ok = false; break; } used[s] = 1; w.push({t:types[i], s:s}); }
+    if (!ok) continue;
+    var bk = randSq(); if (used[bk]) continue;
+    var pos = {w:w, bk:bk, stm:"w"};
+    if (!C.isLegal(pos)) continue;
+    var p = wtmPlies(pos); if (p === Infinity) continue;
+    var mv = movesFromPlies(p);
+    var widen = tries > 30000 ? 2 : 0;
+    if (mv >= lo - widen && mv <= hi + widen) return pos;
+  }
+  return null;
+}
+function sampleKPK(side){
+  for (var tries = 0; tries < 80000; tries++) {
+    var p = 8 + 8*(1 + Math.floor(Math.random()*4)) + Math.floor(Math.random()*8); // ranks 2-5
+    var wk = randSq(), bk = randSq();
+    if (wk === bk || wk === p || bk === p || C.ADJ[wk*64+bk]) continue;
+    var dW = Math.max(Math.abs((wk&7)-(p&7)), Math.abs((wk>>3)-(p>>3)));
+    var dB = Math.max(Math.abs((bk&7)-(p&7)), Math.abs((bk>>3)-(p>>3)));
+    if (dW > 2 || dB > 3 || (bk>>3) < (p>>3)) continue;
+    var pos = {w:[{t:"K",s:wk},{t:"P",s:p}], bk:bk, stm: side};
+    if (!C.isLegal(pos)) continue;
+    var a = tableAnalyse(pos);
+    if (side === "w") {
+      if (a.cat !== "win") continue;
+      var draws = a.moves.filter(function(m){ return m.cat === "draw"; }).length;
+      if (draws < 2 || a.moves.length - draws > 3) continue; // only a few moves win
+      return pos;
+    } else {
+      if (a.cat !== "draw") continue;
+      if (a.moves.some(function(m){ return m.m.capture; })) continue;
+      var lose = a.moves.filter(function(m){ return m.cat === "loss"; }).length;
+      var hold = a.moves.length - lose;
+      if (lose < 2 || hold > 3) continue; // a real test: most moves lose
+      return pos;
+    }
+  }
+  return null;
+}
+function fenFromPos(pos){
+  var rows = [];
+  for (var r = 7; r >= 0; r--) {
+    var row = "", e = 0;
+    for (var f = 0; f < 8; f++) {
+      var s = r*8+f, ch = null;
+      if (s === pos.bk) ch = "k";
+      pos.w.forEach(function(u){ if (u.s === s) ch = u.t; });
+      if (ch) { if (e) { row += e; e = 0; } row += ch; } else e++;
+    }
+    if (e) row += e; rows.push(row);
+  }
+  return rows.join("/") + " " + pos.stm + " - - 0 1";
+}
+
+/* ---------- feed ---------- */
+function say(text, cls, who){
+  var d = document.createElement("div");
+  d.className = "msg " + (cls || "");
+  d.innerHTML = '<span class="who">' + (who || "Coach") + '</span>' + text;
+  feedEl.appendChild(d); feedEl.scrollTop = feedEl.scrollHeight;
+}
+
+/* ---------- views ---------- */
+function showPicker(){
+  stopWatch();
+  document.getElementById("trainer").style.display = "none";
+  document.getElementById("picker").style.display = "";
+  renderPicker();
+  window.scrollTo(0,0);
+}
+function showTrainer(){
+  document.getElementById("picker").style.display = "none";
+  document.getElementById("trainer").style.display = "block";
+  window.scrollTo(0,0);
+}
+function renderPicker(){
+  var mates = document.getElementById("tab-mates"); mates.innerHTML = "";
+  MATES.forEach(function(d){
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML = '<div class="glyphs">' + d.glyphs + '</div><h3>' + d.title + '</h3><p>' + d.blurb + '</p><div class="levels"></div>';
+    var lv = c.querySelector(".levels");
+    d.levels.forEach(function(L, i){
+      var b = document.createElement("button"); b.className = "lvl";
+      var st = (progress["mate-" + d.key + "-" + i] || {}).stars || 0;
+      b.innerHTML = L[0] + '<span class="st">' + (st ? starStr(st) : "mate in " + L[1] + "–" + L[2]) + '</span>';
+      b.onclick = function(){ startMate(d, i); };
+      lv.appendChild(b);
+    });
+    mates.appendChild(c);
+  });
+  var pw = document.getElementById("tab-pawns"); pw.innerHTML = "";
+  PAWNS.forEach(function(d){
+    var rec = progress[d.id] || {};
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML = '<div class="glyphs">' + d.glyphs + '</div><h3>' + d.title + '</h3><p>' + d.blurb + '</p>' +
+      '<p class="note">' + (rec.wins ? "Solved " + rec.wins + " time" + (rec.wins > 1 ? "s" : "") : "Random position each time") + '</p><div class="levels"><button class="lvl">Start</button></div>';
+    c.querySelector("button").onclick = function(){ startKPK(d); };
+    pw.appendChild(c);
+  });
+  var ls = document.getElementById("tab-lessons"); ls.innerHTML = "";
+  LESSONS.forEach(function(d){
+    var done = (progress["lesson-" + d.id] || {}).done;
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML = '<span class="tag' + (done ? ' done' : '') + '">' + (done ? "Completed" : (d.side === "w" ? "Play White" : "Play Black")) + '</span><h3>' + d.title + '</h3><p>' + d.blurb + '</p><div class="levels"><button class="lvl">Start lesson</button></div>';
+    c.querySelector("button").onclick = function(){ startLesson(d); };
+    ls.appendChild(c);
+  });
+  var ln = document.createElement("p"); ln.className = "note"; ln.style.gridColumn = "1/-1";
+  ln.textContent = "Lessons use the free Lichess endgame tablebase (up to 7 pieces), so they need an internet connection.";
+  ls.appendChild(ln);
+}
+document.querySelectorAll(".tab").forEach(function(t){
+  t.onclick = function(){
+    document.querySelectorAll(".tab").forEach(function(x){ x.classList.toggle("on", x === t); });
+    ["mates","pawns","lessons"].forEach(function(n){ document.getElementById("tab-" + n).hidden = (n !== t.dataset.tab); });
+  };
+});
+
+function overlay(on, text){
+  var o = document.getElementById("overlay");
+  o.style.display = on ? "flex" : "none";
+  if (text) document.getElementById("ovText").textContent = text;
+  document.getElementById("ovBar").parentNode.style.display = on ? "block" : "none";
+}
+var fakeProg = null;
+function animateBar(){
+  var b = document.getElementById("ovBar"), w = 5; b.style.width = "5%";
+  clearInterval(fakeProg);
+  fakeProg = setInterval(function(){ w = Math.min(92, w + (95 - w) * 0.08); b.style.width = w + "%"; }, 120);
+}
+
+/* ---------- starting a session ---------- */
+function baseSession(o){
+  stopWatch();
+  S = Object.assign({over:false, busy:false, hint:0, hintMove:null, selected:null, lastMove:null,
+    studentMoves:0, perfect:0, graded:0, assisted:false, flipped:false}, o);
+  feedEl.innerHTML = "";
+  document.getElementById("result").style.display = "none";
+  document.getElementById("tTitle").textContent = o.title;
+  document.getElementById("tGoal").textContent = o.goalText;
+  var tl = document.getElementById("techList"); tl.innerHTML = "";
+  (o.tech || []).forEach(function(t){ var li = document.createElement("li"); li.textContent = t; tl.appendChild(li); });
+  document.getElementById("newBtn").style.display = o.kind === "lesson" ? "none" : "";
+  showTrainer();
+}
+function startMate(def, lvl){
+  var L = def.levels[lvl];
+  baseSession({kind:"mate", def:def, lvl:lvl, student:"w", title:def.title + " · " + L[0],
+    goalText:"White to play and mate. The coach defends perfectly.", tech:def.tech, recKey:"mate-" + def.key + "-" + lvl});
+  game = new Chess("8/8/8/8/8/8/8/k6K w - - 0 1"); renderBoard();
+  overlay(true, "Coach is loading the " + def.title.toLowerCase() + " tables…"); animateBar();
+  ensureTables(def.key).then(function(){
+    var pos = sampleMate(def.key, L[1], L[2]);
+    overlay(false); clearInterval(fakeProg);
+    if (!pos) { say("Couldn't find a suitable position. Try again.", "bad"); return; }
+    S.startFen = fenFromPos(pos);
+    beginFrom(S.startFen);
+  }).catch(function(){
+    overlay(true, "Couldn't load the endgame tables. Check your connection and try again.");
+    document.getElementById("ovBar").parentNode.style.display = "none"; clearInterval(fakeProg);
+  });
+}
+function startKPK(def){
+  baseSession({kind:def.id, def:def, student:def.side, title:def.title,
+    goalText: def.side === "w" ? "White to play. Promote the pawn, then deliver mate." : "Black to play. Find a drawing move every time.",
+    tech:def.tech, recKey:def.id, flipped: def.side === "b"});
+  game = new Chess("8/8/8/8/8/8/8/k6K w - - 0 1"); renderBoard();
+  overlay(true, "Coach is studying king and pawn endings…"); animateBar();
+  loadSmall().then(function(){
+    var pos = sampleKPK(def.side);
+    overlay(false); clearInterval(fakeProg);
+    if (!pos) { say("Couldn't find a suitable position. Try again.", "bad"); return; }
+    S.startFen = fenFromPos(pos);
+    beginFrom(S.startFen);
+  });
+}
+function startLesson(def){
+  baseSession({kind:"lesson", def:def, student:def.side, title:def.title,
+    goalText: def.blurb, tech:def.tech, recKey:"lesson-" + def.id, flipped: def.side === "b", startFen: def.fen});
+  beginFrom(def.fen);
+}
+function beginFrom(fen){
+  stopWatch();
+  game = new Chess(fen);
+  S.over = false; S.busy = false; S.hint = 0; S.hintMove = null; S.selected = null; S.lastMove = null;
+  S.studentMoves = 0; S.perfect = 0; S.graded = 0; S.assisted = false; S.halfAtStart = 0; S.startOptimal = null;
+  document.getElementById("result").style.display = "none";
+  feedEl.innerHTML = "";
+  renderBoard(); updateMoves();
+  if (game.turn() !== S.student) {
+    say("I'll move first.", "coach");
+    setTimeout(coachMove, 500);
+    return;
+  }
+  refreshEval(true);
+}
+
+/* ---------- evaluation display ---------- */
+function setEval(text){ document.getElementById("stEval").querySelector("b").textContent = text; }
+function refreshStats(){
+  document.getElementById("stMoves").querySelector("b").textContent = S.studentMoves;
+  document.getElementById("stAcc").querySelector("b").textContent = S.graded ? S.perfect + " / " + S.graded : "–";
+}
+function refreshEval(first){
+  S.busy = true;
+  return analyse().then(function(a){
+    S.busy = false;
+    S.cur = a;
+    if (a.cat === "win") {
+      setEval(a.plies ? "Mate in " + movesFromPlies(a.plies) : "Winning");
+      if (first) {
+        S.startOptimal = a.plies ? movesFromPlies(a.plies) : null;
+        say(S.kind === "lesson" ? "You're winning here. Show me the technique." :
+          "With perfect play this is mate in <b>" + movesFromPlies(a.plies) + "</b>. Let's see how close you get.", "coach");
+      }
+    } else if (a.cat === "draw") {
+      setEval("Draw");
+      if (first) say(S.student === "b" ? "This position is a draw if you defend accurately. Most moves here lose, so take your time." : "Draw with best play.", "coach");
+    } else {
+      setEval(a.plies ? "Lost in " + movesFromPlies(a.plies) : "Lost");
+    }
+    refreshStats();
+    return a;
+  }).catch(function(e){
+    S.busy = false;
+    say(e.message === "busy" ? "The endgame database is busy. Wait a few seconds, then try again." : "I can't reach the endgame database right now. Check your connection.", "bad");
+    throw e;
+  });
+}
+
+/* ---------- board ---------- */
+function squareOrder(){ var o = []; for (var r = 7; r >= 0; r--) for (var f = 0; f < 8; f++) o.push(r*8+f); return S && S.flipped ? o.reverse() : o; }
+function renderBoard(){
+  boardEl.innerHTML = "";
+  var order = squareOrder(), b = game.board();
+  var checkSq = null;
+  if (game.in_check()) { for (var r = 0; r < 8; r++) for (var f = 0; f < 8; f++) { var p = b[r][f]; if (p && p.type === "k" && p.color === game.turn()) checkSq = (7-r)*8+f; } }
+  var targets = {};
+  if (S && S.selected != null) game.moves({square:sqName(S.selected), verbose:true}).forEach(function(m){ targets[sqIdx(m.to)] = m.captured ? "ring" : "dot"; });
+  order.forEach(function(s, k){
+    var d = document.createElement("div");
+    var f = s & 7, r = s >> 3;
+    d.className = "sq " + ((f + r) % 2 ? "l" : "d");
+    d.dataset.sq = s;
+    if (S && S.lastMove && (S.lastMove[0] === s || S.lastMove[1] === s)) d.classList.add("last");
+    if (S && S.selected === s) d.classList.add("sel");
+    if (S && S.hintMove && S.hint >= 1 && S.hintMove[0] === s) d.classList.add("hint");
+    if (S && S.hintMove && S.hint >= 2 && S.hintMove[1] === s) d.classList.add("hint2");
+    if (checkSq === s) d.classList.add("check");
+    var p = b[7 - r][f];
+    if (p) {
+      var sp = document.createElement("span");
+      sp.className = "pc " + p.color; sp.textContent = GLYPH[p.type];
+      d.appendChild(sp);
+      if (S && p.color === S.student) d.classList.add("mine");
+    }
+    if (targets[s]) { var t = document.createElement("span"); t.className = targets[s]; d.appendChild(t); }
+    if (k % 8 === 0) { var rc = document.createElement("span"); rc.className = "coord r"; rc.textContent = r + 1; d.appendChild(rc); }
+    if (k >= 56) { var fc = document.createElement("span"); fc.className = "coord f"; fc.textContent = FILES[f]; d.appendChild(fc); }
+    boardEl.appendChild(d);
+  });
+}
+function updateMoves(){
+  var h = game.history(), out = [], startBlack = S && S.startFen && S.startFen.split(" ")[1] === "b";
+  var n = 1, i = 0;
+  if (startBlack && h.length) { out.push("1… " + h[0]); i = 1; n = 2; }
+  for (; i < h.length; i += 2, n++) out.push(n + ". " + h[i] + (h[i+1] ? " " + h[i+1] : ""));
+  document.getElementById("moves").textContent = out.join("  ");
+}
+
+/* pointer handling: click-click and drag */
+var drag = null;
+boardEl.addEventListener("pointerdown", function(e){
+  if (!S || S.over || S.busy || S.watching || game.turn() !== S.student) return;
+  var sqEl = e.target.closest(".sq"); if (!sqEl) return;
+  var s = +sqEl.dataset.sq, p = game.get(sqName(s));
+  if (S.selected != null && S.selected !== s && !(p && p.color === S.student)) { attempt(S.selected, s); return; }
+  if (p && p.color === S.student) {
+    S.selected = s; renderBoard();
+    var g = document.createElement("span"); g.className = "pc " + p.color + " ghost"; g.textContent = GLYPH[p.type];
+    g.style.fontSize = getComputedStyle(boardEl.querySelector(".pc")).fontSize;
+    g.style.left = e.clientX + "px"; g.style.top = e.clientY + "px"; g.style.display = "none";
+    document.body.appendChild(g);
+    drag = {from:s, ghost:g, x:e.clientX, y:e.clientY, moved:false};
+    boardEl.setPointerCapture(e.pointerId);
+  } else { S.selected = null; renderBoard(); }
+});
+boardEl.addEventListener("pointermove", function(e){
+  if (!drag) return;
+  if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 6) {
+    drag.moved = true; drag.ghost.style.display = "block";
+    var from = boardEl.querySelector('.sq[data-sq="' + drag.from + '"] .pc'); if (from) from.style.opacity = ".3";
+  }
+  if (drag.moved) { drag.ghost.style.left = e.clientX + "px"; drag.ghost.style.top = e.clientY + "px"; }
+});
+function endDrag(e){
+  if (!drag) return;
+  var d = drag; drag = null; d.ghost.remove();
+  if (!d.moved) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY), sqEl = el && el.closest ? el.closest(".sq") : null;
+  if (sqEl && +sqEl.dataset.sq !== d.from) attempt(d.from, +sqEl.dataset.sq); else renderBoard();
+}
+boardEl.addEventListener("pointerup", endDrag);
+boardEl.addEventListener("pointercancel", function(){ if (drag) { drag.ghost.remove(); drag = null; renderBoard(); } });
+
+function attempt(from, to){
+  var legal = game.moves({square:sqName(from), verbose:true}).filter(function(m){ return m.to === sqName(to); });
+  if (!legal.length) { S.selected = null; renderBoard(); return; }
+  if (legal.length > 1 || legal[0].promotion) { askPromotion(from, to); return; }
+  playStudent(from, to, null);
+}
+function askPromotion(from, to){
+  var pr = document.getElementById("promo"), box = pr.querySelector(".box"); box.innerHTML = "";
+  ["q","r","b","n"].forEach(function(t){
+    var b = document.createElement("button"); b.textContent = GLYPH[t];
+    b.style.color = S.student === "w" ? "#fbfaf6" : "#1c1c1c";
+    b.style.webkitTextStroke = S.student === "w" ? "1.4px #1d1d1d" : "0";
+    b.onclick = function(){ pr.style.display = "none"; playStudent(from, to, t); };
+    box.appendChild(b);
+  });
+  pr.style.display = "flex";
+}
+
+/* ---------- the student's move and the coach's verdict ---------- */
+function playStudent(from, to, promo){
+  var before = S.cur;
+  var mv = game.move({from:sqName(from), to:sqName(to), promotion:promo || "q"});
+  if (!mv) { S.selected = null; renderBoard(); return; }
+  S.selected = null; S.lastMove = [from, to]; S.hint = 0; S.hintMove = null;
+  S.studentMoves++;
+  renderBoard(); updateMoves();
+  grade(before, sqName(from) + sqName(to) + (mv.promotion ? mv.promotion : ""), mv.san);
+  if (checkTerminal()) return;
+  S.busy = true;
+  setTimeout(coachMove, S.watching ? 450 : 350);
+}
+function grade(before, uci, san){
+  if (!before) return;
+  var e = null; before.moves.forEach(function(m){ if (m.uci === uci) e = m; });
+  if (!e) return;
+  S.graded++;
+  var me = S.watching ? "Coach (for you)" : "You";
+  if (before.cat === "win") {
+    if (e.cat === "win") {
+      var lost = (e.plies != null && before.plies != null) ? Math.round((e.plies - before.plies) / 2) : 0;
+      if (lost <= 0) { S.perfect++; say("<b>" + san + "</b> Perfect. That's the fastest route.", "good", me); }
+      else if (lost === 1) say("<b>" + san + "</b> Good, still winning, but one move slower than the best.", "ok", me);
+      else say("<b>" + san + "</b> Still winning, but the mate is now <b>" + lost + "</b> moves further away.", "ok", me);
+    } else {
+      var why = "";
+      if (game.in_stalemate()) why = " It's <b>stalemate</b>.";
+      else if (S.kind === "mate" && hangs()) why = " The coach can take a piece for free" + (S.def.key === "RR" ? " (in a real game one rook is still enough, but this drill wants it clean)." : ", and the rest is a draw.");
+      say("<b>" + san + "</b> Oops, that throws the win away." + why + " Use <b>Take back</b> and look again.", "bad", me);
+    }
+  } else if (before.cat === "draw") {
+    if (e.cat === "draw") {
+      var holds = before.moves.filter(function(m){ return m.cat === "draw"; }).length;
+      S.perfect++;
+      say("<b>" + san + "</b> " + (holds === 1 ? "The only move! Excellent defence." : "Good, the draw holds."), "good", me);
+    } else if (e.cat === "loss") {
+      say("<b>" + san + "</b> That loses. The coach can force a win now. <b>Take back</b> and find the drawing move.", "bad", me);
+    } else say("<b>" + san + "</b> Now you're winning!", "good", me);
+  } else {
+    var worst = 0; before.moves.forEach(function(m){ if (m.plies > worst) worst = m.plies; });
+    if (e.plies >= worst) { S.perfect++; say("<b>" + san + "</b> Most stubborn defence.", "good", me); }
+    else say("<b>" + san + "</b> Lost anyway, but there was a longer defence.", "ok", me);
+  }
+  refreshStats();
+}
+function hangs(){
+  return game.moves({verbose:true}).some(function(m){ return !!m.captured; });
+}
+
+/* ---------- the coach's move ---------- */
+function centrality(sq){ var f = sq & 7, r = sq >> 3; return -Math.max(Math.abs(f - 3.5), Math.abs(r - 3.5)); }
+function pickRandom(a){ return a[Math.floor(Math.random()*a.length)]; }
+function coachMove(){
+  if (!S || S.over) return;
+  S.busy = true;
+  analyse().then(function(a){
+    if (!S || S.over) return;
+    var choice = chooseCoachMove(a);
+    if (!choice) { S.busy = false; checkTerminal(); return; }
+    var uci = choice.uci;
+    var mv = game.move({from:uci.slice(0,2), to:uci.slice(2,4), promotion: uci[4] || "q"});
+    S.lastMove = [sqIdx(uci.slice(0,2)), sqIdx(uci.slice(2,4))];
+    renderBoard(); updateMoves();
+    if (mv && mv.captured) say("I'll take that, thank you: <b>" + mv.san + "</b>.", "coach");
+    if (checkTerminal()) { S.busy = false; return; }
+    return refreshEval(false).then(function(cur){
+      if (checkGoal()) return;
+      if (S.watching) setTimeout(watchStep, 650);
+    });
+  }).catch(function(){ S.busy = false; });
+}
+function chooseCoachMove(a){
+  if (!a.moves.length) return null;
+  var rank = {win:0, draw:1, loss:2};
+  var bestCat = a.moves.reduce(function(c, m){ return rank[m.cat] < rank[c] ? m.cat : c; }, "loss");
+  var pool = a.moves.filter(function(m){ return m.cat === bestCat; });
+  if (bestCat === "win") {
+    var mn = Math.min.apply(null, pool.map(function(m){ return m.plies == null ? 9999 : m.plies; }));
+    pool = pool.filter(function(m){ return (m.plies == null ? 9999 : m.plies) === mn; });
+  } else if (bestCat === "loss") {
+    var mx = Math.max.apply(null, pool.map(function(m){ return m.plies || 0; }));
+    pool = pool.filter(function(m){ return (m.plies || 0) === mx; });
+    // with equal resistance, a lone king prefers the centre
+    if (pool[0] && pool[0].m) {
+      var bc = Math.max.apply(null, pool.map(function(m){ return centrality(m.m.to); }));
+      pool = pool.filter(function(m){ return centrality(m.m.to) === bc; });
+    }
+  } else if (bestCat === "draw" && S.kind === "kpk-def" && game.turn() !== S.student) {
+    // set traps: prefer moves after which most of the student's replies lose
+    var pos = posFromGame(game), bestScore = -1, traps = [];
+    pool.forEach(function(m){
+      var p2 = C.makeMove(pos, m.m), replies = C.legalMoves(p2);
+      if (replies.some(function(r){ return r.capture; })) return;
+      var lose = replies.filter(function(r){ return wtmPlies(C.makeMove(p2, r)) !== Infinity; }).length;
+      var score = replies.length ? lose / replies.length : 0;
+      if (score > bestScore + 1e-9) { bestScore = score; traps = [m]; } else if (Math.abs(score - bestScore) < 1e-9) traps.push(m);
+    });
+    if (traps.length) pool = traps;
+  }
+  return pickRandom(pool);
+}
+
+/* ---------- end of game ---------- */
+function countPieces(color, type){
+  var n = 0; game.board().forEach(function(row){ row.forEach(function(p){ if (p && p.color === color && (!type || p.type === type)) n++; }); }); return n;
+}
+function checkTerminal(){
+  var me = S.student, them = me === "w" ? "b" : "w";
+  if (game.in_checkmate()) {
+    if (game.turn() === them) return finish(true, "Checkmate!");
+    return finish(false, "You've been checkmated.");
+  }
+  if (game.in_stalemate()) return finish(goalIsDraw(), "Stalemate. It's a draw.");
+  if (game.insufficient_material()) return finish(goalIsDraw(), "Not enough material left to mate. Draw.");
+  if (game.in_threefold_repetition()) return finish(goalIsDraw(), "Threefold repetition. Draw.");
+  if (game.in_draw()) return finish(goalIsDraw(), "50-move rule. Draw.");
+  return false;
+}
+/* goals that are checked once the position has been re-evaluated (S.cur is fresh) */
+function checkGoal(){
+  var me = S.student, them = me === "w" ? "b" : "w";
+  var startQueens = (S.startFen.split(" ")[0].match(me === "w" ? /Q/g : /q/g) || []).length;
+  if (S.kind === "lesson") {
+    var g = S.def.goal;
+    if (g === "promote" && countPieces(me, "q") > startQueens && S.cur && game.turn() === me && S.cur.cat === "win")
+      return finish(true, "Pawn promoted and the position is still winning. Lesson complete!");
+    if (g === "bare" && countPieces(them) === 1 && game.turn() === me && S.cur && S.cur.cat === "win")
+      return finish(true, "Their king is on its own now, and the mate is a technicality. Lesson complete!");
+    if (g === "hold" && S.studentMoves >= S.def.holdMoves && S.cur && S.cur.cat !== "loss" && game.turn() === me)
+      return finish(true, "You held for " + S.def.holdMoves + " moves without slipping. Lesson complete!");
+  }
+  if (S.kind === "kpk-def" && S.studentMoves >= 25 && S.cur && S.cur.cat === "draw" && game.turn() === me) return finish(true, "25 accurate defensive moves. That's a draw!");
+  return false;
+}
+function goalIsDraw(){ return S.student === "b" && (S.kind === "kpk-def" || (S.kind === "lesson" && S.def.goal === "hold")); }
+function finish(success, text){
+  S.over = true; S.busy = false; stopWatch();
+  var r = document.getElementById("result"); r.style.display = "block";
+  var html = "<b>" + text + "</b>";
+  if (success && !S.assisted) {
+    if (S.kind === "mate") {
+      var opt = S.startOptimal || S.studentMoves, extra = S.studentMoves - opt;
+      var stars = extra <= 0 ? 3 : extra <= Math.max(2, Math.round(opt * 0.25)) ? 2 : 1;
+      html += '<div class="stars">' + starStr(stars) + '</div>You mated in <b>' + S.studentMoves + '</b> moves. Perfect play needed <b>' + opt + '</b>.';
+      var rec = progress[S.recKey] || {}; if (!rec.stars || stars > rec.stars) rec.stars = stars;
+      rec.wins = (rec.wins || 0) + 1; progress[S.recKey] = rec; saveProgress();
+    } else if (S.kind === "lesson") {
+      progress[S.recKey] = {done:true}; saveProgress();
+      html += "<div>" + S.perfect + " of " + S.graded + " moves were perfect.</div>";
+    } else {
+      var rk = progress[S.recKey] || {}; rk.wins = (rk.wins || 0) + 1; progress[S.recKey] = rk; saveProgress();
+      html += "<div>" + S.perfect + " of " + S.graded + " moves were perfect.</div>";
+    }
+  } else if (success) html += "<div>The coach helped with this one, so no stars. Try it yourself with <b>Restart</b>.</div>";
+  else html += "<div>Use <b>Take back</b> to try again from before the slip.</div>";
+  r.innerHTML = html;
+  say(text, success ? "good" : "bad");
+  setEval(success ? "Done" : "Over");
+  return true;
+}
+
+/* ---------- buttons ---------- */
+document.getElementById("backBtn").onclick = showPicker;
+document.getElementById("restartBtn").onclick = function(){ if (S && S.startFen) beginFrom(S.startFen); };
+document.getElementById("newBtn").onclick = function(){
+  if (!S) return;
+  if (S.kind === "mate") startMate(S.def, S.lvl); else if (S.kind !== "lesson") startKPK(S.def);
+};
+document.getElementById("undoBtn").onclick = function(){
+  if (!S || S.busy || S.watching) return;
+  var h = game.history(); if (!h.length) return;
+  game.undo();
+  if (game.turn() !== S.student && game.history().length) game.undo();
+  if (game.turn() !== S.student) { beginFrom(S.startFen); return; }
+  S.over = false; S.hint = 0; S.hintMove = null; S.selected = null;
+  var lastV = game.history({verbose:true}).slice(-1)[0];
+  S.lastMove = lastV ? [sqIdx(lastV.from), sqIdx(lastV.to)] : null;
+  S.studentMoves = Math.max(0, S.studentMoves - 1);
+  document.getElementById("result").style.display = "none";
+  renderBoard(); updateMoves();
+  say("Move taken back. Your turn again.", "coach");
+  refreshEval(false);
+};
+document.getElementById("hintBtn").onclick = function(){
+  if (!S || S.over || S.busy || !S.cur || game.turn() !== S.student) return;
+  if (!S.hintMove) {
+    var m = chooseCoachMove(S.cur); if (!m) return;
+    S.hintMove = [sqIdx(m.uci.slice(0,2)), sqIdx(m.uci.slice(2,4))];
+  }
+  S.hint = Math.min(2, S.hint + 1);
+  if (S.hint === 1) say("Look at the highlighted piece. What's the most useful thing it can do?", "coach");
+  else { say("Here's where it goes. Play it, or think about why it works first.", "coach"); S.assisted = true; }
+  renderBoard();
+};
+document.getElementById("watchBtn").onclick = function(){
+  if (!S || S.over) return;
+  if (S.watching) { stopWatch(); return; }
+  S.watching = true; S.assisted = true;
+  document.getElementById("watchBtn").textContent = "Stop watching";
+  say("Watch closely. I'll play your side too.", "coach");
+  if (!S.busy && game.turn() === S.student) watchStep();
+};
+function stopWatch(){
+  if (S) S.watching = false;
+  document.getElementById("watchBtn").textContent = "Watch the coach";
+}
+function watchStep(){
+  if (!S || !S.watching || S.over || game.turn() !== S.student) return;
+  var a = S.cur; if (!a) return;
+  var m = chooseCoachMove(a); if (!m) return;
+  playStudent(sqIdx(m.uci.slice(0,2)), sqIdx(m.uci.slice(2,4)), m.uci[4] || null);
+}
+
+renderPicker();
+loadSmall(); // build the small tables in the background straight away
+if (location.hash === "#lessons" || location.hash === "#pawns") document.querySelector('.tab[data-tab="' + location.hash.slice(1) + '"]').click();
+})();
+</script>
+</body>
+</html>
