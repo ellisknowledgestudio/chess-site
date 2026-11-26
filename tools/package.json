@@ -1,0 +1,7 @@
+{
+  "name": "chess-site-tools",
+  "private": true,
+  "description": "Build-time tools for the chess site. Never deployed.",
+  "scripts": { "test": "node --test" },
+  "dependencies": { "chess.js": "^1.0.0" }
+}

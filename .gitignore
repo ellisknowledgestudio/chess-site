@@ -2,3 +2,4 @@
 coach-config.php
 coach-data/
 *.backup-*.html
+tools/node_modules/
