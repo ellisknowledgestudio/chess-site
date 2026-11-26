@@ -85,7 +85,7 @@
   - `availableStages(23, true)` deep-equals `[8, 0]`; `availableStages(35, true)` deep-equals `[8, 12, 0]`; `availableStages(15, true)` deep-equals `[0]`
 - [ ] **Step 2:** `npm test`; expect failures.
 - [ ] **Step 3:** Implement the two functions, a `#stagePicker` button group labelled "Train to" (To move 8 / To move 12 / Full line) rebuilt on line change, restart of the line on stage change, per-stage completion, and the stats line counting completed lines at the current stage.
-- [ ] **Step 4:** `npm test`; expect pass. Then load the page in a headless browser with `EKS_REPLY_DELAY = 0`, select the Chigorin at "To move 8", play the line through the board API and confirm it finishes after 8.Bb3... i.e. after White's 8th move, with no console errors.
+- [ ] **Step 4:** `npm test`; expect pass. Then load the page in a headless browser with `EKS_REPLY_DELAY = 0`, select the Chigorin at "To move 8", play the line through the board API and confirm it finishes after 8.c3 (White's 8th move), with no console errors.
 - [ ] **Step 5:** Commit `feat: train opening lines in stages (Ruy Lopez)`.
 
 ### Task 4: Pull request
