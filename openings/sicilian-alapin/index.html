@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sicilian Defence: Alapin (2.c3) — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn the Alapin (2.c3) against the Sicilian Defence as White: key ideas and plans, a move-by-move line trainer covering every sound Black reply, the Qa4+ fork to know and a quick quiz. Free, in your browser.">
+<link rel="canonical" href="https://chess.ellisknowledgestudio.com/openings/sicilian-alapin/">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffdf8;
+  --ink: #1f2328;
+  --muted: #5d6470;
+  --line: #e2d9c8;
+  --accent: #8a5a2b;
+  --accent-ink: #ffffff;
+  --accent-soft: #f1e4d2;
+  --good: #2f7d4f;
+  --good-soft: #e3f2e8;
+  --bad: #b3402e;
+  --bad-soft: #f7e3df;
+  --sq-light: #efd9b4;
+  --sq-dark: #b58863;
+  --sq-sel: #f4e46a;
+  --sq-last: rgba(214, 196, 60, 0.55);
+  --sq-hint: rgba(47, 125, 79, 0.55);
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* Header and nav */
+.site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
+.logo { text-decoration: none; color: var(--ink); line-height: 1.15; }
+.logo strong { display: block; font-family: var(--font-head); font-size: 1.1rem; }
+.logo span { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.site-nav a { text-decoration: none; color: var(--muted); font-size: .92rem; font-weight: 500; }
+.site-nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero { padding: 40px 0 24px; }
+.eyebrow { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 8px; }
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.2; margin: 0 0 12px; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.6rem; margin-top: 8px; }
+h3 { font-size: 1.15rem; }
+.lead { font-size: 1.08rem; color: var(--muted); max-width: 720px; margin: 0 0 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tags li { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
+
+section { padding: 28px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card p { margin: 0 0 8px; }
+.card ul { margin: 0; padding-left: 20px; }
+.moves-inline { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+/* Board */
+.board-shell { width: 100%; max-width: 480px; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; aspect-ratio: 1 / 1; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; user-select: none; }
+.sq { position: relative; border: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 8.2vw, 2.6rem); line-height: 1; cursor: pointer; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.sq.light { background: var(--sq-light); }
+.sq.dark { background: var(--sq-dark); }
+.sq.last::before { content: ""; position: absolute; inset: 0; background: var(--sq-last); }
+.sq.sel::before { content: ""; position: absolute; inset: 0; background: var(--sq-sel); opacity: .8; }
+.sq.hint::before { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 4px var(--sq-hint); background: rgba(47,125,79,.18); }
+.sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(31,35,40,.28); }
+.sq.target.occ::after { width: 86%; height: 86%; background: transparent; border: 4px solid rgba(31,35,40,.3); }
+.sq .pc { position: relative; z-index: 1; }
+.sq .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.sq .pc.b { color: #111; }
+.sq .co { position: absolute; z-index: 1; font-family: var(--font-body); font-size: .62rem; font-weight: 600; pointer-events: none; }
+.sq .co.f { right: 3px; bottom: 1px; }
+.sq .co.r { left: 3px; top: 1px; }
+.sq.light .co { color: var(--sq-dark); }
+.sq.dark .co { color: var(--sq-light); }
+.board { touch-action: none; }
+.drag-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); line-height: 1; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.drag-ghost .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.drag-ghost .pc.b { color: #111; }
+
+/* Trainer layout */
+.tool { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 24px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.panel h3 { margin-bottom: 6px; }
+.stage-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; }
+.stage-row[hidden] { display: none; }
+.stage-row .line-picker { margin: 0; }
+.line-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.btn { font: inherit; font-size: .92rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px 14px; cursor: pointer; min-height: 40px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.btn.done::after { content: " \2713"; color: var(--good); }
+.btn:disabled { opacity: .5; cursor: default; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.feedback { border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: var(--accent-soft); min-height: 48px; }
+.feedback.good { background: var(--good-soft); color: var(--good); }
+.feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.movelist { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--bg); border-radius: 8px; padding: 10px 12px; min-height: 44px; word-wrap: break-word; }
+.movelist .cur { background: var(--sq-sel); border-radius: 4px; padding: 0 2px; }
+.small { font-size: .88rem; color: var(--muted); }
+.score { font-weight: 600; }
+
+/* Traps */
+.trap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+.trap .btn { margin-top: 6px; }
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links a { display: inline-block; text-decoration: none; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+.links a.alt { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); }
+
+.site-footer { border-top: 1px solid var(--line); padding: 24px 0 40px; margin-top: 24px; font-size: .78rem; letter-spacing: .14em; color: var(--muted); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+@media (max-width: 820px) {
+  .tool { grid-template-columns: 1fr; padding: 14px; }
+  .board-shell { margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../../index.html" aria-label="Ellis Knowledge Studio Chess home"><strong>Ellis Knowledge Studio</strong><span>Chess</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../analysis-board.html">Analysis Board</a></li>
+        <li><a href="../../openings-trainer.html">Openings Trainer</a></li>
+        <li><a href="../../openings/" class="current">Opening Guides</a></li>
+        <li><a href="../../checkmate-academy.html">Checkmate Academy</a></li>
+        <li><a href="../../endgames/">Endgames</a></li>
+        <li><a href="../../coach/">AI Coach</a></li>
+        <li><a href="../../junior-coaching.html">Junior Coaching</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <div class="hero">
+      <p class="eyebrow">Opening guide · White repertoire</p>
+      <h1>The Sicilian: Alapin (2.c3)</h1>
+      <p class="lead">1.e4 c5 2.c3 — the Alapin. Instead of walking into the Open Sicilian and its mountain of theory, you prepare d4 so that after ...cxd4 you can take back with the c-pawn and keep two pawns in the centre. This page gives you one answer to each sound Black reply and drills it move by move.</p>
+      <ul class="tags" aria-label="Opening details">
+        <li>ECO B22</li>
+        <li>For White</li>
+        <li>Club level</li>
+        <li>8 Black replies covered</li>
+      </ul>
+    </div>
+
+    <section id="overview" aria-labelledby="overview-h">
+      <h2 id="overview-h">Overview</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Key ideas</h3>
+          <ul>
+            <li><span class="moves-inline">2.c3</span> supports <span class="moves-inline">d4</span>. When Black takes with ...cxd4 you recapture <span class="moves-inline">cxd4</span> and keep a pawn pair on e4 and d4, or on e5 and d4.</li>
+            <li>The price is that your knight cannot use c3 yet, so Black hits e4 straight away with <span class="moves-inline">2...Nf6</span> or <span class="moves-inline">2...d5</span>. Those are the two main lines.</li>
+            <li>Against <span class="moves-inline">2...Nf6</span> push <span class="moves-inline">3.e5</span>; against <span class="moves-inline">2...d5</span> take with <span class="moves-inline">3.exd5</span>. Against everything else, play <span class="moves-inline">3.d4</span> (or 3.Nf3 first against 2...e5).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Typical plans</h3>
+          <ul>
+            <li>Develop simply: <span class="moves-inline">Nf3</span>, a bishop to d3, c4 or b5, castle short, then a knight to c3 once the c-pawn has been exchanged.</li>
+            <li>With the queen on d1 and the pawn on c3, <span class="moves-inline">Qa4+</span> can fork the king and a loose piece on e4, b4 or g4. See the trap below.</li>
+            <li>With an isolated d-pawn, keep the pieces on and aim at the kingside: Bd3, Qe2 or Qd3, rooks to d1 and e1, and a knight heading for e5.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pawn structures</h3>
+          <ul>
+            <li><strong>Isolated d-pawn</strong> (after 2...d5 or 2...Nc6): you have open lines and active pieces; Black wants exchanges and a blockade on d5.</li>
+            <li><strong>Pawn on e5</strong> (after 2...Nf6 or 2...g6): it cramps Black's kingside. Support it with d4 and Nf3, and be ready for ...d6 or ...f6.</li>
+            <li><strong>Full centre</strong> (after 2...d6 or 2...b6): pawns on e4 and d4 with Bd3 behind them. Keep it protected and build up slowly.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why the Alapin?</h3>
+          <p>You choose the kind of game, not Black. A Najdorf or Dragon player has spent years on the Open Sicilian and often very little on 2.c3. The positions are open and logical, the plans repeat from line to line, and there is far less to memorise.</p>
+        </div>
+        <div class="card">
+          <h3>If they play something odd</h3>
+          <p>Rare tries such as <span class="moves-inline">2...Qa5</span>, <span class="moves-inline">2...a6</span> or <span class="moves-inline">2...Qc7</span> do nothing to stop your plan. Play <span class="moves-inline">Nf3</span> and <span class="moves-inline">d4</span>, recapture on d4 with the c-pawn, and develop as in the lines below.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" aria-labelledby="trainer-h">
+      <h2 id="trainer-h">Line trainer</h2>
+      <p class="small">You play White. Click a piece, then its destination (or tab to a square and press Enter). Black replies automatically.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trainBoard" class="board" role="grid" aria-label="Line trainer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="lineName">Choose a line</h3>
+          <ul class="line-picker" id="linePicker" aria-label="Lines"></ul>
+          <div class="stage-row" id="stageRow" hidden>
+            <span class="small" id="stageLabel">Train to:</span>
+            <ul class="line-picker" id="stagePicker" aria-labelledby="stageLabel"></ul>
+          </div>
+          <p id="lineBlurb" class="small"></p>
+          <div id="trainFeedback" class="feedback" role="status" aria-live="polite">Pick a line to start.</div>
+          <div class="movelist" id="trainMoves" aria-label="Moves played"></div>
+          <div class="controls">
+            <button class="btn" id="hintBtn" type="button" aria-label="Show a hint for the next move">Hint</button>
+            <button class="btn" id="resetBtn" type="button" aria-label="Restart this line">Reset line</button>
+            <button class="btn" id="flipBtn" type="button" aria-label="Flip the board">Flip board</button>
+            <button class="btn primary" id="nextLineBtn" type="button" aria-label="Go to the next line">Next line</button>
+          </div>
+          <p class="small" id="trainStats"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="traps" aria-labelledby="traps-h">
+      <h2 id="traps-h">Trap to know</h2>
+      <p class="small">This one is a trap for you to spring. The same queen check wins a piece in many Alapin positions. Step through it on the board below.</p>
+      <div id="trapList"></div>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trapBoard" class="board" role="grid" aria-label="Trap viewer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="trapTitle">Choose a trap above</h3>
+          <div class="movelist" id="trapMoves" aria-label="Trap moves"></div>
+          <div id="trapNote" class="feedback" role="status" aria-live="polite">Use the buttons to step through the moves.</div>
+          <div class="controls">
+            <button class="btn" id="trapStart" type="button" aria-label="Go to start">&#9198; Start</button>
+            <button class="btn" id="trapBack" type="button" aria-label="Back one move">&#9664; Back</button>
+            <button class="btn" id="trapFwd" type="button" aria-label="Forward one move">Forward &#9654;</button>
+            <button class="btn" id="trapEnd" type="button" aria-label="Go to final position">End &#9197;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" aria-labelledby="quiz-h">
+      <h2 id="quiz-h">Quick quiz</h2>
+      <p class="small">One try per position. Play the move on the board.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="quizBoard" class="board" role="grid" aria-label="Quiz board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="quizTitle">Question 1</h3>
+          <p id="quizPrompt"></p>
+          <div id="quizFeedback" class="feedback" role="status" aria-live="polite">Your move.</div>
+          <p class="score" id="quizScore">Score: 0 / 0</p>
+          <div class="controls">
+            <button class="btn primary" id="quizNext" type="button" aria-label="Next question" disabled>Next question</button>
+            <button class="btn" id="quizRestart" type="button" aria-label="Restart the quiz">Restart quiz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" aria-labelledby="next-h">
+      <h2 id="next-h">Keep going</h2>
+      <p>Drill the lines with spaced repetition in the Openings Trainer, or set up any position from this page on the Analysis Board and check it with Stockfish.</p>
+      <div class="links">
+        <a href="../../openings-trainer.html">Openings Trainer →</a>
+        <a class="alt" href="../../analysis-board.html">Analysis Board →</a>
+        <a class="alt" href="../">All opening guides →</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">ELLIS KNOWLEDGE STUDIO · CHESS · SICILIAN ALAPIN</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var REPLY_DELAY = (typeof window.EKS_REPLY_DELAY === 'number') ? window.EKS_REPLY_DELAY : 450;
+  var FILES = 'abcdefgh';
+  var GLYPH = { w: { k: '♔', q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
+                b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' } };
+  var NAME = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+
+  /* ---------- Repertoire data (all lines checked with chess.js) ---------- */
+  var LINES = [
+    { id: 'nf6', name: '2...Nf6: main line',
+      blurb: '2...Nf6 attacks e4 at once. Push 3.e5, then build the centre with d4 and Nf3. The knight on d5 gets chased again by Bc4.',
+      moves: 'e4 c5 c3 Nf6 e5 Nd5 d4 cxd4 Nf3 Nc6 cxd4 d6 Bc4 Nb6 Bb5 dxe5 Nxe5 Bd7 Nxd7 Qxd7 Nc3',
+      note: 'You have the bishop pair and an isolated d-pawn; Black is solid. Castle, then decide between d5 to open the game for your bishops and simple development with Be3 and Rc1.' },
+    { id: 'd5', name: '2...d5: main line',
+      blurb: '2...d5 3.exd5 Qxd5. With your pawn on c3 there is no Nc3 to hit the queen, so play 4.d4 and develop. Be3 makes Black decide what to do on d4.',
+      moves: 'e4 c5 c3 d5 exd5 Qxd5 d4 Nf6 Nf3 e6 Be3 cxd4 cxd4 Nc6 Nc3 Qd6 a3 Be7 Bd3 O-O O-O',
+      note: 'A classic isolated d-pawn position. Your pieces are active: plans include Qe2 and Rad1, Bg5, and a knight to e5. Avoid swapping pieces without a reason.' },
+    { id: 'e6', name: '2...e6: French-style',
+      blurb: '2...e6 3.d4 d5 looks like a French Defence. Exchange on d5 and give Black the isolated pawn this time.',
+      moves: 'e4 c5 c3 e6 d4 d5 exd5 exd5 Nf3 Nc6 Bb5 Bd6 dxc5 Bxc5 O-O Ne7 Nbd2 O-O Nb3 Bb6 Re1',
+      note: 'Black has the isolated d-pawn. Put a knight on d4 in front of it, develop the c1 bishop to e3 or g5, and keep an eye on the d5 pawn.' },
+    { id: 'd6', name: '2...d6: full centre',
+      blurb: '2...d6 lets you take the whole centre. Guard e4 with Bd3 so that ...Nf6 does not win a pawn, and play h3 to stop ...Bg4.',
+      moves: 'e4 c5 c3 d6 d4 Nf6 Bd3 cxd4 cxd4 g6 Nf3 Bg7 h3 O-O O-O Nc6 Nc3',
+      note: 'You have the ideal centre and more space. Next comes Be3, Qd2 and Rc1 or Re1. Watch for ...e5 and ...Nb4 hitting the d3 bishop.' },
+    { id: 'g6', name: '2...g6: fianchetto',
+      blurb: '2...g6 3.d4 cxd4 4.cxd4 d5. Push past with 5.e5 and Black\'s bishop on g7 bites on your pawn chain.',
+      moves: 'e4 c5 c3 g6 d4 cxd4 cxd4 d5 e5 Nc6 Nc3 Bg7 h3 Nh6 Nf3 O-O Be2 f6 exf6 exf6 O-O',
+      note: 'Black has freed the g7 bishop with ...f6, but the d5 pawn is now a target. Pressure it with Qb3 and Bf4, and use the e-file with Re1.' },
+    { id: 'nc6', name: '2...Nc6',
+      blurb: '2...Nc6 3.d4 usually turns into a 2...d5 position with the knight already on c6. Meet ...Bg4 with Be2 and then gain time on the queen with Nc3.',
+      moves: 'e4 c5 c3 Nc6 d4 cxd4 cxd4 d5 exd5 Qxd5 Nf3 Bg4 Be2 e6 Nc3 Qa5 O-O Nf6 h3 Bh5 Be3',
+      note: 'Another isolated d-pawn position with your development complete. Typical ideas are a3 and b4 to chase the queen, Qb3 hitting b7, and Ne5.' },
+    { id: 'e5', name: '2...e5',
+      blurb: '2...e5 stops d4 for the moment but leaves a hole on d5. Develop with Nf3 and Bc4, then break with d4 anyway.',
+      moves: 'e4 c5 c3 e5 Nf3 Nc6 Bc4 Be7 d4 cxd4 cxd4 exd4 Nxd4 Nf6 Nc3 O-O O-O',
+      note: 'The centre has opened with your pieces on good squares. The d5 square and the d6 pawn are your targets: consider Nf5, Bf4 and Re1.' },
+    { id: 'b6', name: '2...b6',
+      blurb: '2...b6 aims the bishop at e4. Take the centre, put the bishop on d3 and guard e4 with Qe2 so you can castle in peace.',
+      moves: 'e4 c5 c3 b6 d4 Bb7 Bd3 e6 Nf3 Nf6 Qe2 Be7 O-O',
+      note: 'Your centre is secure. If Black plays ...d5, push e5 and attack on the kingside; otherwise develop with Nbd2, Rd1 and a3.' }
+  ];
+
+  var TRAPS = [
+    { id: 'qa4fork', title: 'The Qa4+ fork (never leave a piece loose on e4)',
+      text: 'After 2...d6 3.d4 Nf6 you can also play 4.dxc5. If Black grabs the e4 pawn, the queen check on a4 forks king and knight. The c3 pawn is what opens that diagonal for your queen, so the same idea turns up all over the Alapin.',
+      moves: 'e4 c5 c3 d6 d4 Nf6 dxc5 Nxe4 Qa4+ Bd7 Qxe4',
+      bad: 7,
+      notes: { 5: '3...Nf6 attacks e4.', 6: '4.dxc5 — a sideline that sets the trap. (The trainer line uses 4.Bd3.)', 7: '4...Nxe4?? — the mistake. Black should play 4...Nc6 or 4...dxc5.', 8: '5.Qa4+! Check, and the queen also attacks the knight on e4.', 9: '5...Bd7 blocks the check but cannot save the knight.', 10: '6.Qxe4. White has won a piece for a pawn.' } }
+  ];
+
+  var QUIZ = [
+    { pre: 'e4 c5 c3 Nf6', prompt: 'Black attacks your e-pawn with 2...Nf6. What is the Alapin answer?', accept: ['e5'],
+      explain: '3.e5 gains space and chases the knight. Defending with 3.d3 would give up the whole idea of building a centre with d4.' },
+    { pre: 'e4 c5 c3 d5', prompt: 'Black strikes in the centre with 2...d5. Play the repertoire move.', accept: ['exd5'],
+      explain: '3.exd5 Qxd5 brings the queen out early. With your pawn on c3 you cannot hit it with Nc3 yet, so you continue with 4.d4.' },
+    { pre: 'e4 c5 c3 d5 exd5 Qxd5', prompt: 'The queen has recaptured on d5. What is the point of 2.c3?', accept: ['d4'],
+      explain: '4.d4 takes the centre. If Black exchanges on d4 you recapture with the c-pawn and the knight gets the c3 square with gain of time.' },
+    { pre: 'e4 c5 c3 Nf6 e5 Nd5 d4 cxd4 Nf3 Nc6', prompt: 'Black has taken on d4 and developed. How do you restore your centre?', accept: ['cxd4', 'Bc4'],
+      explain: '6.cxd4 completes the centre with pawns on d4 and e5. 6.Bc4 first is a good alternative that hits the d5 knight.' },
+    { pre: 'e4 c5 c3 d6 d4 Nf6 dxc5 Nxe4', prompt: 'Black has grabbed the e4 pawn. Punish it.', accept: ['Qa4+'],
+      explain: '5.Qa4+ forks the king and the knight on e4. After the check is blocked, Qxe4 wins a piece.' },
+    { pre: 'e4 c5 c3 e5 Nf3 Nc6', prompt: 'Black has stopped d4 for now with 2...e5. Where does your bishop belong?', accept: ['Bc4'],
+      explain: '4.Bc4 points at f7 and controls d5, the hole Black created with ...e5. You will play d4 a move or two later.' }
+  ];
+
+  function splitMoves(s) { return s ? s.split(' ') : []; }
+
+  /* ---------- Board component ---------- */
+  function Board(el, opts) {
+    this.el = el;
+    this.orientation = 'w';
+    this.game = null;
+    this.selected = null;
+    this.last = null;
+    this.hint = null;
+    this.interactive = false;
+    this.onMove = opts.onMove || null;
+    this.squares = {};
+    this.build();
+    this.initDrag();
+  }
+  Board.prototype.build = function () {
+    var self = this, r, f, sq, btn;
+    this.el.innerHTML = '';
+    this.squares = {};
+    for (r = 0; r < 8; r++) {
+      for (f = 0; f < 8; f++) {
+        var file = this.orientation === 'w' ? f : 7 - f;
+        var rank = this.orientation === 'w' ? 8 - r : r + 1;
+        sq = FILES.charAt(file) + rank;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sq ' + (((file + rank) % 2 === 0) ? 'light' : 'dark');
+        btn.setAttribute('data-sq', sq);
+        btn.setAttribute('role', 'gridcell');
+        btn.tabIndex = (r === 7 && f === 0) ? 0 : -1;
+        btn.addEventListener('click', (function (s) { return function () { self.clickSquare(s); }; })(sq));
+        btn.addEventListener('keydown', (function (s) { return function (e) { self.keyNav(e, s); }; })(sq));
+        this.el.appendChild(btn);
+        this.squares[sq] = btn;
+      }
+    }
+  };
+  Board.prototype.initDrag = function () {
+    var self = this, drag = null;
+    function sqAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      while (el && el !== self.el && !(el.getAttribute && el.getAttribute('data-sq'))) el = el.parentNode;
+      return (el && el !== self.el) ? el.getAttribute('data-sq') : null;
+    }
+    this.el.addEventListener('pointerdown', function (e) {
+      if (!self.interactive || !self.game || e.button !== 0) return;
+      var sq = sqAt(e.clientX, e.clientY);
+      if (!sq) return;
+      var p = self.game.get(sq);
+      if (!p || p.color !== self.game.turn()) return;
+      drag = { from: sq, x: e.clientX, y: e.clientY, ghost: null, moved: false };
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
+        drag.moved = true;
+        self.selected = drag.from;
+        self.render();
+        var src = self.squares[drag.from], pc = src.querySelector('.pc');
+        var g = document.createElement('div');
+        g.className = 'drag-ghost';
+        g.innerHTML = pc.outerHTML;
+        g.style.fontSize = window.getComputedStyle(src).fontSize;
+        document.body.appendChild(g);
+        drag.ghost = g;
+        pc.style.opacity = '0.25';
+      }
+      e.preventDefault();
+      drag.ghost.style.left = e.clientX + 'px';
+      drag.ghost.style.top = e.clientY + 'px';
+    }, { passive: false });
+    function end(e) {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (!d.moved) return;
+      if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+      var swallow = function (ev) { ev.stopPropagation(); self.el.removeEventListener('click', swallow, true); };
+      self.el.addEventListener('click', swallow, true);
+      setTimeout(function () { self.el.removeEventListener('click', swallow, true); }, 0);
+      var to = e.type === 'pointerup' ? sqAt(e.clientX, e.clientY) : null;
+      var ok = false, legal, i;
+      if (to && to !== d.from) {
+        legal = self.game.moves({ square: d.from, verbose: true });
+        for (i = 0; i < legal.length; i++) if (legal[i].to === to) ok = true;
+      }
+      self.selected = null;
+      self.render();
+      if (ok && self.onMove) self.onMove(d.from, to);
+    }
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+  };
+  Board.prototype.keyNav = function (e, sq) {
+    var dx = 0, dy = 0;
+    if (e.key === 'ArrowLeft') dx = -1; else if (e.key === 'ArrowRight') dx = 1;
+    else if (e.key === 'ArrowUp') dy = 1; else if (e.key === 'ArrowDown') dy = -1;
+    else return;
+    e.preventDefault();
+    if (this.orientation === 'b') { dx = -dx; dy = -dy; }
+    var f = FILES.indexOf(sq.charAt(0)) + dx, r = parseInt(sq.charAt(1), 10) + dy;
+    if (f < 0 || f > 7 || r < 1 || r > 8) return;
+    var next = this.squares[FILES.charAt(f) + r];
+    var k;
+    for (k in this.squares) { if (this.squares.hasOwnProperty(k)) this.squares[k].tabIndex = -1; }
+    next.tabIndex = 0;
+    next.focus();
+  };
+  Board.prototype.flip = function () {
+    this.orientation = this.orientation === 'w' ? 'b' : 'w';
+    this.build();
+    this.render();
+  };
+  Board.prototype.set = function (game, last) {
+    this.game = game;
+    this.last = last || null;
+    this.selected = null;
+    this.hint = null;
+    this.render();
+  };
+  Board.prototype.render = function () {
+    if (!this.game) return;
+    var targets = {}, k, i, moves;
+    if (this.selected) {
+      moves = this.game.moves({ square: this.selected, verbose: true });
+      for (i = 0; i < moves.length; i++) targets[moves[i].to] = true;
+    }
+    for (k in this.squares) {
+      if (!this.squares.hasOwnProperty(k)) continue;
+      var btn = this.squares[k];
+      var p = this.game.get(k);
+      var cls = btn.className.split(' ').slice(0, 2).join(' ');
+      if (this.last && (this.last.from === k || this.last.to === k)) cls += ' last';
+      if (this.selected === k) cls += ' sel';
+      if (this.hint && this.hint.indexOf(k) !== -1) cls += ' hint';
+      if (targets[k]) cls += ' target' + (p ? ' occ' : '');
+      btn.className = cls;
+      var html = '';
+      if (p) html += '<span class="pc ' + p.color + '" aria-hidden="true">' + GLYPH[p.color][p.type] + '</span>';
+      var file = k.charAt(0), rank = k.charAt(1);
+      var bottomRank = this.orientation === 'w' ? '1' : '8';
+      var leftFile = this.orientation === 'w' ? 'a' : 'h';
+      if (rank === bottomRank) html += '<span class="co f" aria-hidden="true">' + file + '</span>';
+      if (file === leftFile) html += '<span class="co r" aria-hidden="true">' + rank + '</span>';
+      btn.innerHTML = html;
+      btn.setAttribute('aria-label', k + (p ? ', ' + (p.color === 'w' ? 'white ' : 'black ') + NAME[p.type] : ', empty') + (targets[k] ? ', legal move' : ''));
+    }
+  };
+  Board.prototype.clickSquare = function (sq) {
+    if (!this.interactive || !this.game) return;
+    var p = this.game.get(sq);
+    if (this.selected) {
+      if (sq === this.selected) { this.selected = null; this.render(); return; }
+      var legal = this.game.moves({ square: this.selected, verbose: true });
+      var i, found = null;
+      for (i = 0; i < legal.length; i++) if (legal[i].to === sq) { found = legal[i]; break; }
+      if (found) {
+        var from = this.selected;
+        this.selected = null;
+        if (this.onMove) this.onMove(from, sq);
+        return;
+      }
+    }
+    if (p && p.color === this.game.turn()) { this.selected = sq; } else { this.selected = null; }
+    this.render();
+  };
+
+  function sanFor(game, from, to) {
+    var t = new Chess(game.fen());
+    var m = t.move({ from: from, to: to, promotion: 'q' });
+    return m ? m.san : null;
+  }
+  function movesText(list, upto, highlightIndex) {
+    var out = [], i;
+    for (i = 0; i < upto; i++) {
+      var txt = (i % 2 === 0 ? (i / 2 + 1) + '.' : '') + list[i];
+      if (i === highlightIndex) txt = '<span class="cur">' + txt + '</span>';
+      out.push(txt);
+    }
+    return out.join(' ');
+  }
+  function setFb(el, text, kind) {
+    el.className = 'feedback' + (kind ? ' ' + kind : '');
+    el.textContent = text;
+  }
+
+  /* ---------- Line trainer ---------- */
+  var T = { line: null, idx: 0, ply: 0, game: new Chess(), mistakes: 0, hintStage: 0, busy: false, done: {}, timer: null, stage: 0 };
+
+  /* Stages: train a long line up to move 8, move 12, or in full (0). */
+  var STAGES = [8, 12, 0];
+  var TRAINEE_IS_WHITE = true;
+  function stagePlies(totalPlies, stage, traineeIsWhite) {
+    if (!stage) return totalPlies;
+    return Math.min(traineeIsWhite ? stage * 2 - 1 : stage * 2, totalPlies);
+  }
+  function availableStages(totalPlies, traineeIsWhite) {
+    var out = [], i;
+    for (i = 0; i < STAGES.length; i++) {
+      if (!STAGES[i] || stagePlies(totalPlies, STAGES[i], traineeIsWhite) < totalPlies) out.push(STAGES[i]);
+    }
+    return out;
+  }
+  function stageName(stage) { return stage ? 'To move ' + stage : 'Full line'; }
+  function doneKey(id) { return id + ':' + T.stage; }
+  var trainBoard = new Board(document.getElementById('trainBoard'), { onMove: trainerMove });
+  var picker = document.getElementById('linePicker');
+  var trainFb = document.getElementById('trainFeedback');
+
+  function buildPicker() {
+    var i;
+    picker.innerHTML = '';
+    for (i = 0; i < LINES.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (T.done[doneKey(LINES[i].id)] ? ' done' : '');
+      b.textContent = LINES[i].name;
+      b.setAttribute('aria-pressed', T.idx === i && T.line ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Train line: ' + LINES[i].name + (T.done[doneKey(LINES[i].id)] ? ' (completed)' : ''));
+      b.addEventListener('click', (function (n) { return function () { startLine(n); }; })(i));
+      li.appendChild(b);
+      picker.appendChild(li);
+    }
+  }
+  function buildStagePicker() {
+    var sp = document.getElementById('stagePicker'), row = document.getElementById('stageRow'), stages, i;
+    sp.innerHTML = '';
+    if (!T.line) { row.hidden = true; return; }
+    stages = availableStages(splitMoves(T.line.moves).length, TRAINEE_IS_WHITE);
+    row.hidden = stages.length < 2;
+    if (stages.length < 2) return;
+    for (i = 0; i < stages.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.textContent = stageName(stages[i]);
+      b.setAttribute('aria-pressed', T.stage === stages[i] ? 'true' : 'false');
+      b.addEventListener('click', (function (st) { return function () { chooseStage(st); }; })(stages[i]));
+      li.appendChild(b);
+      sp.appendChild(li);
+    }
+  }
+  function chooseStage(st) {
+    T.stage = st;
+    startLine(T.idx);
+    // The pickers are rebuilt, so put keyboard focus back on the chosen stage and announce it.
+    var pressed = document.querySelector('#stagePicker button[aria-pressed="true"]');
+    if (pressed) pressed.focus();
+    setFb(trainFb, (st ? 'Training to move ' + st : 'Training the full line') + '. Your move as White.', '');
+  }
+  function fullLineMoves() { return splitMoves(T.line.moves); }
+  function lineMoves() {
+    var all = fullLineMoves();
+    return all.slice(0, stagePlies(all.length, T.stage, TRAINEE_IS_WHITE));
+  }
+  function updateTrainUI() {
+    var mv = T.line ? lineMoves() : [];
+    document.getElementById('trainMoves').innerHTML = movesText(mv, T.ply, T.ply - 1) || '<span class="small">Start position</span>';
+    var count = 0, i;
+    for (i = 0; i < LINES.length; i++) if (T.done[doneKey(LINES[i].id)]) count++;
+    document.getElementById('trainStats').textContent = 'Lines completed ' + (T.stage ? 'to move ' + T.stage : 'in full') + ': ' + count + ' / ' + LINES.length + (T.line ? ' · Mistakes this line: ' + T.mistakes : '');
+  }
+  function startLine(n) {
+    if (T.timer) { clearTimeout(T.timer); T.timer = null; }
+    T.idx = n;
+    T.line = LINES[n];
+    if (availableStages(fullLineMoves().length, TRAINEE_IS_WHITE).indexOf(T.stage) === -1) T.stage = 0;
+    T.ply = 0;
+    T.mistakes = 0;
+    T.hintStage = 0;
+    T.busy = false;
+    T.game = new Chess();
+    document.getElementById('lineName').textContent = T.line.name;
+    document.getElementById('lineBlurb').textContent = T.line.blurb;
+    trainBoard.interactive = true;
+    trainBoard.set(T.game, null);
+    setFb(trainFb, 'Your move as White.', '');
+    buildPicker();
+    buildStagePicker();
+    updateTrainUI();
+  }
+  function trainerMove(from, to) {
+    if (!T.line || T.busy) return;
+    var mv = lineMoves();
+    var expected = mv[T.ply];
+    var san = sanFor(T.game, from, to);
+    if (san === expected) {
+      var m = T.game.move(expected);
+      T.ply++;
+      T.hintStage = 0;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      afterUserMove();
+    } else {
+      T.mistakes++;
+      trainBoard.set(T.game, trainBoard.last);
+      setFb(trainFb, (san || 'That move') + ' is not the repertoire move here. Try again, or press Hint.', 'bad');
+      updateTrainUI();
+    }
+  }
+  function afterUserMove() {
+    var mv = lineMoves();
+    if (T.ply >= mv.length) { finishLine(); return; }
+    setFb(trainFb, 'Correct. Black is thinking…', 'good');
+    T.busy = true;
+    var doReply = function () {
+      T.timer = null;
+      var m = T.game.move(mv[T.ply]);
+      T.ply++;
+      T.busy = false;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      if (T.ply >= mv.length) { finishLine(); return; }
+      setFb(trainFb, 'Black played ' + m.san + '. Your move.', '');
+    };
+    if (REPLY_DELAY > 0) T.timer = setTimeout(doReply, REPLY_DELAY); else doReply();
+  }
+  function finishLine() {
+    var partial = lineMoves().length < fullLineMoves().length;
+    T.done[doneKey(T.line.id)] = true;
+    trainBoard.interactive = false;
+    setFb(trainFb, (partial ? 'Stage complete' : 'Line complete') + (T.mistakes ? ' with ' + T.mistakes + ' mistake' + (T.mistakes === 1 ? '' : 's') : ' with no mistakes') + '. ' +
+      (partial ? 'You know this line to move ' + T.stage + '. Pick a longer stage to go deeper.' : T.line.note), 'good');
+    buildPicker();
+    updateTrainUI();
+  }
+  document.getElementById('hintBtn').addEventListener('click', function () {
+    if (!T.line || T.busy || T.ply >= lineMoves().length) return;
+    var t = new Chess(T.game.fen());
+    var m = t.move(lineMoves()[T.ply]);
+    if (T.hintStage === 0) {
+      trainBoard.hint = [m.from];
+      setFb(trainFb, 'Hint: move the ' + NAME[m.piece] + ' on ' + m.from + '.', '');
+      T.hintStage = 1;
+    } else {
+      trainBoard.hint = [m.from, m.to];
+      setFb(trainFb, 'The move is ' + m.san + '.', '');
+    }
+    trainBoard.render();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () { if (T.line) startLine(T.idx); });
+  document.getElementById('flipBtn').addEventListener('click', function () { trainBoard.flip(); });
+  document.getElementById('nextLineBtn').addEventListener('click', function () { startLine(T.line ? (T.idx + 1) % LINES.length : 0); });
+
+  /* ---------- Trap viewer ---------- */
+  var V = { trap: null, ply: 0 };
+  var trapBoard = new Board(document.getElementById('trapBoard'), {});
+  function buildTraps() {
+    var list = document.getElementById('trapList'), i;
+    for (i = 0; i < TRAPS.length; i++) {
+      var d = document.createElement('div');
+      d.className = 'trap';
+      var h = document.createElement('h3'); h.textContent = TRAPS[i].title;
+      var p = document.createElement('p'); p.textContent = TRAPS[i].text;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn'; b.textContent = 'Show on board';
+      b.setAttribute('aria-label', 'Show ' + TRAPS[i].title + ' on the board');
+      b.addEventListener('click', (function (n) { return function () { loadTrap(n); }; })(i));
+      d.appendChild(h); d.appendChild(p); d.appendChild(b);
+      list.appendChild(d);
+    }
+  }
+  function loadTrap(n) {
+    V.trap = TRAPS[n];
+    document.getElementById('trapTitle').textContent = V.trap.title;
+    gotoTrap(V.trap.bad);
+  }
+  function gotoTrap(ply) {
+    if (!V.trap) return;
+    var mv = splitMoves(V.trap.moves);
+    if (ply < 0) ply = 0;
+    if (ply > mv.length) ply = mv.length;
+    V.ply = ply;
+    var g = new Chess(), last = null, i;
+    for (i = 0; i < ply; i++) last = g.move(mv[i]);
+    trapBoard.set(g, last);
+    document.getElementById('trapMoves').innerHTML = movesText(mv, mv.length, ply - 1);
+    var note = V.trap.notes[ply - 1];
+    setFb(document.getElementById('trapNote'), note || (ply === 0 ? 'Start position.' : 'Move ' + Math.ceil(ply / 2) + '. Step forward to continue.'), '');
+  }
+  document.getElementById('trapStart').addEventListener('click', function () { gotoTrap(0); });
+  document.getElementById('trapBack').addEventListener('click', function () { gotoTrap(V.ply - 1); });
+  document.getElementById('trapFwd').addEventListener('click', function () { gotoTrap(V.ply + 1); });
+  document.getElementById('trapEnd').addEventListener('click', function () { if (V.trap) gotoTrap(splitMoves(V.trap.moves).length); });
+
+  /* ---------- Quiz ---------- */
+  var Q = { i: 0, score: 0, answered: 0, game: null, locked: false };
+  var quizBoard = new Board(document.getElementById('quizBoard'), { onMove: quizMove });
+  var quizFb = document.getElementById('quizFeedback');
+  function loadQuestion() {
+    var item = QUIZ[Q.i], mv = splitMoves(item.pre), g = new Chess(), last = null, i;
+    for (i = 0; i < mv.length; i++) last = g.move(mv[i]);
+    Q.game = g;
+    Q.locked = false;
+    quizBoard.interactive = true;
+    quizBoard.set(g, last);
+    document.getElementById('quizTitle').textContent = 'Question ' + (Q.i + 1) + ' of ' + QUIZ.length;
+    document.getElementById('quizPrompt').innerHTML = '<span class="small">After ' + movesText(mv, mv.length, -1) + '</span><br>' + item.prompt;
+    setFb(quizFb, 'Your move (White).', '');
+    document.getElementById('quizNext').disabled = true;
+    document.getElementById('quizNext').textContent = Q.i === QUIZ.length - 1 ? 'See result' : 'Next question';
+    updateScore();
+  }
+  function updateScore() { document.getElementById('quizScore').textContent = 'Score: ' + Q.score + ' / ' + Q.answered; }
+  function quizMove(from, to) {
+    if (Q.locked) return;
+    var item = QUIZ[Q.i];
+    var san = sanFor(Q.game, from, to);
+    var ok = item.accept.indexOf(san) !== -1;
+    Q.locked = true;
+    Q.answered++;
+    if (ok) Q.score++;
+    var m = Q.game.move(ok ? san : item.accept[0]);
+    quizBoard.interactive = false;
+    quizBoard.set(Q.game, m);
+    setFb(quizFb, (ok ? 'Correct! ' : 'Not quite — you played ' + san + '. The answer is ' + item.accept[0] + '. ') + item.explain, ok ? 'good' : 'bad');
+    document.getElementById('quizNext').disabled = false;
+    updateScore();
+  }
+  document.getElementById('quizNext').addEventListener('click', function () {
+    if (Q.i < QUIZ.length - 1) { Q.i++; loadQuestion(); return; }
+    var pct = Math.round(100 * Q.score / QUIZ.length);
+    document.getElementById('quizTitle').textContent = 'Quiz complete';
+    document.getElementById('quizPrompt').textContent = '';
+    setFb(quizFb, 'You scored ' + Q.score + ' / ' + QUIZ.length + ' (' + pct + '%). ' + (pct === 100 ? 'Excellent — you know your Alapin.' : 'Run the line trainer again, then retry.'), pct >= 70 ? 'good' : '');
+    document.getElementById('quizNext').disabled = true;
+  });
+  document.getElementById('quizRestart').addEventListener('click', function () { Q.i = 0; Q.score = 0; Q.answered = 0; loadQuestion(); });
+
+  /* ---------- Init ---------- */
+  buildPicker();
+  trainBoard.set(new Chess(), null);
+  updateTrainUI();
+  buildTraps();
+  trapBoard.set(new Chess(), null);
+  loadQuestion();
+
+  window.EKSAlapin = { LINES: LINES, TRAPS: TRAPS, QUIZ: QUIZ, state: { T: T, Q: Q, V: V }, stagePlies: stagePlies, availableStages: availableStages };
+})();
+</script>
+</body>
+</html>

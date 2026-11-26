@@ -257,7 +257,8 @@ section { padding: 28px 0; }
   /* ---------- Opening guides: add one entry per new opening page ----------
      side: 'w' or 'b'. families: opening names (as the explorer shows them) that
      this guide covers, so the explorer can link to it. live: false shows
-     "Coming soon" with no link. */
+     "Coming soon" with no link. names (optional): exact opening names, for a
+     guide that covers one variation rather than a whole family. */
   var GUIDES = [
     { name: 'Italian Game', glyph: '♗', side: 'w', eco: 'C50–C55', level: 'Club',
       url: 'italian-game/', live: true, badge: 'New',
@@ -275,6 +276,10 @@ section { padding: 28px 0; }
       url: 'caro-kann/', live: true, badge: 'New',
       desc: 'A solid answer to 1.e4 for Black: Classical 4...Bf5, the Advance and the Exchange, a smothered-mate trap to avoid and a quiz.',
       families: ['Caro-Kann Defence'] },
+    { name: 'Sicilian: Alapin (2.c3)', glyph: '♙', side: 'w', eco: 'B22', level: 'Club',
+      url: 'sicilian-alapin/', live: true, badge: 'New',
+      desc: 'Meet the Sicilian with 2.c3 as White: one line against each of Black\u2019s eight sound replies, the Qa4+ fork and a quiz.',
+      families: [], names: ['Sicilian Defence: Alapin Variation'] },
     { name: 'Scotch Game', glyph: '♘', side: 'w', eco: 'C44–C45', level: 'All',
       url: '../openings-trainer.html', live: true, badge: 'In the Trainer',
       desc: 'Open the centre at once with 3.d4. Drill it with spaced repetition in the Openings Trainer.',
@@ -768,6 +773,9 @@ section { padding: 28px 0; }
       if (!GUIDES[i].live) continue;
       for (j = 0; j < GUIDES[i].families.length; j++) {
         if (GUIDES[i].families[j] === entry.family) return GUIDES[i];
+      }
+      for (j = 0; GUIDES[i].names && j < GUIDES[i].names.length; j++) {
+        if (entry.full.indexOf(GUIDES[i].names[j]) === 0) return GUIDES[i];
       }
     }
     return null;
