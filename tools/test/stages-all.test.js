@@ -10,6 +10,7 @@ const CHESS_SRC = fs.readFileSync(require.resolve('chess.js-legacy'), 'utf8');
 const PAGES = [
   { slug: 'ruy-lopez', api: 'EKSRuyLopez', white: true },
   { slug: 'italian-game', api: 'EKSItalian', white: true },
+  { slug: 'sicilian-alapin', api: 'EKSAlapin', white: true },
   { slug: 'caro-kann', api: 'EKSCaroKann', white: false },
   { slug: 'queens-gambit-declined', api: 'EKSQGD', white: false }
 ];

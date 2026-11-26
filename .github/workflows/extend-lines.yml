@@ -23,6 +23,7 @@ on:
           - italian-game
           - caro-kann
           - queens-gambit-declined
+          - sicilian-alapin
 
 permissions:
   contents: write
