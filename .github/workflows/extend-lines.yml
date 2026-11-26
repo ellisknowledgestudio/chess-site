@@ -20,6 +20,9 @@ on:
           # Add an opening here only once its page has the "Train to" stage control,
           # otherwise its trainer becomes one long 18-move line.
           - ruy-lopez
+          - italian-game
+          - caro-kann
+          - queens-gambit-declined
 
 permissions:
   contents: write
