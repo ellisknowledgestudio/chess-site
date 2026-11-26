@@ -17,7 +17,15 @@ const PAGES = [
   { slug: 'kings-indian-defence', api: 'EKSKingsIndian', white: false },
   { slug: 'grunfeld-defence', api: 'EKSGrunfeld', white: false },
   { slug: 'english-opening', api: 'EKSEnglish', white: true },
-  { slug: 'pirc-defence', api: 'EKSPirc', white: false }
+  { slug: 'pirc-defence', api: 'EKSPirc', white: false },
+  { slug: 'sicilian-najdorf', api: 'EKSNajdorf', white: false },
+  { slug: 'sicilian-dragon', api: 'EKSDragon', white: false },
+  { slug: 'sicilian-sveshnikov', api: 'EKSSveshnikov', white: false },
+  { slug: 'sicilian-taimanov', api: 'EKSTaimanov', white: false },
+  { slug: 'sicilian-classical', api: 'EKSClassicalSicilian', white: false },
+  { slug: 'sicilian-accelerated-dragon', api: 'EKSAccelDragon', white: false },
+  { slug: 'sicilian-scheveningen', api: 'EKSScheveningen', white: false },
+  { slug: 'sicilian-smith-morra', api: 'EKSSmithMorra', white: true }
 ];
 // A legal 36-ply line for each side to stand in for an extended line.
 const LONG = {

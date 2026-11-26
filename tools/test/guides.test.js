@@ -18,7 +18,23 @@ const GUIDES = [
   { slug: 'english-opening', api: 'EKSEnglish', white: true, title: /English Opening/, start: 'c4', minLines: 6,
     foreign: /Alapin|2\.c3|Ruy|Caro/, explorer: ['c4'] },
   { slug: 'pirc-defence', api: 'EKSPirc', white: false, title: /Pirc Defence/, start: 'e4 d6 d4 Nf6 Nc3 g6', minLines: 6,
-    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'd6', 'd4', 'Nf6', 'Nc3', 'g6'] }
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'd6', 'd4', 'Nf6', 'Nc3', 'g6'] },
+  { slug: 'sicilian-najdorf', api: 'EKSNajdorf', white: false, title: /Najdorf/, start: 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'a6'] },
+  { slug: 'sicilian-dragon', api: 'EKSDragon', white: false, title: /Sicilian.*Dragon/, start: 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'g6'] },
+  { slug: 'sicilian-sveshnikov', api: 'EKSSveshnikov', white: false, title: /Sveshnikov/, start: 'e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 e5', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'Nc6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'e5'] },
+  { slug: 'sicilian-taimanov', api: 'EKSTaimanov', white: false, title: /Taimanov/, start: 'e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nc6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'e6', 'd4', 'cxd4', 'Nxd4', 'Nc6'] },
+  { slug: 'sicilian-classical', api: 'EKSClassicalSicilian', white: false, title: /Classical Sicilian/, start: 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 Nc6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'Nc6'] },
+  { slug: 'sicilian-accelerated-dragon', api: 'EKSAccelDragon', white: false, title: /Accelerated Dragon/, start: 'e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 g6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'Nc6', 'd4', 'cxd4', 'Nxd4', 'g6'] },
+  { slug: 'sicilian-scheveningen', api: 'EKSScheveningen', white: false, title: /Scheveningen/, start: 'e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nf6 Nc3 d6', minLines: 6,
+    foreign: /Caro|Kann|1\.e4 c6|Alapin|Ruy/, explorer: ['e4', 'c5', 'Nf3', 'e6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'd6'] },
+  { slug: 'sicilian-smith-morra', api: 'EKSSmithMorra', white: true, title: /Smith-Morra/, start: 'e4 c5 d4 cxd4 c3', minLines: 7,
+    foreign: /Ruy|Caro|Qa4\+ fork/, explorer: ['e4', 'c5', 'd4', 'cxd4', 'c3'] }
 ];
 
 function load(rel) {
