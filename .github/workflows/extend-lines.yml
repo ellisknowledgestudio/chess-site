@@ -1,0 +1,63 @@
+name: Extend opening lines
+
+# Run by hand from the Actions tab ("Run workflow"). Follows the Lichess masters
+# database deeper into each trainer line on one opening page and opens a pull
+# request with the result. Nothing goes live until James merges that pull request.
+#
+# One-off setup:
+#   1. Settings > Secrets and variables > Actions > New repository secret
+#      Name: LICHESS_TOKEN   Value: a personal API token from lichess.org/account/oauth/token
+#   2. Settings > Actions > General > Workflow permissions >
+#      tick "Allow GitHub Actions to create and approve pull requests"
+on:
+  workflow_dispatch:
+    inputs:
+      opening:
+        description: Which opening guide to extend
+        required: true
+        type: choice
+        options:
+          # Add an opening here only once its page has the "Train to" stage control,
+          # otherwise its trainer becomes one long 18-move line.
+          - ruy-lopez
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install the tool's dependencies
+        run: npm ci --omit=dev --ignore-scripts
+        working-directory: tools
+
+      - name: Follow the masters database
+        env:
+          LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
+          OPENING: ${{ inputs.opening }}
+        run: node tools/extend-lines.js "$OPENING" --report "$RUNNER_TEMP/report.md"
+
+      # Shown on the run's summary page, so the result is visible even when no
+      # line gained a move and therefore no pull request is opened.
+      - name: Show the report on the run page
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/report.md" ]; then cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - name: Open a pull request for review
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: extend-lines/${{ inputs.opening }}
+          title: "Deeper lines: ${{ inputs.opening }}"
+          commit-message: "Extend ${{ inputs.opening }} trainer lines from the Lichess masters database"
+          body-path: ${{ runner.temp }}/report.md
+          add-paths: openings/**
