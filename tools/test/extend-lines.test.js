@@ -24,7 +24,7 @@ function stubExplorer(gamesAt) {
 test('parseLines reads only the LINES block of the real Ruy Lopez page', function () {
   const lines = parseLines(RUY);
   assert.deepEqual(lines.map(function (l) { return l.id; }), ['chigorin', 'berlin', 'open']);
-  assert.match(lines[0].moves, /Qc7 Nbd2$/);
+  assert.match(lines[0].moves, /^e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2/);
 });
 
 test('replaceLineMoves changes only the named line', function () {
