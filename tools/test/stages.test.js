@@ -8,6 +8,7 @@ const { JSDOM } = require('jsdom');
 
 const PAGE = path.join(__dirname, '../../openings/ruy-lopez/index.html');
 const CHESS_SRC = fs.readFileSync(require.resolve('chess.js-legacy'), 'utf8');
+const SHORT_CHIGORIN = 'e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2';   // 23 plies, ends 12.Nbd2
 const LONG_CHIGORIN = 'e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 ' +
   'cxd4 cxd4 Nc6 Nb3 a5 Be3 a4 Nbd2 Bd7 Rc1 Qb7 Qe2';   // 35 plies, ends 18.Qe2
 
@@ -63,21 +64,23 @@ test('page loads without script errors and shows no stage buttons before a line 
   assert.deepEqual(p.stageLabels(), []);
 });
 
-test('today\'s 12-move Chigorin offers "To move 8" and "Full line" only', function () {
+test('a 12-move line offers "To move 8" and "Full line" only', function () {
   const p = loadPage();
+  p.api.LINES[0].moves = SHORT_CHIGORIN;
   p.pickLine('Closed: Chigorin');
   assert.deepEqual(p.stageLabels(), ['To move 8', 'Full line']);
 });
 
 test('training to move 8 finishes after White\'s 8th move and is tracked for that stage only', function () {
   const p = loadPage();
+  const note = p.api.LINES[0].note;
   p.pickLine('Closed: Chigorin');
   p.pickStage('To move 8');
   WHITE_FIRST_8.forEach(function (m) { p.play(m[0], m[1]); });
   const T = p.api.state.T;
   assert.equal(T.ply, 15);
   assert.match(p.feedback(), /Stage complete/);
-  assert.doesNotMatch(p.feedback(), /Main position reached/);
+  assert.ok(!p.feedback().includes(note));
   assert.equal(T.done['chigorin:8'], true);
   assert.equal(T.done['chigorin:0'], undefined);
   assert.match(p.d.getElementById('trainStats').textContent, /Lines completed to move 8: 1 \/ 3/);
@@ -89,10 +92,11 @@ test('training to move 8 finishes after White\'s 8th move and is tracked for tha
 
 test('a full line still ends with the line\'s own note', function () {
   const p = loadPage();
+  p.api.LINES[0].moves = SHORT_CHIGORIN;
   p.pickLine('Closed: Chigorin');
   WHITE_FIRST_8.concat([['h2', 'h3'], ['b3', 'c2'], ['d2', 'd4'], ['b1', 'd2']]).forEach(function (m) { p.play(m[0], m[1]); });
   assert.match(p.feedback(), /Line complete/);
-  assert.match(p.feedback(), /Main position reached/);
+  assert.ok(p.feedback().includes(p.api.LINES[0].note));
   assert.equal(p.api.state.T.done['chigorin:0'], true);
 });
 
@@ -111,6 +115,7 @@ test('switching to a shorter line falls back to the full line when the stage doe
   const p = loadPage();
   p.api.LINES[0].moves = LONG_CHIGORIN;
   p.pickLine('Closed: Chigorin');
+  p.api.LINES[1].moves = 'e4 e5 Nf3 Nc6 Bb5 Nf6 d3 Bc5 c3 O-O O-O d6 h3 a6 Ba4 Ba7 Re1 Ne7 Nbd2 Ng6 Nf1';
   p.pickStage('To move 12');
   p.pickLine('Berlin');
   assert.equal(p.api.state.T.stage, 0);
@@ -125,4 +130,20 @@ test('choosing a stage keeps keyboard focus on that button and announces the sta
   assert.equal(active && active.textContent, 'To move 8');
   assert.equal(active.getAttribute('aria-pressed'), 'true');
   assert.match(p.feedback(), /Training to move 8/);
+});
+
+test('every line on the live page is legal and ends on White\'s move', function () {
+  const p = loadPage();
+  p.api.LINES.forEach(function (line) {
+    const g = new p.w.Chess();
+    const moves = line.moves.split(' ');
+    moves.forEach(function (san) { assert.ok(g.move(san), line.id + ': illegal move ' + san); });
+    assert.equal(moves.length % 2, 1, line.id + ' should end on White\'s move');
+  });
+});
+
+test('the extended Chigorin can be trained to move 12 on the live page', function () {
+  const p = loadPage();
+  p.pickLine('Closed: Chigorin');
+  assert.deepEqual(p.stageLabels(), ['To move 8', 'To move 12', 'Full line']);
 });
