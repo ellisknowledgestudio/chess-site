@@ -17,10 +17,9 @@ on:
         required: true
         type: choice
         options:
+          # Add an opening here only once its page has the "Train to" stage control,
+          # otherwise its trainer becomes one long 18-move line.
           - ruy-lopez
-          - italian-game
-          - caro-kann
-          - queens-gambit-declined
 
 permissions:
   contents: write
@@ -29,6 +28,7 @@ permissions:
 jobs:
   extend:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +37,7 @@ jobs:
           node-version: 22
 
       - name: Install the tool's dependencies
-        run: npm ci
+        run: npm ci --omit=dev --ignore-scripts
         working-directory: tools
 
       - name: Follow the masters database
@@ -45,6 +45,13 @@ jobs:
           LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
           OPENING: ${{ inputs.opening }}
         run: node tools/extend-lines.js "$OPENING" --report "$RUNNER_TEMP/report.md"
+
+      # Shown on the run's summary page, so the result is visible even when no
+      # line gained a move and therefore no pull request is opened.
+      - name: Show the report on the run page
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/report.md" ]; then cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
 
       - name: Open a pull request for review
         uses: peter-evans/create-pull-request@v7

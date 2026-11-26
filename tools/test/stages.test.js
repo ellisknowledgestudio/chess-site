@@ -116,3 +116,13 @@ test('switching to a shorter line falls back to the full line when the stage doe
   assert.equal(p.api.state.T.stage, 0);
   assert.deepEqual(p.stageLabels(), ['To move 8', 'Full line']);
 });
+
+test('choosing a stage keeps keyboard focus on that button and announces the stage', function () {
+  const p = loadPage();
+  p.pickLine('Closed: Chigorin');
+  p.pickStage('To move 8');
+  const active = p.d.activeElement;
+  assert.equal(active && active.textContent, 'To move 8');
+  assert.equal(active.getAttribute('aria-pressed'), 'true');
+  assert.match(p.feedback(), /Training to move 8/);
+});

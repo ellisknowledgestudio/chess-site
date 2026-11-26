@@ -584,10 +584,18 @@ section { padding: 28px 0; }
       b.className = 'btn';
       b.textContent = stageName(stages[i]);
       b.setAttribute('aria-pressed', T.stage === stages[i] ? 'true' : 'false');
-      b.addEventListener('click', (function (st) { return function () { T.stage = st; startLine(T.idx); }; })(stages[i]));
+      b.addEventListener('click', (function (st) { return function () { chooseStage(st); }; })(stages[i]));
       li.appendChild(b);
       sp.appendChild(li);
     }
+  }
+  function chooseStage(st) {
+    T.stage = st;
+    startLine(T.idx);
+    // The pickers are rebuilt, so put keyboard focus back on the chosen stage and announce it.
+    var pressed = document.querySelector('#stagePicker button[aria-pressed="true"]');
+    if (pressed) pressed.focus();
+    setFb(trainFb, (st ? 'Training to move ' + st : 'Training the full line') + '. Your move as White.', '');
   }
   function fullLineMoves() { return splitMoves(T.line.moves); }
   function lineMoves() {
