@@ -29,6 +29,14 @@ on:
           - grunfeld-defence
           - english-opening
           - pirc-defence
+          - sicilian-najdorf
+          - sicilian-dragon
+          - sicilian-accelerated-dragon
+          - sicilian-scheveningen
+          - sicilian-classical
+          - sicilian-sveshnikov
+          - sicilian-taimanov
+          - sicilian-smith-morra
 
 permissions:
   contents: write
