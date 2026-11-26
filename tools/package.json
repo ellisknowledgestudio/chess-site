@@ -2,6 +2,14 @@
   "name": "chess-site-tools",
   "private": true,
   "description": "Build-time tools for the chess site. Never deployed.",
-  "scripts": { "test": "node --test" },
-  "dependencies": { "chess.js": "^1.0.0" }
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0"
+  },
+  "devDependencies": {
+    "chess.js-legacy": "npm:chess.js@^0.10.3",
+    "jsdom": "^31.0.1"
+  }
 }
