@@ -24,6 +24,11 @@ on:
           - caro-kann
           - queens-gambit-declined
           - sicilian-alapin
+          - scotch-game
+          - kings-indian-defence
+          - grunfeld-defence
+          - english-opening
+          - pirc-defence
 
 permissions:
   contents: write

@@ -12,7 +12,12 @@ const PAGES = [
   { slug: 'italian-game', api: 'EKSItalian', white: true },
   { slug: 'sicilian-alapin', api: 'EKSAlapin', white: true },
   { slug: 'caro-kann', api: 'EKSCaroKann', white: false },
-  { slug: 'queens-gambit-declined', api: 'EKSQGD', white: false }
+  { slug: 'queens-gambit-declined', api: 'EKSQGD', white: false },
+  { slug: 'scotch-game', api: 'EKSScotch', white: true },
+  { slug: 'kings-indian-defence', api: 'EKSKingsIndian', white: false },
+  { slug: 'grunfeld-defence', api: 'EKSGrunfeld', white: false },
+  { slug: 'english-opening', api: 'EKSEnglish', white: true },
+  { slug: 'pirc-defence', api: 'EKSPirc', white: false }
 ];
 // A legal 36-ply line for each side to stand in for an extended line.
 const LONG = {

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scotch Game — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn the Scotch Game as White: key ideas and plans, a move-by-move line trainer against 4...Bc5, 4...Nf6, 4...Qh4, 4...Bb4+ and 4...g6, a trap to spring and a quick quiz. Free, in your browser.">
+<link rel="canonical" href="https://chess.ellisknowledgestudio.com/openings/scotch-game/">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffdf8;
+  --ink: #1f2328;
+  --muted: #5d6470;
+  --line: #e2d9c8;
+  --accent: #8a5a2b;
+  --accent-ink: #ffffff;
+  --accent-soft: #f1e4d2;
+  --good: #2f7d4f;
+  --good-soft: #e3f2e8;
+  --bad: #b3402e;
+  --bad-soft: #f7e3df;
+  --sq-light: #efd9b4;
+  --sq-dark: #b58863;
+  --sq-sel: #f4e46a;
+  --sq-last: rgba(214, 196, 60, 0.55);
+  --sq-hint: rgba(47, 125, 79, 0.55);
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* Header and nav */
+.site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
+.logo { text-decoration: none; color: var(--ink); line-height: 1.15; }
+.logo strong { display: block; font-family: var(--font-head); font-size: 1.1rem; }
+.logo span { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.site-nav a { text-decoration: none; color: var(--muted); font-size: .92rem; font-weight: 500; }
+.site-nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero { padding: 40px 0 24px; }
+.eyebrow { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 8px; }
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.2; margin: 0 0 12px; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.6rem; margin-top: 8px; }
+h3 { font-size: 1.15rem; }
+.lead { font-size: 1.08rem; color: var(--muted); max-width: 720px; margin: 0 0 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tags li { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
+
+section { padding: 28px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card p { margin: 0 0 8px; }
+.card ul { margin: 0; padding-left: 20px; }
+.moves-inline { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+/* Board */
+.board-shell { width: 100%; max-width: 480px; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; aspect-ratio: 1 / 1; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; user-select: none; }
+.sq { position: relative; border: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 8.2vw, 2.6rem); line-height: 1; cursor: pointer; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.sq.light { background: var(--sq-light); }
+.sq.dark { background: var(--sq-dark); }
+.sq.last::before { content: ""; position: absolute; inset: 0; background: var(--sq-last); }
+.sq.sel::before { content: ""; position: absolute; inset: 0; background: var(--sq-sel); opacity: .8; }
+.sq.hint::before { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 4px var(--sq-hint); background: rgba(47,125,79,.18); }
+.sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(31,35,40,.28); }
+.sq.target.occ::after { width: 86%; height: 86%; background: transparent; border: 4px solid rgba(31,35,40,.3); }
+.sq .pc { position: relative; z-index: 1; }
+.sq .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.sq .pc.b { color: #111; }
+.sq .co { position: absolute; z-index: 1; font-family: var(--font-body); font-size: .62rem; font-weight: 600; pointer-events: none; }
+.sq .co.f { right: 3px; bottom: 1px; }
+.sq .co.r { left: 3px; top: 1px; }
+.sq.light .co { color: var(--sq-dark); }
+.sq.dark .co { color: var(--sq-light); }
+.board { touch-action: none; }
+.drag-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); line-height: 1; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.drag-ghost .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.drag-ghost .pc.b { color: #111; }
+
+/* Trainer layout */
+.tool { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 24px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.panel h3 { margin-bottom: 6px; }
+.stage-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; }
+.stage-row[hidden] { display: none; }
+.stage-row .line-picker { margin: 0; }
+.line-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.btn { font: inherit; font-size: .92rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px 14px; cursor: pointer; min-height: 40px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.btn.done::after { content: " \2713"; color: var(--good); }
+.btn:disabled { opacity: .5; cursor: default; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.feedback { border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: var(--accent-soft); min-height: 48px; }
+.feedback.good { background: var(--good-soft); color: var(--good); }
+.feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.movelist { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--bg); border-radius: 8px; padding: 10px 12px; min-height: 44px; word-wrap: break-word; }
+.movelist .cur { background: var(--sq-sel); border-radius: 4px; padding: 0 2px; }
+.small { font-size: .88rem; color: var(--muted); }
+.score { font-weight: 600; }
+
+/* Traps */
+.trap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+.trap .btn { margin-top: 6px; }
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links a { display: inline-block; text-decoration: none; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+.links a.alt { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); }
+
+.site-footer { border-top: 1px solid var(--line); padding: 24px 0 40px; margin-top: 24px; font-size: .78rem; letter-spacing: .14em; color: var(--muted); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+@media (max-width: 820px) {
+  .tool { grid-template-columns: 1fr; padding: 14px; }
+  .board-shell { margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../../index.html" aria-label="Ellis Knowledge Studio Chess home"><strong>Ellis Knowledge Studio</strong><span>Chess</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../analysis-board.html">Analysis Board</a></li>
+        <li><a href="../../openings-trainer.html">Openings Trainer</a></li>
+        <li><a href="../../openings/" class="current">Opening Guides</a></li>
+        <li><a href="../../checkmate-academy.html">Checkmate Academy</a></li>
+        <li><a href="../../endgames/">Endgames</a></li>
+        <li><a href="../../coach/">AI Coach</a></li>
+        <li><a href="../../junior-coaching.html">Junior Coaching</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <div class="hero">
+      <p class="eyebrow">Opening guide · White repertoire</p>
+      <h1>The Scotch Game</h1>
+      <p class="lead">1.e4 e5 2.Nf3 Nc6 3.d4 — the Scotch. You open the centre on move three instead of manoeuvring for twenty moves as in the Ruy Lopez or the Italian. After 3...exd4 4.Nxd4 you have a knight in the middle of the board, free development for both bishops and far less theory to learn.</p>
+      <ul class="tags" aria-label="Opening details">
+        <li>ECO C44–C45</li>
+        <li>For White</li>
+        <li>Club level</li>
+        <li>5 Black replies covered</li>
+      </ul>
+    </div>
+
+    <section id="overview" aria-labelledby="overview-h">
+      <h2 id="overview-h">Overview</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Key ideas</h3>
+          <ul>
+            <li><span class="moves-inline">3.d4</span> exd4 <span class="moves-inline">4.Nxd4</span> gives you a pawn on e4 against a pawn on d6 or d7, so you have more space in the centre.</li>
+            <li>Black gets quick development in return and will attack the d4 knight or the e4 pawn straight away. Each main reply does one or the other.</li>
+            <li>Your c1 bishop usually goes to <span class="moves-inline">e3</span> to support the knight, and the knight on b1 heads for c3 or d2.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Typical plans</h3>
+          <ul>
+            <li>Against <span class="moves-inline">4...Bc5</span>: <span class="moves-inline">Be3</span>, <span class="moves-inline">c3</span> and <span class="moves-inline">Bc4</span> build a solid centre, then you castle and play f3 or f4.</li>
+            <li>Against <span class="moves-inline">4...Nf6</span>: <span class="moves-inline">Nxc6</span> and <span class="moves-inline">e5</span>. The pawn on e5 cramps Black and the game becomes a fight over that pawn.</li>
+            <li>Against a kingside fianchetto: castle long and attack with f3, g4 and h4.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pawn structures</h3>
+          <ul>
+            <li><strong>e4 against d6</strong>: the usual Scotch centre. You have the d5 square and more room; Black aims for ...d5 or ...f5.</li>
+            <li><strong>Pawn on e5</strong> (Mieses line): Black has doubled c-pawns and a bishop stuck on a6. Keep e5 defended and finish development.</li>
+            <li><strong>Opposite-side castling</strong> (after 4...g6): speed matters more than pawns.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why the Scotch?</h3>
+          <p>It is direct and easy to understand: open lines, quick development and clear targets. Kasparov used it at world championship level, and it takes Black out of the Ruy Lopez and Italian positions they have prepared for.</p>
+        </div>
+        <div class="card">
+          <h3>If they play something odd</h3>
+          <p>After <span class="moves-inline">4...Nxd4</span> recapture with the queen: <span class="moves-inline">5.Qxd4</span> gives you a strong centralised queen that the missing knight can no longer chase. After <span class="moves-inline">4...Qf6</span> play <span class="moves-inline">5.Be3</span>, which usually transposes to the 4...Bc5 line.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" aria-labelledby="trainer-h">
+      <h2 id="trainer-h">Line trainer</h2>
+      <p class="small">You play White. Click a piece, then its destination (or tab to a square and press Enter). Black replies automatically.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trainBoard" class="board" role="grid" aria-label="Line trainer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="lineName">Choose a line</h3>
+          <ul class="line-picker" id="linePicker" aria-label="Lines"></ul>
+          <div class="stage-row" id="stageRow" hidden>
+            <span class="small" id="stageLabel">Train to:</span>
+            <ul class="line-picker" id="stagePicker" aria-labelledby="stageLabel"></ul>
+          </div>
+          <p id="lineBlurb" class="small"></p>
+          <div id="trainFeedback" class="feedback" role="status" aria-live="polite">Pick a line to start.</div>
+          <div class="movelist" id="trainMoves" aria-label="Moves played"></div>
+          <div class="controls">
+            <button class="btn" id="hintBtn" type="button" aria-label="Show a hint for the next move">Hint</button>
+            <button class="btn" id="resetBtn" type="button" aria-label="Restart this line">Reset line</button>
+            <button class="btn" id="flipBtn" type="button" aria-label="Flip the board">Flip board</button>
+            <button class="btn primary" id="nextLineBtn" type="button" aria-label="Go to the next line">Next line</button>
+          </div>
+          <p class="small" id="trainStats"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="traps" aria-labelledby="traps-h">
+      <h2 id="traps-h">Trap to know</h2>
+      <p class="small">This one is a trap for you to spring. Black's bishop on c5 is only defended while the knight on d4 is in the way. Step through it on the board below.</p>
+      <div id="trapList"></div>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trapBoard" class="board" role="grid" aria-label="Trap viewer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="trapTitle">Choose a trap above</h3>
+          <div class="movelist" id="trapMoves" aria-label="Trap moves"></div>
+          <div id="trapNote" class="feedback" role="status" aria-live="polite">Use the buttons to step through the moves.</div>
+          <div class="controls">
+            <button class="btn" id="trapStart" type="button" aria-label="Go to start">&#9198; Start</button>
+            <button class="btn" id="trapBack" type="button" aria-label="Back one move">&#9664; Back</button>
+            <button class="btn" id="trapFwd" type="button" aria-label="Forward one move">Forward &#9654;</button>
+            <button class="btn" id="trapEnd" type="button" aria-label="Go to final position">End &#9197;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" aria-labelledby="quiz-h">
+      <h2 id="quiz-h">Quick quiz</h2>
+      <p class="small">One try per position. Play the move on the board.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="quizBoard" class="board" role="grid" aria-label="Quiz board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="quizTitle">Question 1</h3>
+          <p id="quizPrompt"></p>
+          <div id="quizFeedback" class="feedback" role="status" aria-live="polite">Your move.</div>
+          <p class="score" id="quizScore">Score: 0 / 0</p>
+          <div class="controls">
+            <button class="btn primary" id="quizNext" type="button" aria-label="Next question" disabled>Next question</button>
+            <button class="btn" id="quizRestart" type="button" aria-label="Restart the quiz">Restart quiz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" aria-labelledby="next-h">
+      <h2 id="next-h">Keep going</h2>
+      <p>Drill the lines with spaced repetition in the Openings Trainer, or set up any position from this page on the Analysis Board and check it with Stockfish.</p>
+      <div class="links">
+        <a href="../../openings-trainer.html">Openings Trainer →</a>
+        <a class="alt" href="../../analysis-board.html">Analysis Board →</a>
+        <a class="alt" href="../">All opening guides →</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">ELLIS KNOWLEDGE STUDIO · CHESS · SCOTCH GAME</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var REPLY_DELAY = (typeof window.EKS_REPLY_DELAY === 'number') ? window.EKS_REPLY_DELAY : 450;
+  var FILES = 'abcdefgh';
+  var GLYPH = { w: { k: '♔', q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
+                b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' } };
+  var NAME = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+
+  /* ---------- Repertoire data (all lines checked with chess.js) ---------- */
+  var LINES = [
+    { id: 'bc5', name: '4...Bc5: Classical',
+      blurb: 'Black develops with a threat to the d4 knight. Support it with Be3 and c3, then Bc4. When the knight comes to e5, the bishop simply drops back to e2.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Bc5 Be3 Qf6 c3 Nge7 Bc4 Ne5 Be2 Qg6 O-O d6 f3 O-O Nd2',
+      note: 'Your centre is rock solid. Next comes Kh1 and f4 to gain space on the kingside. Black\'s freeing break is ...d5, so be ready to meet it.' },
+    { id: 'nf6', name: '4...Nf6: Mieses',
+      blurb: 'Black attacks e4. Take on c6 and push e5: the knight is chased to d5 and Black\'s bishop ends up misplaced on a6.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Nf6 Nxc6 bxc6 e5 Qe7 Qe2 Nd5 c4 Ba6 b3 g6 g3 Bg7 Bb2 O-O Bg2 Rae8 O-O',
+      note: 'Both sides have castled. Your e5 pawn is the centre of the fight: Black will hit it with ...f6 or ...d6, and you support it with f4 and Re1. Black\'s a6 bishop and doubled c-pawns are long-term targets.' },
+    { id: 'qh4', name: '4...Qh4: Steinitz',
+      blurb: 'Black goes pawn-hunting with the queen. Let the e4 pawn go: you get a big lead in development and Black\'s king gets stuck in the middle.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Qh4 Nc3 Bb4 Be2 Qxe4 Nb5 Bxc3+ bxc3 Kd8 O-O',
+      note: 'You are a pawn down, but Black\'s king has lost the right to castle and c7 is weak. Bring a rook to e1, use Bf3 to chase the queen, and open lines before Black gets organised.' },
+    { id: 'bb4', name: '4...Bb4+',
+      blurb: 'The check provokes c3, then the bishop drops back to c5 and b6. Jump into f5 with the knight and swap off Black\'s good bishop.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Bb4+ c3 Bc5 Be3 Bb6 Nf5 Bxe3 Nxe3 Nf6 Nd2 O-O Bd3',
+      note: 'A calm position with a small edge. Castle, then gain space with f4. The knight on e3 covers d5 and f5, so Black\'s ...d5 break is hard to arrange.' },
+    { id: 'g6', name: '4...g6: fianchetto',
+      blurb: 'Black aims the bishop at d4. Develop with Nc3, Be3 and Qd2 and castle queenside, as you would against a Dragon.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 g6 Nc3 Bg7 Be3 Nf6 Qd2 O-O O-O-O',
+      note: 'The kings are on opposite sides, so attack: f3, g4 and h4–h5 open lines towards g7, and Bh6 swaps off Black\'s best defender.' }
+  ];
+
+  var TRAPS = [
+    { id: 'loosebishop', title: 'The loose bishop on c5',
+      text: 'After 4...Bc5 5.Be3 Black must look after the bishop with 5...Qf6 or 5...Bb6. The natural developing move 5...Nf6 loses a piece at once.',
+      moves: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Bc5 Be3 Nf6 Nxc6 bxc6 Bxc5',
+      bad: 9,
+      notes: { 7: '4...Bc5 attacks your knight.', 8: '5.Be3 defends it, and now your bishop is looking at c5 through the knight.', 9: '5...Nf6?? — the mistake. Black needed 5...Qf6 or 5...Bb6.', 10: '6.Nxc6! The knight moves away with a capture and uncovers the attack on c5.', 11: '6...bxc6 takes the knight back, but...', 12: '7.Bxc5. White has won a bishop.' } }
+  ];
+
+  var QUIZ = [
+    { pre: 'e4 e5 Nf3 Nc6', prompt: 'Play the move that defines the Scotch.', accept: ['d4'],
+      explain: '3.d4 opens the centre straight away. After 3...exd4 you take back with the knight.' },
+    { pre: 'e4 e5 Nf3 Nc6 d4 exd4', prompt: 'Black has taken on d4. How do you recapture?', accept: ['Nxd4'],
+      explain: '4.Nxd4 is the Scotch Game. The knight is well placed in the centre and both your bishops have open diagonals.' },
+    { pre: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Bc5', prompt: 'Your knight is attacked. Play the repertoire move.', accept: ['Be3'],
+      explain: '5.Be3 defends the knight and sets up a hidden attack on the c5 bishop. 5.Nxc6 and 5.Nb3 are also played, but Be3 is the line this guide teaches.' },
+    { pre: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Bc5 Be3 Nf6', prompt: 'Black has just blundered with 5...Nf6. Win a piece.', accept: ['Nxc6'],
+      explain: '6.Nxc6! uncovers the bishop on e3. After 6...bxc6 7.Bxc5 you are a piece up.' },
+    { pre: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Nf6', prompt: 'Black attacks e4. What is the Mieses way to answer?', accept: ['Nxc6', 'Nc3'],
+      explain: '5.Nxc6 bxc6 6.e5 chases the knight and is the line in this guide. 5.Nc3 is a good, quieter alternative (the Scotch Four Knights).' },
+    { pre: 'e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Qh4', prompt: 'The queen attacks e4. Defend it or ignore it?', accept: ['Nc3', 'Nb5'],
+      explain: '5.Nc3 develops and defends for the moment; after 5...Bb4 you let the pawn go with 6.Be2 for a big lead in development. 5.Nb5 is the other main move.' }
+  ];
+
+  function splitMoves(s) { return s ? s.split(' ') : []; }
+
+  /* ---------- Board component ---------- */
+  function Board(el, opts) {
+    this.el = el;
+    this.orientation = 'w';
+    this.game = null;
+    this.selected = null;
+    this.last = null;
+    this.hint = null;
+    this.interactive = false;
+    this.onMove = opts.onMove || null;
+    this.squares = {};
+    this.build();
+    this.initDrag();
+  }
+  Board.prototype.build = function () {
+    var self = this, r, f, sq, btn;
+    this.el.innerHTML = '';
+    this.squares = {};
+    for (r = 0; r < 8; r++) {
+      for (f = 0; f < 8; f++) {
+        var file = this.orientation === 'w' ? f : 7 - f;
+        var rank = this.orientation === 'w' ? 8 - r : r + 1;
+        sq = FILES.charAt(file) + rank;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sq ' + (((file + rank) % 2 === 0) ? 'light' : 'dark');
+        btn.setAttribute('data-sq', sq);
+        btn.setAttribute('role', 'gridcell');
+        btn.tabIndex = (r === 7 && f === 0) ? 0 : -1;
+        btn.addEventListener('click', (function (s) { return function () { self.clickSquare(s); }; })(sq));
+        btn.addEventListener('keydown', (function (s) { return function (e) { self.keyNav(e, s); }; })(sq));
+        this.el.appendChild(btn);
+        this.squares[sq] = btn;
+      }
+    }
+  };
+  Board.prototype.initDrag = function () {
+    var self = this, drag = null;
+    function sqAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      while (el && el !== self.el && !(el.getAttribute && el.getAttribute('data-sq'))) el = el.parentNode;
+      return (el && el !== self.el) ? el.getAttribute('data-sq') : null;
+    }
+    this.el.addEventListener('pointerdown', function (e) {
+      if (!self.interactive || !self.game || e.button !== 0) return;
+      var sq = sqAt(e.clientX, e.clientY);
+      if (!sq) return;
+      var p = self.game.get(sq);
+      if (!p || p.color !== self.game.turn()) return;
+      drag = { from: sq, x: e.clientX, y: e.clientY, ghost: null, moved: false };
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
+        drag.moved = true;
+        self.selected = drag.from;
+        self.render();
+        var src = self.squares[drag.from], pc = src.querySelector('.pc');
+        var g = document.createElement('div');
+        g.className = 'drag-ghost';
+        g.innerHTML = pc.outerHTML;
+        g.style.fontSize = window.getComputedStyle(src).fontSize;
+        document.body.appendChild(g);
+        drag.ghost = g;
+        pc.style.opacity = '0.25';
+      }
+      e.preventDefault();
+      drag.ghost.style.left = e.clientX + 'px';
+      drag.ghost.style.top = e.clientY + 'px';
+    }, { passive: false });
+    function end(e) {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (!d.moved) return;
+      if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+      var swallow = function (ev) { ev.stopPropagation(); self.el.removeEventListener('click', swallow, true); };
+      self.el.addEventListener('click', swallow, true);
+      setTimeout(function () { self.el.removeEventListener('click', swallow, true); }, 0);
+      var to = e.type === 'pointerup' ? sqAt(e.clientX, e.clientY) : null;
+      var ok = false, legal, i;
+      if (to && to !== d.from) {
+        legal = self.game.moves({ square: d.from, verbose: true });
+        for (i = 0; i < legal.length; i++) if (legal[i].to === to) ok = true;
+      }
+      self.selected = null;
+      self.render();
+      if (ok && self.onMove) self.onMove(d.from, to);
+    }
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+  };
+  Board.prototype.keyNav = function (e, sq) {
+    var dx = 0, dy = 0;
+    if (e.key === 'ArrowLeft') dx = -1; else if (e.key === 'ArrowRight') dx = 1;
+    else if (e.key === 'ArrowUp') dy = 1; else if (e.key === 'ArrowDown') dy = -1;
+    else return;
+    e.preventDefault();
+    if (this.orientation === 'b') { dx = -dx; dy = -dy; }
+    var f = FILES.indexOf(sq.charAt(0)) + dx, r = parseInt(sq.charAt(1), 10) + dy;
+    if (f < 0 || f > 7 || r < 1 || r > 8) return;
+    var next = this.squares[FILES.charAt(f) + r];
+    var k;
+    for (k in this.squares) { if (this.squares.hasOwnProperty(k)) this.squares[k].tabIndex = -1; }
+    next.tabIndex = 0;
+    next.focus();
+  };
+  Board.prototype.flip = function () {
+    this.orientation = this.orientation === 'w' ? 'b' : 'w';
+    this.build();
+    this.render();
+  };
+  Board.prototype.set = function (game, last) {
+    this.game = game;
+    this.last = last || null;
+    this.selected = null;
+    this.hint = null;
+    this.render();
+  };
+  Board.prototype.render = function () {
+    if (!this.game) return;
+    var targets = {}, k, i, moves;
+    if (this.selected) {
+      moves = this.game.moves({ square: this.selected, verbose: true });
+      for (i = 0; i < moves.length; i++) targets[moves[i].to] = true;
+    }
+    for (k in this.squares) {
+      if (!this.squares.hasOwnProperty(k)) continue;
+      var btn = this.squares[k];
+      var p = this.game.get(k);
+      var cls = btn.className.split(' ').slice(0, 2).join(' ');
+      if (this.last && (this.last.from === k || this.last.to === k)) cls += ' last';
+      if (this.selected === k) cls += ' sel';
+      if (this.hint && this.hint.indexOf(k) !== -1) cls += ' hint';
+      if (targets[k]) cls += ' target' + (p ? ' occ' : '');
+      btn.className = cls;
+      var html = '';
+      if (p) html += '<span class="pc ' + p.color + '" aria-hidden="true">' + GLYPH[p.color][p.type] + '</span>';
+      var file = k.charAt(0), rank = k.charAt(1);
+      var bottomRank = this.orientation === 'w' ? '1' : '8';
+      var leftFile = this.orientation === 'w' ? 'a' : 'h';
+      if (rank === bottomRank) html += '<span class="co f" aria-hidden="true">' + file + '</span>';
+      if (file === leftFile) html += '<span class="co r" aria-hidden="true">' + rank + '</span>';
+      btn.innerHTML = html;
+      btn.setAttribute('aria-label', k + (p ? ', ' + (p.color === 'w' ? 'white ' : 'black ') + NAME[p.type] : ', empty') + (targets[k] ? ', legal move' : ''));
+    }
+  };
+  Board.prototype.clickSquare = function (sq) {
+    if (!this.interactive || !this.game) return;
+    var p = this.game.get(sq);
+    if (this.selected) {
+      if (sq === this.selected) { this.selected = null; this.render(); return; }
+      var legal = this.game.moves({ square: this.selected, verbose: true });
+      var i, found = null;
+      for (i = 0; i < legal.length; i++) if (legal[i].to === sq) { found = legal[i]; break; }
+      if (found) {
+        var from = this.selected;
+        this.selected = null;
+        if (this.onMove) this.onMove(from, sq);
+        return;
+      }
+    }
+    if (p && p.color === this.game.turn()) { this.selected = sq; } else { this.selected = null; }
+    this.render();
+  };
+
+  function sanFor(game, from, to) {
+    var t = new Chess(game.fen());
+    var m = t.move({ from: from, to: to, promotion: 'q' });
+    return m ? m.san : null;
+  }
+  function movesText(list, upto, highlightIndex) {
+    var out = [], i;
+    for (i = 0; i < upto; i++) {
+      var txt = (i % 2 === 0 ? (i / 2 + 1) + '.' : '') + list[i];
+      if (i === highlightIndex) txt = '<span class="cur">' + txt + '</span>';
+      out.push(txt);
+    }
+    return out.join(' ');
+  }
+  function setFb(el, text, kind) {
+    el.className = 'feedback' + (kind ? ' ' + kind : '');
+    el.textContent = text;
+  }
+
+  /* ---------- Line trainer ---------- */
+  var T = { line: null, idx: 0, ply: 0, game: new Chess(), mistakes: 0, hintStage: 0, busy: false, done: {}, timer: null, stage: 0 };
+
+  /* Stages: train a long line up to move 8, move 12, or in full (0). */
+  var STAGES = [8, 12, 0];
+  var TRAINEE_IS_WHITE = true;
+  function stagePlies(totalPlies, stage, traineeIsWhite) {
+    if (!stage) return totalPlies;
+    return Math.min(traineeIsWhite ? stage * 2 - 1 : stage * 2, totalPlies);
+  }
+  function availableStages(totalPlies, traineeIsWhite) {
+    var out = [], i;
+    for (i = 0; i < STAGES.length; i++) {
+      if (!STAGES[i] || stagePlies(totalPlies, STAGES[i], traineeIsWhite) < totalPlies) out.push(STAGES[i]);
+    }
+    return out;
+  }
+  function stageName(stage) { return stage ? 'To move ' + stage : 'Full line'; }
+  function doneKey(id) { return id + ':' + T.stage; }
+  var trainBoard = new Board(document.getElementById('trainBoard'), { onMove: trainerMove });
+  var picker = document.getElementById('linePicker');
+  var trainFb = document.getElementById('trainFeedback');
+
+  function buildPicker() {
+    var i;
+    picker.innerHTML = '';
+    for (i = 0; i < LINES.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (T.done[doneKey(LINES[i].id)] ? ' done' : '');
+      b.textContent = LINES[i].name;
+      b.setAttribute('aria-pressed', T.idx === i && T.line ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Train line: ' + LINES[i].name + (T.done[doneKey(LINES[i].id)] ? ' (completed)' : ''));
+      b.addEventListener('click', (function (n) { return function () { startLine(n); }; })(i));
+      li.appendChild(b);
+      picker.appendChild(li);
+    }
+  }
+  function buildStagePicker() {
+    var sp = document.getElementById('stagePicker'), row = document.getElementById('stageRow'), stages, i;
+    sp.innerHTML = '';
+    if (!T.line) { row.hidden = true; return; }
+    stages = availableStages(splitMoves(T.line.moves).length, TRAINEE_IS_WHITE);
+    row.hidden = stages.length < 2;
+    if (stages.length < 2) return;
+    for (i = 0; i < stages.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.textContent = stageName(stages[i]);
+      b.setAttribute('aria-pressed', T.stage === stages[i] ? 'true' : 'false');
+      b.addEventListener('click', (function (st) { return function () { chooseStage(st); }; })(stages[i]));
+      li.appendChild(b);
+      sp.appendChild(li);
+    }
+  }
+  function chooseStage(st) {
+    T.stage = st;
+    startLine(T.idx);
+    // The pickers are rebuilt, so put keyboard focus back on the chosen stage and announce it.
+    var pressed = document.querySelector('#stagePicker button[aria-pressed="true"]');
+    if (pressed) pressed.focus();
+    setFb(trainFb, (st ? 'Training to move ' + st : 'Training the full line') + '. Your move as White.', '');
+  }
+  function fullLineMoves() { return splitMoves(T.line.moves); }
+  function lineMoves() {
+    var all = fullLineMoves();
+    return all.slice(0, stagePlies(all.length, T.stage, TRAINEE_IS_WHITE));
+  }
+  function updateTrainUI() {
+    var mv = T.line ? lineMoves() : [];
+    document.getElementById('trainMoves').innerHTML = movesText(mv, T.ply, T.ply - 1) || '<span class="small">Start position</span>';
+    var count = 0, i;
+    for (i = 0; i < LINES.length; i++) if (T.done[doneKey(LINES[i].id)]) count++;
+    document.getElementById('trainStats').textContent = 'Lines completed ' + (T.stage ? 'to move ' + T.stage : 'in full') + ': ' + count + ' / ' + LINES.length + (T.line ? ' · Mistakes this line: ' + T.mistakes : '');
+  }
+  function startLine(n) {
+    if (T.timer) { clearTimeout(T.timer); T.timer = null; }
+    T.idx = n;
+    T.line = LINES[n];
+    if (availableStages(fullLineMoves().length, TRAINEE_IS_WHITE).indexOf(T.stage) === -1) T.stage = 0;
+    T.ply = 0;
+    T.mistakes = 0;
+    T.hintStage = 0;
+    T.busy = false;
+    T.game = new Chess();
+    document.getElementById('lineName').textContent = T.line.name;
+    document.getElementById('lineBlurb').textContent = T.line.blurb;
+    trainBoard.interactive = true;
+    trainBoard.set(T.game, null);
+    setFb(trainFb, 'Your move as White.', '');
+    buildPicker();
+    buildStagePicker();
+    updateTrainUI();
+  }
+  function trainerMove(from, to) {
+    if (!T.line || T.busy) return;
+    var mv = lineMoves();
+    var expected = mv[T.ply];
+    var san = sanFor(T.game, from, to);
+    if (san === expected) {
+      var m = T.game.move(expected);
+      T.ply++;
+      T.hintStage = 0;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      afterUserMove();
+    } else {
+      T.mistakes++;
+      trainBoard.set(T.game, trainBoard.last);
+      setFb(trainFb, (san || 'That move') + ' is not the repertoire move here. Try again, or press Hint.', 'bad');
+      updateTrainUI();
+    }
+  }
+  function afterUserMove() {
+    var mv = lineMoves();
+    if (T.ply >= mv.length) { finishLine(); return; }
+    setFb(trainFb, 'Correct. Black is thinking…', 'good');
+    T.busy = true;
+    var doReply = function () {
+      T.timer = null;
+      var m = T.game.move(mv[T.ply]);
+      T.ply++;
+      T.busy = false;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      if (T.ply >= mv.length) { finishLine(); return; }
+      setFb(trainFb, 'Black played ' + m.san + '. Your move.', '');
+    };
+    if (REPLY_DELAY > 0) T.timer = setTimeout(doReply, REPLY_DELAY); else doReply();
+  }
+  function finishLine() {
+    var partial = lineMoves().length < fullLineMoves().length;
+    T.done[doneKey(T.line.id)] = true;
+    trainBoard.interactive = false;
+    setFb(trainFb, (partial ? 'Stage complete' : 'Line complete') + (T.mistakes ? ' with ' + T.mistakes + ' mistake' + (T.mistakes === 1 ? '' : 's') : ' with no mistakes') + '. ' +
+      (partial ? 'You know this line to move ' + T.stage + '. Pick a longer stage to go deeper.' : T.line.note), 'good');
+    buildPicker();
+    updateTrainUI();
+  }
+  document.getElementById('hintBtn').addEventListener('click', function () {
+    if (!T.line || T.busy || T.ply >= lineMoves().length) return;
+    var t = new Chess(T.game.fen());
+    var m = t.move(lineMoves()[T.ply]);
+    if (T.hintStage === 0) {
+      trainBoard.hint = [m.from];
+      setFb(trainFb, 'Hint: move the ' + NAME[m.piece] + ' on ' + m.from + '.', '');
+      T.hintStage = 1;
+    } else {
+      trainBoard.hint = [m.from, m.to];
+      setFb(trainFb, 'The move is ' + m.san + '.', '');
+    }
+    trainBoard.render();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () { if (T.line) startLine(T.idx); });
+  document.getElementById('flipBtn').addEventListener('click', function () { trainBoard.flip(); });
+  document.getElementById('nextLineBtn').addEventListener('click', function () { startLine(T.line ? (T.idx + 1) % LINES.length : 0); });
+
+  /* ---------- Trap viewer ---------- */
+  var V = { trap: null, ply: 0 };
+  var trapBoard = new Board(document.getElementById('trapBoard'), {});
+  function buildTraps() {
+    var list = document.getElementById('trapList'), i;
+    for (i = 0; i < TRAPS.length; i++) {
+      var d = document.createElement('div');
+      d.className = 'trap';
+      var h = document.createElement('h3'); h.textContent = TRAPS[i].title;
+      var p = document.createElement('p'); p.textContent = TRAPS[i].text;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn'; b.textContent = 'Show on board';
+      b.setAttribute('aria-label', 'Show ' + TRAPS[i].title + ' on the board');
+      b.addEventListener('click', (function (n) { return function () { loadTrap(n); }; })(i));
+      d.appendChild(h); d.appendChild(p); d.appendChild(b);
+      list.appendChild(d);
+    }
+  }
+  function loadTrap(n) {
+    V.trap = TRAPS[n];
+    document.getElementById('trapTitle').textContent = V.trap.title;
+    gotoTrap(V.trap.bad);
+  }
+  function gotoTrap(ply) {
+    if (!V.trap) return;
+    var mv = splitMoves(V.trap.moves);
+    if (ply < 0) ply = 0;
+    if (ply > mv.length) ply = mv.length;
+    V.ply = ply;
+    var g = new Chess(), last = null, i;
+    for (i = 0; i < ply; i++) last = g.move(mv[i]);
+    trapBoard.set(g, last);
+    document.getElementById('trapMoves').innerHTML = movesText(mv, mv.length, ply - 1);
+    var note = V.trap.notes[ply - 1];
+    setFb(document.getElementById('trapNote'), note || (ply === 0 ? 'Start position.' : 'Move ' + Math.ceil(ply / 2) + '. Step forward to continue.'), '');
+  }
+  document.getElementById('trapStart').addEventListener('click', function () { gotoTrap(0); });
+  document.getElementById('trapBack').addEventListener('click', function () { gotoTrap(V.ply - 1); });
+  document.getElementById('trapFwd').addEventListener('click', function () { gotoTrap(V.ply + 1); });
+  document.getElementById('trapEnd').addEventListener('click', function () { if (V.trap) gotoTrap(splitMoves(V.trap.moves).length); });
+
+  /* ---------- Quiz ---------- */
+  var Q = { i: 0, score: 0, answered: 0, game: null, locked: false };
+  var quizBoard = new Board(document.getElementById('quizBoard'), { onMove: quizMove });
+  var quizFb = document.getElementById('quizFeedback');
+  function loadQuestion() {
+    var item = QUIZ[Q.i], mv = splitMoves(item.pre), g = new Chess(), last = null, i;
+    for (i = 0; i < mv.length; i++) last = g.move(mv[i]);
+    Q.game = g;
+    Q.locked = false;
+    quizBoard.interactive = true;
+    quizBoard.set(g, last);
+    document.getElementById('quizTitle').textContent = 'Question ' + (Q.i + 1) + ' of ' + QUIZ.length;
+    document.getElementById('quizPrompt').innerHTML = '<span class="small">After ' + movesText(mv, mv.length, -1) + '</span><br>' + item.prompt;
+    setFb(quizFb, 'Your move (White).', '');
+    document.getElementById('quizNext').disabled = true;
+    document.getElementById('quizNext').textContent = Q.i === QUIZ.length - 1 ? 'See result' : 'Next question';
+    updateScore();
+  }
+  function updateScore() { document.getElementById('quizScore').textContent = 'Score: ' + Q.score + ' / ' + Q.answered; }
+  function quizMove(from, to) {
+    if (Q.locked) return;
+    var item = QUIZ[Q.i];
+    var san = sanFor(Q.game, from, to);
+    var ok = item.accept.indexOf(san) !== -1;
+    Q.locked = true;
+    Q.answered++;
+    if (ok) Q.score++;
+    var m = Q.game.move(ok ? san : item.accept[0]);
+    quizBoard.interactive = false;
+    quizBoard.set(Q.game, m);
+    setFb(quizFb, (ok ? 'Correct! ' : 'Not quite — you played ' + san + '. The answer is ' + item.accept[0] + '. ') + item.explain, ok ? 'good' : 'bad');
+    document.getElementById('quizNext').disabled = false;
+    updateScore();
+  }
+  document.getElementById('quizNext').addEventListener('click', function () {
+    if (Q.i < QUIZ.length - 1) { Q.i++; loadQuestion(); return; }
+    var pct = Math.round(100 * Q.score / QUIZ.length);
+    document.getElementById('quizTitle').textContent = 'Quiz complete';
+    document.getElementById('quizPrompt').textContent = '';
+    setFb(quizFb, 'You scored ' + Q.score + ' / ' + QUIZ.length + ' (' + pct + '%). ' + (pct === 100 ? 'Excellent — you know your Scotch.' : 'Run the line trainer again, then retry.'), pct >= 70 ? 'good' : '');
+    document.getElementById('quizNext').disabled = true;
+  });
+  document.getElementById('quizRestart').addEventListener('click', function () { Q.i = 0; Q.score = 0; Q.answered = 0; loadQuestion(); });
+
+  /* ---------- Init ---------- */
+  buildPicker();
+  trainBoard.set(new Chess(), null);
+  updateTrainUI();
+  buildTraps();
+  trapBoard.set(new Chess(), null);
+  loadQuestion();
+
+  window.EKSScotch = { LINES: LINES, TRAPS: TRAPS, QUIZ: QUIZ, state: { T: T, Q: Q, V: V }, stagePlies: stagePlies, availableStages: availableStages };
+})();
+</script>
+</body>
+</html>
