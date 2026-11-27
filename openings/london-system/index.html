@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>London System — Ellis Knowledge Studio Chess</title>
+<meta name="description" content="Learn the London System as White: key ideas and plans, a move-by-move line trainer against ...d5 and ...e6, the King's Indian setup and the early ...c5 and ...Qb6, plus a quick quiz. Free, in your browser.">
+<link rel="canonical" href="https://chess.ellisknowledgestudio.com/openings/london-system/">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HEX75KWYM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HEX75KWYM8');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffdf8;
+  --ink: #1f2328;
+  --muted: #5d6470;
+  --line: #e2d9c8;
+  --accent: #8a5a2b;
+  --accent-ink: #ffffff;
+  --accent-soft: #f1e4d2;
+  --good: #2f7d4f;
+  --good-soft: #e3f2e8;
+  --bad: #b3402e;
+  --bad-soft: #f7e3df;
+  --sq-light: #efd9b4;
+  --sq-dark: #b58863;
+  --sq-sel: #f4e46a;
+  --sq-last: rgba(214, 196, 60, 0.55);
+  --sq-hint: rgba(47, 125, 79, 0.55);
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* Header and nav */
+.site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
+.logo { text-decoration: none; color: var(--ink); line-height: 1.15; }
+.logo strong { display: block; font-family: var(--font-head); font-size: 1.1rem; }
+.logo span { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.site-nav a { text-decoration: none; color: var(--muted); font-size: .92rem; font-weight: 500; }
+.site-nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero { padding: 40px 0 24px; }
+.eyebrow { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 8px; }
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.2; margin: 0 0 12px; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.6rem; margin-top: 8px; }
+h3 { font-size: 1.15rem; }
+.lead { font-size: 1.08rem; color: var(--muted); max-width: 720px; margin: 0 0 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tags li { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
+
+section { padding: 28px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card p { margin: 0 0 8px; }
+.card ul { margin: 0; padding-left: 20px; }
+.moves-inline { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+/* Board */
+.board-shell { width: 100%; max-width: 480px; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; aspect-ratio: 1 / 1; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; user-select: none; }
+.sq { position: relative; border: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 8.2vw, 2.6rem); line-height: 1; cursor: pointer; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.sq.light { background: var(--sq-light); }
+.sq.dark { background: var(--sq-dark); }
+.sq.last::before { content: ""; position: absolute; inset: 0; background: var(--sq-last); }
+.sq.sel::before { content: ""; position: absolute; inset: 0; background: var(--sq-sel); opacity: .8; }
+.sq.hint::before { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 4px var(--sq-hint); background: rgba(47,125,79,.18); }
+.sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(31,35,40,.28); }
+.sq.target.occ::after { width: 86%; height: 86%; background: transparent; border: 4px solid rgba(31,35,40,.3); }
+.sq .pc { position: relative; z-index: 1; }
+.sq .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.sq .pc.b { color: #111; }
+.sq .co { position: absolute; z-index: 1; font-family: var(--font-body); font-size: .62rem; font-weight: 600; pointer-events: none; }
+.sq .co.f { right: 3px; bottom: 1px; }
+.sq .co.r { left: 3px; top: 1px; }
+.sq.light .co { color: var(--sq-dark); }
+.sq.dark .co { color: var(--sq-light); }
+.board { touch-action: none; }
+.drag-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); line-height: 1; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; }
+.drag-ghost .pc.w { color: #fff; text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 -1px 1px #000; }
+.drag-ghost .pc.b { color: #111; }
+
+/* Trainer layout */
+.tool { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 24px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.panel h3 { margin-bottom: 6px; }
+.stage-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; }
+.stage-row[hidden] { display: none; }
+.stage-row .line-picker { margin: 0; }
+.line-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.btn { font: inherit; font-size: .92rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px 14px; cursor: pointer; min-height: 40px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.btn.done::after { content: " \2713"; color: var(--good); }
+.btn:disabled { opacity: .5; cursor: default; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.feedback { border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: var(--accent-soft); min-height: 48px; }
+.feedback.good { background: var(--good-soft); color: var(--good); }
+.feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.movelist { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; background: var(--bg); border-radius: 8px; padding: 10px 12px; min-height: 44px; word-wrap: break-word; }
+.movelist .cur { background: var(--sq-sel); border-radius: 4px; padding: 0 2px; }
+.small { font-size: .88rem; color: var(--muted); }
+.score { font-weight: 600; }
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links a { display: inline-block; text-decoration: none; background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+.links a.alt { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); }
+
+.site-footer { border-top: 1px solid var(--line); padding: 24px 0 40px; margin-top: 24px; font-size: .78rem; letter-spacing: .14em; color: var(--muted); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+@media (max-width: 820px) {
+  .tool { grid-template-columns: 1fr; padding: 14px; }
+  .board-shell { margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../../index.html" aria-label="Ellis Knowledge Studio Chess home"><strong>Ellis Knowledge Studio</strong><span>Chess</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../analysis-board.html">Analysis Board</a></li>
+        <li><a href="../../openings-trainer.html">Openings Trainer</a></li>
+        <li><a href="../../openings/" class="current">Opening Guides</a></li>
+        <li><a href="../../checkmate-academy.html">Checkmate Academy</a></li>
+        <li><a href="../../endgames/">Endgames</a></li>
+        <li><a href="../../coach/">AI Coach</a></li>
+        <li><a href="../../junior-coaching.html">Junior Coaching</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <div class="hero">
+      <p class="eyebrow">Opening guide · White repertoire</p>
+      <h1>The London System</h1>
+      <p class="lead">1.d4 and an early Bf4, followed by e3, Nf3, c3 and Nbd2. The same sturdy set-up works against almost anything Black plays, so you spend your time learning plans rather than memorising theory. This page gives you a club-level system and drills it move by move.</p>
+      <ul class="tags" aria-label="Opening details">
+        <li>ECO D02 · A46 · A48</li>
+        <li>For White</li>
+        <li>Club level</li>
+        <li>...d5, ...g6 &amp; ...c5/...Qb6</li>
+      </ul>
+    </div>
+
+    <section id="overview" aria-labelledby="overview-h">
+      <h2 id="overview-h">Overview</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Key ideas</h3>
+          <ul>
+            <li>Get the dark-squared bishop out to <span class="moves-inline">Bf4</span> <em>before</em> playing e3, so it is not shut in behind your pawns.</li>
+            <li>Build the triangle <span class="moves-inline">d4</span>, <span class="moves-inline">e3</span>, <span class="moves-inline">c3</span>. It is very hard for Black to break down, and c3 also keeps a knight out of b4.</li>
+            <li>The queen's knight goes to <span class="moves-inline">d2</span>, not c3, so it supports e4 or e5 and leaves the c-pawn free.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Typical plans</h3>
+          <ul>
+            <li>When Black plays ...Bd6 to trade bishops, drop back with <span class="moves-inline">Bg3</span>. If Black takes, hxg3 opens the h-file for your rook.</li>
+            <li>Against ...d5 set-ups, the jump <span class="moves-inline">Ne5</span> followed by <span class="moves-inline">f4</span> gives you a kingside attack with the d3 bishop pointing at h7.</li>
+            <li>A quiet <span class="moves-inline">h3</span> gives the bishop a safe square on h2 when Black tries ...Nh5 to hunt it.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Watch out for</h3>
+          <ul>
+            <li><strong>...Qb6</strong> hitting b2 once your bishop has left c1. Meet it with <span class="moves-inline">Qb3</span> or make sure b2 is covered.</li>
+            <li><strong>...c5 and ...c4</strong>: once the c-pawn reaches c4 your bishop cannot use d3, so it goes to e2 instead.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Why the London?</h3>
+          <p>It is popular at every level, from club leagues to world champions, because it is low on theory and easy to play well when you are short of preparation time. The middlegames are solid, and you keep the chance to attack on the kingside.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" aria-labelledby="trainer-h">
+      <h2 id="trainer-h">Line trainer</h2>
+      <p class="small">You play White. Click a piece, then its destination (or tab to a square and press Enter). Black replies automatically.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="trainBoard" class="board" role="grid" aria-label="Line trainer board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="lineName">Choose a line</h3>
+          <ul class="line-picker" id="linePicker" aria-label="Lines"></ul>
+          <div class="stage-row" id="stageRow" hidden>
+            <span class="small" id="stageLabel">Train to:</span>
+            <ul class="line-picker" id="stagePicker" aria-labelledby="stageLabel"></ul>
+          </div>
+          <p id="lineBlurb" class="small"></p>
+          <div id="trainFeedback" class="feedback" role="status" aria-live="polite">Pick a line to start.</div>
+          <div class="movelist" id="trainMoves" aria-label="Moves played"></div>
+          <div class="controls">
+            <button class="btn" id="hintBtn" type="button" aria-label="Show a hint for the next move">Hint</button>
+            <button class="btn" id="resetBtn" type="button" aria-label="Restart this line">Reset line</button>
+            <button class="btn" id="flipBtn" type="button" aria-label="Flip the board">Flip board</button>
+            <button class="btn primary" id="nextLineBtn" type="button" aria-label="Go to the next line">Next line</button>
+          </div>
+          <p class="small" id="trainStats"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" aria-labelledby="quiz-h">
+      <h2 id="quiz-h">Quick quiz</h2>
+      <p class="small">One try per position. Play the move on the board.</p>
+      <div class="tool">
+        <div class="board-shell">
+          <div id="quizBoard" class="board" role="grid" aria-label="Quiz board"></div>
+        </div>
+        <div class="panel">
+          <h3 id="quizTitle">Question 1</h3>
+          <p id="quizPrompt"></p>
+          <div id="quizFeedback" class="feedback" role="status" aria-live="polite">Your move.</div>
+          <p class="score" id="quizScore">Score: 0 / 0</p>
+          <div class="controls">
+            <button class="btn primary" id="quizNext" type="button" aria-label="Next question" disabled>Next question</button>
+            <button class="btn" id="quizRestart" type="button" aria-label="Restart the quiz">Restart quiz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" aria-labelledby="next-h">
+      <h2 id="next-h">Keep going</h2>
+      <p>Drill the lines with spaced repetition in the Openings Trainer, or set up any position from this page on the Analysis Board and check it with Stockfish.</p>
+      <div class="links">
+        <a href="../../openings-trainer.html">Openings Trainer →</a>
+        <a class="alt" href="../../analysis-board.html">Analysis Board →</a>
+        <a class="alt" href="../">All opening guides →</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">ELLIS KNOWLEDGE STUDIO · CHESS · LONDON SYSTEM</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var REPLY_DELAY = (typeof window.EKS_REPLY_DELAY === 'number') ? window.EKS_REPLY_DELAY : 450;
+  var FILES = 'abcdefgh';
+  var GLYPH = { w: { k: '♔', q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
+                b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' } };
+  var NAME = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+
+  /* ---------- Repertoire data (all lines checked with chess.js) ---------- */
+  var LINES = [
+    { id: 'main', name: 'Main line: ...d5 and ...e6',
+      blurb: '1...d5 2.Bf4 Nf6 3.e3 e6 4.Nf3 c5 — the classical answer. Build c3 and Nbd2, keep your bishop with Bg3 when Black offers a trade, then aim at the kingside with Ne5 and f4.',
+      moves: 'd4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bg3 O-O Bd3 b6 Ne5 Bb7 f4 Ne7 O-O',
+      note: 'This is the attacking London: the knight on e5 and the pawn on f4 form a strong grip, the d3 bishop aims at h7, and your queen can swing to f3 or h5 with ideas of Rf3–h3. If Black ever takes on e5, recapture with the f-pawn to open the f-file.' },
+    { id: 'kid', name: "King's Indian set-up",
+      blurb: '1...Nf6 and ...g6 — Black fianchettoes. Keep the same structure, play h3 so the bishop can drop back to h2, and look for queenside space with a4.',
+      moves: 'd4 Nf6 Bf4 g6 e3 Bg7 Nf3 O-O Be2 d6 h3 c5 c3 b6 O-O Bb7 Nbd2 Nbd7 a4',
+      note: 'Your pieces are safe and your king is castled. The a4 pawn can go on to a5 to loosen Black\'s queenside. If Black plays ...e5, keep calm: your bishop on f4 (or h2) and the d4 pawn hold the centre, and dxe5 opens lines for your pieces.' },
+    { id: 'qb6', name: 'Early ...c5 and ...Qb6',
+      blurb: '1...d5 2.Bf4 c5 3.e3 Nc6 4.c3 Qb6 — Black goes straight for your b2 pawn. Offer a queen trade with Qb3 and you are fine.',
+      moves: 'd4 d5 Bf4 c5 e3 Nc6 c3 Qb6 Qb3 c4 Qc2 Bf5 Qc1 e6 Nd2 Nf6 Ngf3 Be7 Be2 O-O O-O',
+      note: 'Your queen looks odd on c1, but it guards b2 and the position is solid. With ...c4 played, your plan is to break with b3 (or e4) to attack Black\'s pawn chain. The bishop went to e2 because d3 is covered by the c4 pawn.' }
+  ];
+
+  var QUIZ = [
+    { pre: 'd4 d5', prompt: 'Black has replied 1...d5. Play the move that defines the London System.', accept: ['Bf4'],
+      explain: '2.Bf4 develops the bishop before e3 shuts it in. Move orders with 2.Nf3 and 3.Bf4 reach the same set-up, but this repertoire plays Bf4 straight away.' },
+    { pre: 'd4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6', prompt: 'Black offers to trade dark-squared bishops with 6...Bd6. What is the repertoire answer?', accept: ['Bg3'],
+      explain: '7.Bg3 keeps the bishop. If Black takes, hxg3 opens the h-file for your rook and the new g3 pawn covers f4.' },
+    { pre: 'd4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bg3 O-O Bd3 b6', prompt: 'Everything is developed. Which knight move starts your kingside plan?', accept: ['Ne5'],
+      explain: '9.Ne5 plants the knight in the centre and prepares f4 to support it. Castling is fine too, but Ne5 is the active plan this repertoire uses.' },
+    { pre: 'd4 d5 Bf4 c5 e3 Nc6 c3 Qb6', prompt: 'Black\'s queen attacks b2. How do you deal with it?', accept: ['Qb3'],
+      explain: '5.Qb3 defends b2 and offers a queen trade. If Black takes on b3, axb3 opens the a-file for your rook.' },
+    { pre: 'd4 Nf6 Bf4 g6 e3 Bg7 Nf3 O-O Be2 d6', prompt: 'Black is planning ...Nh5 to hunt your bishop. Which pawn move prepares a safe retreat square?', accept: ['h3'],
+      explain: '6.h3 means that after ...Nh5 your bishop can step back to h2 and stay on the same diagonal.' }
+  ];
+
+  function splitMoves(s) { return s ? s.split(' ') : []; }
+
+  /* ---------- Board component ---------- */
+  function Board(el, opts) {
+    this.el = el;
+    this.orientation = 'w';
+    this.game = null;
+    this.selected = null;
+    this.last = null;
+    this.hint = null;
+    this.interactive = false;
+    this.onMove = opts.onMove || null;
+    this.squares = {};
+    this.build();
+    this.initDrag();
+  }
+  Board.prototype.build = function () {
+    var self = this, r, f, sq, btn;
+    this.el.innerHTML = '';
+    this.squares = {};
+    for (r = 0; r < 8; r++) {
+      for (f = 0; f < 8; f++) {
+        var file = this.orientation === 'w' ? f : 7 - f;
+        var rank = this.orientation === 'w' ? 8 - r : r + 1;
+        sq = FILES.charAt(file) + rank;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sq ' + (((file + rank) % 2 === 0) ? 'light' : 'dark');
+        btn.setAttribute('data-sq', sq);
+        btn.setAttribute('role', 'gridcell');
+        btn.tabIndex = (r === 7 && f === 0) ? 0 : -1;
+        btn.addEventListener('click', (function (s) { return function () { self.clickSquare(s); }; })(sq));
+        btn.addEventListener('keydown', (function (s) { return function (e) { self.keyNav(e, s); }; })(sq));
+        this.el.appendChild(btn);
+        this.squares[sq] = btn;
+      }
+    }
+  };
+  Board.prototype.initDrag = function () {
+    var self = this, drag = null;
+    function sqAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      while (el && el !== self.el && !(el.getAttribute && el.getAttribute('data-sq'))) el = el.parentNode;
+      return (el && el !== self.el) ? el.getAttribute('data-sq') : null;
+    }
+    this.el.addEventListener('pointerdown', function (e) {
+      if (!self.interactive || !self.game || e.button !== 0) return;
+      var sq = sqAt(e.clientX, e.clientY);
+      if (!sq) return;
+      var p = self.game.get(sq);
+      if (!p || p.color !== self.game.turn()) return;
+      drag = { from: sq, x: e.clientX, y: e.clientY, ghost: null, moved: false };
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
+        drag.moved = true;
+        self.selected = drag.from;
+        self.render();
+        var src = self.squares[drag.from], pc = src.querySelector('.pc');
+        var g = document.createElement('div');
+        g.className = 'drag-ghost';
+        g.innerHTML = pc.outerHTML;
+        g.style.fontSize = window.getComputedStyle(src).fontSize;
+        document.body.appendChild(g);
+        drag.ghost = g;
+        pc.style.opacity = '0.25';
+      }
+      e.preventDefault();
+      drag.ghost.style.left = e.clientX + 'px';
+      drag.ghost.style.top = e.clientY + 'px';
+    }, { passive: false });
+    function end(e) {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (!d.moved) return;
+      if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+      var swallow = function (ev) { ev.stopPropagation(); self.el.removeEventListener('click', swallow, true); };
+      self.el.addEventListener('click', swallow, true);
+      setTimeout(function () { self.el.removeEventListener('click', swallow, true); }, 0);
+      var to = e.type === 'pointerup' ? sqAt(e.clientX, e.clientY) : null;
+      var ok = false, legal, i;
+      if (to && to !== d.from) {
+        legal = self.game.moves({ square: d.from, verbose: true });
+        for (i = 0; i < legal.length; i++) if (legal[i].to === to) ok = true;
+      }
+      self.selected = null;
+      self.render();
+      if (ok && self.onMove) self.onMove(d.from, to);
+    }
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+  };
+  Board.prototype.keyNav = function (e, sq) {
+    var dx = 0, dy = 0;
+    if (e.key === 'ArrowLeft') dx = -1; else if (e.key === 'ArrowRight') dx = 1;
+    else if (e.key === 'ArrowUp') dy = 1; else if (e.key === 'ArrowDown') dy = -1;
+    else return;
+    e.preventDefault();
+    if (this.orientation === 'b') { dx = -dx; dy = -dy; }
+    var f = FILES.indexOf(sq.charAt(0)) + dx, r = parseInt(sq.charAt(1), 10) + dy;
+    if (f < 0 || f > 7 || r < 1 || r > 8) return;
+    var next = this.squares[FILES.charAt(f) + r];
+    var k;
+    for (k in this.squares) { if (this.squares.hasOwnProperty(k)) this.squares[k].tabIndex = -1; }
+    next.tabIndex = 0;
+    next.focus();
+  };
+  Board.prototype.flip = function () {
+    this.orientation = this.orientation === 'w' ? 'b' : 'w';
+    this.build();
+    this.render();
+  };
+  Board.prototype.set = function (game, last) {
+    this.game = game;
+    this.last = last || null;
+    this.selected = null;
+    this.hint = null;
+    this.render();
+  };
+  Board.prototype.render = function () {
+    if (!this.game) return;
+    var targets = {}, k, i, moves;
+    if (this.selected) {
+      moves = this.game.moves({ square: this.selected, verbose: true });
+      for (i = 0; i < moves.length; i++) targets[moves[i].to] = true;
+    }
+    for (k in this.squares) {
+      if (!this.squares.hasOwnProperty(k)) continue;
+      var btn = this.squares[k];
+      var p = this.game.get(k);
+      var cls = btn.className.split(' ').slice(0, 2).join(' ');
+      if (this.last && (this.last.from === k || this.last.to === k)) cls += ' last';
+      if (this.selected === k) cls += ' sel';
+      if (this.hint && this.hint.indexOf(k) !== -1) cls += ' hint';
+      if (targets[k]) cls += ' target' + (p ? ' occ' : '');
+      btn.className = cls;
+      var html = '';
+      if (p) html += '<span class="pc ' + p.color + '" aria-hidden="true">' + GLYPH[p.color][p.type] + '</span>';
+      var file = k.charAt(0), rank = k.charAt(1);
+      var bottomRank = this.orientation === 'w' ? '1' : '8';
+      var leftFile = this.orientation === 'w' ? 'a' : 'h';
+      if (rank === bottomRank) html += '<span class="co f" aria-hidden="true">' + file + '</span>';
+      if (file === leftFile) html += '<span class="co r" aria-hidden="true">' + rank + '</span>';
+      btn.innerHTML = html;
+      btn.setAttribute('aria-label', k + (p ? ', ' + (p.color === 'w' ? 'white ' : 'black ') + NAME[p.type] : ', empty') + (targets[k] ? ', legal move' : ''));
+    }
+  };
+  Board.prototype.clickSquare = function (sq) {
+    if (!this.interactive || !this.game) return;
+    var p = this.game.get(sq);
+    if (this.selected) {
+      if (sq === this.selected) { this.selected = null; this.render(); return; }
+      var legal = this.game.moves({ square: this.selected, verbose: true });
+      var i, found = null;
+      for (i = 0; i < legal.length; i++) if (legal[i].to === sq) { found = legal[i]; break; }
+      if (found) {
+        var from = this.selected;
+        this.selected = null;
+        if (this.onMove) this.onMove(from, sq);
+        return;
+      }
+    }
+    if (p && p.color === this.game.turn()) { this.selected = sq; } else { this.selected = null; }
+    this.render();
+  };
+
+  function sanFor(game, from, to) {
+    var t = new Chess(game.fen());
+    var m = t.move({ from: from, to: to, promotion: 'q' });
+    return m ? m.san : null;
+  }
+  function movesText(list, upto, highlightIndex) {
+    var out = [], i;
+    for (i = 0; i < upto; i++) {
+      var txt = (i % 2 === 0 ? (i / 2 + 1) + '.' : '') + list[i];
+      if (i === highlightIndex) txt = '<span class="cur">' + txt + '</span>';
+      out.push(txt);
+    }
+    return out.join(' ');
+  }
+  function setFb(el, text, kind) {
+    el.className = 'feedback' + (kind ? ' ' + kind : '');
+    el.textContent = text;
+  }
+
+  /* ---------- Line trainer ---------- */
+  var T = { line: null, idx: 0, ply: 0, game: new Chess(), mistakes: 0, hintStage: 0, busy: false, done: {}, timer: null, stage: 0 };
+
+  /* Stages: train a long line up to move 8, move 12, or in full (0). */
+  var STAGES = [8, 12, 0];
+  var TRAINEE_IS_WHITE = true;
+  function stagePlies(totalPlies, stage, traineeIsWhite) {
+    if (!stage) return totalPlies;
+    return Math.min(traineeIsWhite ? stage * 2 - 1 : stage * 2, totalPlies);
+  }
+  function availableStages(totalPlies, traineeIsWhite) {
+    var out = [], i;
+    for (i = 0; i < STAGES.length; i++) {
+      if (!STAGES[i] || stagePlies(totalPlies, STAGES[i], traineeIsWhite) < totalPlies) out.push(STAGES[i]);
+    }
+    return out;
+  }
+  function stageName(stage) { return stage ? 'To move ' + stage : 'Full line'; }
+  function doneKey(id) { return id + ':' + T.stage; }
+  var trainBoard = new Board(document.getElementById('trainBoard'), { onMove: trainerMove });
+  var picker = document.getElementById('linePicker');
+  var trainFb = document.getElementById('trainFeedback');
+
+  function buildPicker() {
+    var i;
+    picker.innerHTML = '';
+    for (i = 0; i < LINES.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (T.done[doneKey(LINES[i].id)] ? ' done' : '');
+      b.textContent = LINES[i].name;
+      b.setAttribute('aria-pressed', T.idx === i && T.line ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Train line: ' + LINES[i].name + (T.done[doneKey(LINES[i].id)] ? ' (completed)' : ''));
+      b.addEventListener('click', (function (n) { return function () { startLine(n); }; })(i));
+      li.appendChild(b);
+      picker.appendChild(li);
+    }
+  }
+  function buildStagePicker() {
+    var sp = document.getElementById('stagePicker'), row = document.getElementById('stageRow'), stages, i;
+    sp.innerHTML = '';
+    if (!T.line) { row.hidden = true; return; }
+    stages = availableStages(splitMoves(T.line.moves).length, TRAINEE_IS_WHITE);
+    row.hidden = stages.length < 2;
+    if (stages.length < 2) return;
+    for (i = 0; i < stages.length; i++) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.textContent = stageName(stages[i]);
+      b.setAttribute('aria-pressed', T.stage === stages[i] ? 'true' : 'false');
+      b.addEventListener('click', (function (st) { return function () { chooseStage(st); }; })(stages[i]));
+      li.appendChild(b);
+      sp.appendChild(li);
+    }
+  }
+  function chooseStage(st) {
+    T.stage = st;
+    startLine(T.idx);
+    // The pickers are rebuilt, so put keyboard focus back on the chosen stage and announce it.
+    var pressed = document.querySelector('#stagePicker button[aria-pressed="true"]');
+    if (pressed) pressed.focus();
+    setFb(trainFb, (st ? 'Training to move ' + st : 'Training the full line') + '. Your move as White.', '');
+  }
+  function fullLineMoves() { return splitMoves(T.line.moves); }
+  function lineMoves() {
+    var all = fullLineMoves();
+    return all.slice(0, stagePlies(all.length, T.stage, TRAINEE_IS_WHITE));
+  }
+  function updateTrainUI() {
+    var mv = T.line ? lineMoves() : [];
+    document.getElementById('trainMoves').innerHTML = movesText(mv, T.ply, T.ply - 1) || '<span class="small">Start position</span>';
+    var count = 0, i;
+    for (i = 0; i < LINES.length; i++) if (T.done[doneKey(LINES[i].id)]) count++;
+    document.getElementById('trainStats').textContent = 'Lines completed ' + (T.stage ? 'to move ' + T.stage : 'in full') + ': ' + count + ' / ' + LINES.length + (T.line ? ' · Mistakes this line: ' + T.mistakes : '');
+  }
+  function startLine(n) {
+    if (T.timer) { clearTimeout(T.timer); T.timer = null; }
+    T.idx = n;
+    T.line = LINES[n];
+    if (availableStages(fullLineMoves().length, TRAINEE_IS_WHITE).indexOf(T.stage) === -1) T.stage = 0;
+    T.ply = 0;
+    T.mistakes = 0;
+    T.hintStage = 0;
+    T.busy = false;
+    T.game = new Chess();
+    document.getElementById('lineName').textContent = T.line.name;
+    document.getElementById('lineBlurb').textContent = T.line.blurb;
+    trainBoard.interactive = true;
+    trainBoard.set(T.game, null);
+    setFb(trainFb, 'Your move as White.', '');
+    buildPicker();
+    buildStagePicker();
+    updateTrainUI();
+  }
+  function trainerMove(from, to) {
+    if (!T.line || T.busy) return;
+    var mv = lineMoves();
+    var expected = mv[T.ply];
+    var san = sanFor(T.game, from, to);
+    if (san === expected) {
+      var m = T.game.move(expected);
+      T.ply++;
+      T.hintStage = 0;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      afterUserMove();
+    } else {
+      T.mistakes++;
+      trainBoard.set(T.game, trainBoard.last);
+      setFb(trainFb, (san || 'That move') + ' is not the repertoire move here. Try again, or press Hint.', 'bad');
+      updateTrainUI();
+    }
+  }
+  function afterUserMove() {
+    var mv = lineMoves();
+    if (T.ply >= mv.length) { finishLine(); return; }
+    setFb(trainFb, 'Correct. Black is thinking…', 'good');
+    T.busy = true;
+    var doReply = function () {
+      T.timer = null;
+      var m = T.game.move(mv[T.ply]);
+      T.ply++;
+      T.busy = false;
+      trainBoard.set(T.game, m);
+      updateTrainUI();
+      if (T.ply >= mv.length) { finishLine(); return; }
+      setFb(trainFb, 'Black played ' + m.san + '. Your move.', '');
+    };
+    if (REPLY_DELAY > 0) T.timer = setTimeout(doReply, REPLY_DELAY); else doReply();
+  }
+  function finishLine() {
+    var partial = lineMoves().length < fullLineMoves().length;
+    T.done[doneKey(T.line.id)] = true;
+    trainBoard.interactive = false;
+    setFb(trainFb, (partial ? 'Stage complete' : 'Line complete') + (T.mistakes ? ' with ' + T.mistakes + ' mistake' + (T.mistakes === 1 ? '' : 's') : ' with no mistakes') + '. ' +
+      (partial ? 'You know this line to move ' + T.stage + '. Pick a longer stage to go deeper.' : T.line.note), 'good');
+    buildPicker();
+    updateTrainUI();
+  }
+  document.getElementById('hintBtn').addEventListener('click', function () {
+    if (!T.line || T.busy || T.ply >= lineMoves().length) return;
+    var t = new Chess(T.game.fen());
+    var m = t.move(lineMoves()[T.ply]);
+    if (T.hintStage === 0) {
+      trainBoard.hint = [m.from];
+      setFb(trainFb, 'Hint: move the ' + NAME[m.piece] + ' on ' + m.from + '.', '');
+      T.hintStage = 1;
+    } else {
+      trainBoard.hint = [m.from, m.to];
+      setFb(trainFb, 'The move is ' + m.san + '.', '');
+    }
+    trainBoard.render();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () { if (T.line) startLine(T.idx); });
+  document.getElementById('flipBtn').addEventListener('click', function () { trainBoard.flip(); });
+  document.getElementById('nextLineBtn').addEventListener('click', function () { startLine(T.line ? (T.idx + 1) % LINES.length : 0); });
+
+  /* ---------- Quiz ---------- */
+  var Q = { i: 0, score: 0, answered: 0, game: null, locked: false };
+  var quizBoard = new Board(document.getElementById('quizBoard'), { onMove: quizMove });
+  var quizFb = document.getElementById('quizFeedback');
+  function loadQuestion() {
+    var item = QUIZ[Q.i], mv = splitMoves(item.pre), g = new Chess(), last = null, i;
+    for (i = 0; i < mv.length; i++) last = g.move(mv[i]);
+    Q.game = g;
+    Q.locked = false;
+    quizBoard.interactive = true;
+    quizBoard.set(g, last);
+    document.getElementById('quizTitle').textContent = 'Question ' + (Q.i + 1) + ' of ' + QUIZ.length;
+    document.getElementById('quizPrompt').innerHTML = '<span class="small">After ' + movesText(mv, mv.length, -1) + '</span><br>' + item.prompt;
+    setFb(quizFb, 'Your move (White).', '');
+    document.getElementById('quizNext').disabled = true;
+    document.getElementById('quizNext').textContent = Q.i === QUIZ.length - 1 ? 'See result' : 'Next question';
+    updateScore();
+  }
+  function updateScore() { document.getElementById('quizScore').textContent = 'Score: ' + Q.score + ' / ' + Q.answered; }
+  function quizMove(from, to) {
+    if (Q.locked) return;
+    var item = QUIZ[Q.i];
+    var san = sanFor(Q.game, from, to);
+    var ok = item.accept.indexOf(san) !== -1;
+    Q.locked = true;
+    Q.answered++;
+    if (ok) Q.score++;
+    var m = Q.game.move(ok ? san : item.accept[0]);
+    quizBoard.interactive = false;
+    quizBoard.set(Q.game, m);
+    setFb(quizFb, (ok ? 'Correct! ' : 'Not quite — you played ' + san + '. The answer is ' + item.accept[0] + '. ') + item.explain, ok ? 'good' : 'bad');
+    document.getElementById('quizNext').disabled = false;
+    updateScore();
+  }
+  document.getElementById('quizNext').addEventListener('click', function () {
+    if (Q.i < QUIZ.length - 1) { Q.i++; loadQuestion(); return; }
+    var pct = Math.round(100 * Q.score / QUIZ.length);
+    document.getElementById('quizTitle').textContent = 'Quiz complete';
+    document.getElementById('quizPrompt').textContent = '';
+    setFb(quizFb, 'You scored ' + Q.score + ' / ' + QUIZ.length + ' (' + pct + '%). ' + (pct === 100 ? 'Excellent — you know your London System.' : 'Run the line trainer again, then retry.'), pct >= 70 ? 'good' : '');
+    document.getElementById('quizNext').disabled = true;
+  });
+  document.getElementById('quizRestart').addEventListener('click', function () { Q.i = 0; Q.score = 0; Q.answered = 0; loadQuestion(); });
+
+  /* ---------- Init ---------- */
+  buildPicker();
+  trainBoard.set(new Chess(), null);
+  updateTrainUI();
+  loadQuestion();
+
+  window.EKSLondon = { LINES: LINES, QUIZ: QUIZ, state: { T: T, Q: Q }, stagePlies: stagePlies, availableStages: availableStages };
+})();
+</script>
+</body>
+</html>
