@@ -316,28 +316,28 @@ section { padding: 28px 0; }
   var LINES = [
     { id: 'classical', name: 'Classical: Mar del Plata',
       blurb: 'The main line. White closes the centre with d5 and the race is on: your knight drops back to d7 so the f-pawn can advance.',
-      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1 Nd7 Nd3 f5 Bd2 Nf6 f3 f4',
-      note: 'The pawn chain points at White\'s king. Next comes ...g5, ...Ng6 and ...h5, then ...g4. White will break through on the c-file, so use ...Rf7 and ...Bf8 to cover c7 and d6 without slowing your attack.' },
+      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1 Nd7 Nd3 f5 Bd2 Nf6 f3 f4 c5 g5 Rc1 Ng6 cxd6 cxd6 Nb5 Rf7 Qc2 Ne8 a4 h5',
+      note: 'Both attacks are well advanced. White has opened the c-file; your rook on f7 and knight on e8 cover c7 and d6. Now ...g4 is coming, and the bishop can drop back to f8 if the queenside needs more help.' },
     { id: 'saemisch', name: 'Sämisch: 5.f3',
       blurb: 'White props up e4 with f3 and plans to castle long. Hit the centre with ...e5, then go for ...Nh5 and ...f5.',
       moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 f3 O-O Be3 e5 d5 Nh5 Qd2 f5 O-O-O Nd7 Bd3 Nc5 Bc2 a6',
       note: 'Your knight on c5 is well placed and ...a6 prepares ...b5 to open lines at White\'s king. On the other wing, decide between ...f4 to gain space and ...fxe4 to open the f-file.' },
     { id: 'fianchetto', name: 'Fianchetto: g3',
       blurb: 'White\'s bishop on g2 makes a kingside attack harder, so play in the centre instead: ...Nbd7, ...e5, ...c6 and ...Qb6.',
-      moves: 'd4 Nf6 c4 g6 Nf3 Bg7 g3 O-O Bg2 d6 O-O Nbd7 Nc3 e5 e4 c6 h3 Qb6',
-      note: 'Your queen presses on d4 and b2. Next comes ...exd4 to open the long diagonal, then ...Re8 and ...Nc5 with pressure on e4.' },
+      moves: 'd4 Nf6 c4 g6 Nf3 Bg7 g3 O-O Bg2 d6 O-O Nbd7 Nc3 e5 e4 c6 h3 Qb6 Re1 exd4 Nxd4 Re8 Nc2 Nc5',
+      note: 'Your knight on c5 and rook on e8 bear down on e4. Secure the knight with ...a5, then ...a4 or ...Qb4 adds to the pressure. Keep an eye on b4, which would drive the knight away.' },
     { id: 'fourpawns', name: 'Four Pawns: 5.f4',
       blurb: 'White grabs as much space as possible. The usual break here is ...c5, not ...e5: hit the centre from the side, then add ...e6.',
-      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 f4 O-O Nf3 c5 d5 e6 Be2 exd5 cxd5 Bg4 O-O Nbd7',
-      note: 'A Benoni structure where White\'s centre is big but needs defending. Play ...Re8 to pressure e4, take on f3 when it helps, and expand on the queenside with ...a6 and ...b5.' },
+      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 f4 O-O Nf3 c5 d5 e6 Be2 exd5 cxd5 Bg4 O-O Nbd7 h3 Bxf3 Bxf3 Re8 g4 h6',
+      note: 'You have exchanged the bishop that had no good square. Your rook watches e4, and the queenside majority is ready to go with ...a6 and ...b5, or ...c4 followed by ...Nc5. White\'s g-pawn advance has loosened his own king.' },
     { id: 'averbakh', name: 'Averbakh: Be2 and Bg5',
       blurb: 'The bishop on g5 makes ...e5 awkward at once, so prepare it with ...Na6 first. The knight will come to c5.',
-      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Be2 O-O Bg5 Na6 Qd2 e5 d5 c6 f3 cxd5 cxd5 Bd7',
-      note: 'The c-file is open and your pieces are ready for it: ...Qa5, ...Nc5 and ...Rfc8. Later you can still play on the kingside with ...Nh5 and ...f5.' },
+      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Be2 O-O Bg5 Na6 Qd2 e5 d5 c6 f3 cxd5 cxd5 Bd7 g4 h6',
+      note: 'The g5 bishop has to decide where it is going. After that, carry on with ...Qa5, ...Nc5 and a rook to c8. White\'s g4 means his king has no really safe home.' },
     { id: 'exchange', name: 'Exchange: 7.dxe5',
       blurb: 'White swaps queens hoping for a quiet draw. You have nothing to fear: develop with tempo and take over the d4 square.',
-      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 dxe5 dxe5 Qxd8 Rxd8 Bg5 Re8 Nd5 Nxd5 cxd5 c6 Bc4 cxd5 Bxd5 Nd7',
-      note: 'A level endgame. Bring the knight to b6 or c5 to challenge the d5 bishop, play ...h6 to ask the g5 bishop where it is going, and remember you can play for a win here too.' }
+      moves: 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 dxe5 dxe5 Qxd8 Rxd8 Bg5 Re8 Nd5 Nxd5 cxd5 c6 Bc4 cxd5 Bxd5 Nd7 Nd2 Nc5 O-O-O Be6 Bxe6 Nxe6 Be3 Bf8',
+      note: 'A level endgame. Your knight on e6 looks at d4 and the bishop on f8 is heading for c5. Bring the rooks to the open files and remember you can play for a win here too.' }
   ];
 
   var TRAPS = [
